@@ -21,6 +21,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
+        'avatar',
     ];
 
     /**
@@ -42,4 +44,53 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    /**
+     * Relationships
+     */
+    public function courses()
+    {
+        return $this->hasMany(Course::class, 'teacher_id');
+    }
+
+    public function enrolledCourses()
+    {
+        return $this->belongsToMany(Course::class, 'course_user')
+            ->withPivot('enrolled_at', 'completed_at', 'certificate_generated')
+            ->withTimestamps();
+    }
+
+    public function lessonProgress()
+    {
+        return $this->hasMany(LessonProgress::class);
+    }
+
+    public function quizAttempts()
+    {
+        return $this->hasMany(QuizAttempt::class);
+    }
+
+    /**
+     * Check if user is admin
+     */
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
+    }
+
+    /**
+     * Check if user is teacher
+     */
+    public function isTeacher()
+    {
+        return $this->role === 'teacher';
+    }
+
+    /**
+     * Check if user is student
+     */
+    public function isStudent()
+    {
+        return $this->role === 'student';
+    }
 }
