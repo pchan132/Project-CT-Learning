@@ -56,11 +56,11 @@ Route::post(uri: '/register/teacher', action: [RegisteredUserController::class, 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/student/dashboard', function () {
         return view('student.dashboard');
-    })->name('student.dashboard');
+    })->name('student.dashboard')->middleware('student');
     
     Route::get('/teacher/dashboard', function () {
         return view('teacher.dashboard');
-    })->name('teacher.dashboard');
+    })->name('teacher.dashboard')->middleware('teacher');
 });
 
 require __DIR__.'/auth.php';

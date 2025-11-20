@@ -114,16 +114,61 @@ Flow:
 
 ## การป้องกัน Route
 
+### Middleware Registration
+**ไฟล์**: [`app/Http/Kernel.php`](../../app/Http/Kernel.php)
+
+เพิ่ม middleware aliases ใน `$middlewareAliases`:
+```php
+protected $middlewareAliases = [
+    // ... existing middleware
+    'student' => \App\Http\Middleware\StudentMiddleware::class,
+    'teacher' => \App\Http\Middleware\TeacherMiddleware::class,
+    // ... other middleware
+];
+```
+
+### Route Protection
 Dashboard routes มี middleware protection:
 ```php
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/student/dashboard', ...);
-    Route::get('/teacher/dashboard', ...);
+    Route::get('/student/dashboard', function () {
+        return view('student.dashboard');
+    })->name('student.dashboard')->middleware('student');
+    
+    Route::get('/teacher/dashboard', function () {
+        return view('teacher.dashboard');
+    })->name('teacher.dashboard')->middleware('teacher');
 });
 ```
 
+**Middleware Stack:**
 - `auth` - ต้องล็อกอินก่อน
 - `verified` - ต้องยืนยัน email (ถ้าเปิดใช้งาน)
+- `student` - อนุญาตเฉพาะ student (สำหรับ student dashboard)
+- `teacher` - อนุญาตเฉพาะ teacher (สำหรับ teacher dashboard)
+
+### การทำงานของ Role-Based Middleware
+
+#### ทำไมต้องสร้าง Middleware แยก?
+
+1. **Single Responsibility** - แต่ละ middleware ทำหน้าที่เดียวชัดเจน
+2. **Reusability** - สามารถนำไปใช้กับ route อื่นๆ ได้
+3. **Maintainability** - แก้ไขง่ายเมื่อมีการเปลี่ยนแปลง business logic
+4. **Security** - ชั้นการป้องกันที่ชัดเจนและสมบูรณ์
+
+#### การ Redirect ตาม Role
+
+**StudentMiddleware:**
+- ถ้า user ไม่ใช่ student → redirect ไป dashboard ที่เหมาะสม
+- Student → อนุญาตให้ผ่านไปได้
+- Teacher → redirect ไป `/teacher/dashboard`
+- Role อื่น → redirect ไป `/dashboard`
+
+**TeacherMiddleware:**
+- ถ้า user ไม่ใช่ teacher → redirect ไป dashboard ที่เหมาะสม
+- Teacher → อนุญาตให้ผ่านไปได้
+- Student → redirect ไป `/student/dashboard`
+- Role อื่น → redirect ไป `/dashboard`
 
 ## Database Schema
 
@@ -198,3 +243,139 @@ php artisan migrate:fresh --seed
 **Last Updated**: 2025-11-19  
 **Version**: 1.0.0  
 **Maintainer**: CT-Learning Development Team
+
+## Testing Commands (เพิ่มเติม)
+
+### ตรวจสอบ Routes และ Middleware
+```bash
+# ดู routes ทั้งหมด
+php artisan route:list
+
+# กรอง routes ตามชื่อ
+php artisan route:list --name=dashboard
+php artisan route:list --name=student
+php artisan route:list --name=teacher
+php artisan route:list --name=register
+
+# ตรวจสอบ routes ตาม path
+php artisan route:list --path=student/dashboard
+php artisan route:list --path=teacher/dashboard
+
+# ดู middleware ที่ใช้กับแต่ละ route
+php artisan route:list --middleware=student
+php artisan route:list --middleware=teacher
+```
+
+### ทดสอบ Middleware
+```bash
+# Clear cache ทั้งหมด (ทำหลังจากแก้ไข middleware หรือ routes)
+php artisan cache:clear
+php artisan config:clear
+php artisan route:clear
+php artisan view:clear
+
+# หรือใช้คำสั่งรวม
+php artisan optimize:clear
+
+# ตรวจสอบว่า middleware ถูกลงทะเบียนอย่างถูกต้อง
+php artisan route:list | findstr "student"
+php artisan route:list | findstr "teacher"
+```
+
+### ทดสอบการทำงานจริง (Manual Testing)
+
+#### 1. ทดสอบการลงทะเบียน
+```bash
+# เปิด browser แล้วไปที่:
+http://127.0.0.1:8000/register/student
+http://127.0.0.1:8000/register/teacher
+```
+
+**ตรวจสอบ:**
+- ฟอร์มแสดง role ที่ถูกต้องและ lock อยู่
+- หลังลงทะเบียน redirect ไป dashboard ที่ถูกต้อง
+- ข้อมูลในฐานข้อมูลมี role ที่ถูกต้อง
+
+#### 2. ทดสอบการ Login
+```bash
+# เปิด browser แล้วไปที่:
+http://127.0.0.1:8000/login
+```
+
+**ตรวจสอบ:**
+- Login สำเร็จแล้ว redirect ไป dashboard ตาม role
+- Student → `/student/dashboard`
+- Teacher → `/teacher/dashboard`
+
+#### 3. ทดสอบการป้องกัน Route
+```bash
+# ทดสอบโดยการพิมพ์ URL ตรง:
+http://127.0.0.1:8000/student/dashboard  (ขณะ login ด้วย teacher)
+http://127.0.0.1:8000/teacher/dashboard  (ขณะ login ด้วย student)
+```
+
+**ตรวจสอบ:**
+- Teacher พยายามเข้า student dashboard → redirect ไป teacher dashboard
+- Student พยายามเข้า teacher dashboard → redirect ไป student dashboard
+- ผู้ใช้ที่ไม่ได้ login → redirect ไปหน้า login
+
+### ทดสอบผ่าน Command Line
+```bash
+# สร้าง user สำหรับทดสอบ
+php artisan tinker
+>>> User::create(['name' => 'Test Student', 'email' => 'student@test.com', 'password' => Hash::make('password'), 'role' => 'student']);
+>>> User::create(['name' => 'Test Teacher', 'email' => 'teacher@test.com', 'password' => Hash::make('password'), 'role' => 'teacher']);
+>>> exit
+
+# ตรวจสอบว่า user ถูกสร้างแล้ว
+php artisan tinker
+>>> $student = User::where('email', 'student@test.com')->first();
+>>> $student->isStudent(); // ควร return true
+>>> $student->isTeacher(); // ควร return false
+>>> exit
+```
+
+## การนำไปประยุกต์ใช้กับโปรเจคอื่น
+
+### ขั้นตอนการนำไปใช้:
+
+1. **เพิ่มฟิลด์ role ใน users table**
+   ```sql
+   ALTER TABLE users ADD COLUMN role VARCHAR(255) DEFAULT 'user';
+   ```
+
+2. **อัพเดท User Model**
+   ```php
+   protected $fillable = ['name', 'email', 'password', 'role'];
+   
+   public function isAdmin(): bool {
+       return $this->role === 'admin';
+   }
+   
+   public function isUser(): bool {
+       return $this->role === 'user';
+   }
+   ```
+
+3. **สร้าง Middleware**
+   ```bash
+   php artisan make:middleware AdminMiddleware
+   php artisan make:middleware UserMiddleware
+   ```
+
+4. **ลงทะเบียน Middleware ใน Kernel.php**
+   ```php
+   'admin' => \App\Http\Middleware\AdminMiddleware::class,
+   'user' => \App\Http\Middleware\UserMiddleware::class,
+   ```
+
+5. **ใช้กับ Routes**
+   ```php
+   Route::get('/admin/dashboard', ...)->middleware('admin');
+   Route::get('/user/profile', ...)->middleware('user');
+   ```
+
+### ปรับแต่งตามความต้องการ:
+- เปลี่ยนชื่อ role (admin, moderator, member, etc.)
+- เพิ่ม middleware สำหรับ permission ซับซ้อนขึ้น
+- ใช้ Gate/Policy สำหรับการจัดการสิทธิ์ที่ซับซ้อน
