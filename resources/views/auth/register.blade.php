@@ -1,15 +1,19 @@
 <x-guest-layout>
-    <form method="POST" action="{{ route('register') }}">
+    <form method="POST" action="{{ isset($role) ? ($role === 'student' ? route('register.student.store') : route('register.teacher.store')) : route('register') }}">
         @csrf
 
         {{-- role --}}
         <div class="mt-4">
             <x-input-label for="role" :value="__('ลงทะเบียนในฐานะ')" />
             <select id="role" name="role"
-                class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm block mt-1 w-full">
-                <option value="student">นักศึกษา (Student)</option>
-                <option value="teacher">อาจารย์ (Teacher)</option>
+                class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm block mt-1 w-full"
+                @isset($role) disabled @endisset>
+                <option value="student" @isset($role) @if($role === 'student') selected @endif @endif>นักศึกษา (Student)</option>
+                <option value="teacher" @isset($role) @if($role === 'teacher') selected @endif @endif>อาจารย์ (Teacher)</option>
             </select>
+            @isset($role)
+                <input type="hidden" name="role" value="{{ $role }}">
+            @endisset
             <x-input-error :messages="$errors->get('role')" class="mt-2" />
         </div>
 
