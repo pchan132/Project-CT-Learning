@@ -29,6 +29,15 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        // ตรวจสอบ role ของผู้ใช้และ redirect ไปยัง dashboard ที่เหมาะสม
+        $user = $request->user();
+        
+        if ($user->isStudent()) {
+            return redirect()->intended(route('student.dashboard'));
+        } elseif ($user->isTeacher()) {
+            return redirect()->intended(route('teacher.dashboard'));
+        }
+
         return redirect()->intended(RouteServiceProvider::HOME);
     }
 
