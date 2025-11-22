@@ -19,10 +19,10 @@ class CourseController extends Controller
         return view('student.courses.index', compact('courses'));
     }
 
-    public function create(){
-        Enrollment::create([
+    public function enroll(Course $course){
+        Enrollment::firstOrCreate([
+            'course_id' => $course->id,
             'student_id' => auth()->id(),
-            'course_id' => request()->course_id,
         ]);
         return redirect()->route('student.courses.index')->with('success', 'ลงทะเบียนเรียนสำเร็จ');
     }

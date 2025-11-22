@@ -28,6 +28,8 @@ class RedirectIfAuthenticated
                 } elseif ($user->role === 'teacher') {
                     return redirect()->route('teacher.dashboard');
                 }
+
+                if (auth()->user()->role === 'admin') return redirect('/admin/dashboard');
                 // return redirect(RouteServiceProvider::HOME);
             }
         }

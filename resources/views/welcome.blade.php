@@ -129,8 +129,6 @@
     <div id="particle-bg"></div>
 
 
-
-
     <!-- Navbar (Glass Effect) -->
     <nav class="glass-nav sticky top-0 w-full z-50 shadow-xl">
         <div class="max-w-10xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -252,11 +250,14 @@
                             class="absolute inset-4 rounded-full border-4 border-fuchsia-500/50 animate-spin-reverse-slow">
                         </div>
 
-                        <!-- Core Icon: Laptop (Icon ที่เหมาะสมกับแผนกคอมพิวเตอร์) -->
-                        <div class="absolute inset-0 flex items-center justify-center">
-                            <i class="fas fa-laptop-code text-9xl text-violet-400 opacity-80"
-                                style="text-shadow: 0 0 15px rgba(168, 85, 247, 0.8);"></i>
+                        <!-- Core Content: Image of the Department (บรรทัด 166: ตำแหน่งที่ต้องใส่ URL รูปภาพของคุณ) -->
+                        <div class="absolute inset-0 flex items-center justify-center p-6">
+                            <img src="https://placehold.co/400x400/1E1539/E5E7EB?text=Upload+Department+Image+Here"
+                                alt="ภาพแผนกวิชาเทคโนโลยีคอมพิวเตอร์"
+                                class="w-full h-full object-cover rounded-full shadow-2xl shadow-fuchsia-500/30 opacity-90 transition-opacity hover:opacity-100" />
                         </div>
+                        <!-- END Core Content -->
+
                     </div>
                 </div>
             </div>
@@ -428,9 +429,9 @@
                         <img src="https://placehold.co/300x300/1F1539/EC4899?text=รณภูมิ" alt="อาจารย์รณภูมิ"
                             class="w-32 h-32 object-cover rounded-full mx-auto ring-4 ring-violet-500/50 hover:ring-fuchsia-500 transition duration-300">
                         <div class="mt-4">
-                            <h3 class="text-lg font-semibold text-white"></h3>
-                            <p class="text-xs text-fuchsia-400"></p>
-                            <p class="text-xs text-gray-500 mt-1"></p>
+                            <h3 class="text-lg font-semibold text-white">รณภูมิ นาคสมบูรณ์</h3>
+                            <p class="text-xs text-fuchsia-400">หัวหน้าแผนกวิชา</p>
+                            <p class="text-xs text-gray-500 mt-1">เครือข่ายคอมพิวเตอร์</p>
                         </div>
                     </div>
 

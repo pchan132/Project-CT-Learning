@@ -1,10 +1,13 @@
 <?php
-
+// -------------------------- ของ Controller ----------------------------
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Student\CourseController as StudentCourseController;
+use App\Http\Controllers\Teacher\CourseController as TeacherCourseController;
 use Illuminate\Support\Facades\Route;
 
 // ---------------------------- Register ----------------------------------
 use App\Http\Controllers\Auth\RegisteredUserController;
+
 
 /*
 |--------------------------------------------------------------------------
