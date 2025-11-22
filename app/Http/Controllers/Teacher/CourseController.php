@@ -61,7 +61,9 @@ class CourseController extends Controller
     public function show(Course $course)
     {
         // แสดงรายละเอียดของคอร์สเรียนที่ระบุ
-        $this->authorize('view', $course);
+        if ($course->teacher_id !== auth()->id()) {
+            abort(403, 'Unauthorized action.');
+        }
         return view('teacher.courses.show', compact('course'));
     }
 
@@ -70,8 +72,9 @@ class CourseController extends Controller
      */
     public function edit(Course $course)
     {
-        //
-        $this->authorize('update', $course);
+        if ($course->teacher_id !== auth()->id()) {
+            abort(403, 'Unauthorized action.');
+        }
         return view('teacher.courses.edit', compact('course'));
     }
 
@@ -81,12 +84,20 @@ class CourseController extends Controller
     public function update(Request $request, Course $course)
     {
         // แก้ไขข้อมูลคอร์สเรียน
-        $this->authorize('update', $course);
+        if ($course->teacher_id !== auth()->id()) {
+            abort(403, 'Unauthorized action.');
+        }
        $data = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'cover_image_url' => 'image|mimes:jpeg,png,jpg,gif,svg',
+            'cover_image_url' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
         ]);
+
+        // จัดการรูปภาพหน้าปกใหม่ (ถ้ามี)
+        if ($request->hasFile('cover_image_url')) {
+            $data['cover_image_url'] = $request->file('cover_image_url')->store('cover_images', 'public');
+        }
+
         $course->update($data);
         return redirect()->route('teacher.courses.index');
     }
@@ -96,9 +107,19 @@ class CourseController extends Controller
      */
     public function destroy(Course $course)
     {
+        // ตรวจสอบว่าเป็นเจ้าของคอร์สหรือไม่
+        if ($course->teacher_id !== auth()->id()) {
+            abort(403, 'Unauthorized action.');
+        }
+        
+        // ลบรูปภาพหน้าปกถ้ามี (ก่อนลบ record)
+        if ($course->cover_image_url) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($course->cover_image_url);
+        }
+        
         // ลบคอร์สเรียน
-        $this->authorize('delete', $course);
         $course->delete();
+        
         return redirect()->route('teacher.courses.index');
     }
 }

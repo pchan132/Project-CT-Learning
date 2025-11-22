@@ -765,7 +765,7 @@
                 <div>
                     <a href="#home"
                         class="text-xl font-extrabold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-fuchsia-500 mb-4 block">
-                        COM TECH <span class="text-white">LBT</span>
+                        Center-Learning <span class="text-white">TECHNOLOGY COMPUTER</span>
                     </a>
                     <p class="mb-4">
                         แผนกวิชาเทคโนโลยีคอมพิวเตอร์ วิทยาลัยเทคนิคลพบุรี

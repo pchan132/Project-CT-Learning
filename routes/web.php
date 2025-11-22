@@ -87,10 +87,3 @@ Route::middleware(['auth', 'student'])->prefix('student')->name('student.')->gro
 Route::middleware(['auth', 'teacher'])->prefix('teacher')->name('teacher.')->group(function () {
     Route::resource('courses', TeacherCourseController::class);
 });
-
-
-// หน้าที่แสดงรายการคอร์สเรียนทั้งหมด (สำหรับผู้ teacher) **********
-Route::get('/teacher/courses',
-[TeacherCourseController::class, 'index'])
-->middleware(['auth', 'teacher'])
-->name('teacher.courses.index');

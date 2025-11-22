@@ -24,9 +24,9 @@
                     @foreach ($courses as $course)
                         <tr class="border-b hover:bg-gray-50">
                             <td class="py-3">
-                                @if ($course->cover)
-                                    <img src="{{ asset('storage/' . $course->cover) }}"
-                                        class="w-20 h-12 object-cover rounded">
+                                @if ($course->cover_image_url)
+                                    <img src="{{ asset('storage/' . $course->cover_image_url) }}"
+                                        class="w-20 h-12 object-cover rounded" alt="{{ $course->title }}">
                                 @else
                                     <div class="w-20 h-12 bg-gray-200 rounded"></div>
                                 @endif
@@ -41,12 +41,13 @@
                                     Edit
                                 </a>
 
-                                <form class="inline-block" action="{{ route('teacher.courses.destroy', $course->id) }}"
+                                <form class="inline-block"
+                                    action="{{ route('teacher.courses.destroy', parameters: $course->id) }}"
                                     method="POST" onsubmit="return confirm('Delete this course?')">
                                     @csrf
                                     @method('DELETE')
-
-                                    <button class="text-red-600 hover:underline">
+                                    <button class="text-red-600
+                                    hover:underline">
                                         Delete
                                     </button>
                                 </form>

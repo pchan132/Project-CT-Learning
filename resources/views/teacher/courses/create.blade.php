@@ -19,7 +19,7 @@
 
             <div>
                 <label class="block font-medium">Cover Image</label>
-                <input type="file" name="cover" accept="image/*" class="mt-2">
+                <input type="file" name="cover_image_url" accept="image/*" class="mt-2">
             </div>
 
             <div class="flex justify-between">
