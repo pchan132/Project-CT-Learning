@@ -133,14 +133,14 @@
 
     <!-- Navbar (Glass Effect) -->
     <nav class="glass-nav sticky top-0 w-full z-50 shadow-xl">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-10xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-20">
                 <!-- Logo -->
                 <a href="#home" class="flex items-center">
                     <!-- ใช้ชื่อแผนกแทนโลโก้ -->
                     <span
                         class="text-xl md:text-2xl font-extrabold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-fuchsia-500">
-                        COM TECH <span class="text-white">LBT</span>
+                        Center-Learning <span class="text-white">TECHNOLOGY COMPUTER</span>
                     </span>
                 </a>
 
@@ -154,14 +154,14 @@
                         <a href="#courses"
                             class="nav-link text-gray-300 hover:text-violet-400 px-3 py-2 text-sm font-medium transition duration-150">หลักสูตร</a>
                         <a href="#teachers"
-                            class="nav-link text-gray-300 hover:text-violet-400 px-3 py-2 text-sm font-medium transition duration-150">คณาจารย์</a>
+                            class="nav-link text-gray-300 hover:text-violet-400 px-3 py-2 text-sm font-medium transition duration-150">อาจารย์ประจำแผนก</a>
                         <a href="#projects"
-                            class="nav-link text-gray-300 hover:text-violet-400 px-3 py-2 text-sm font-medium transition duration-150">ผลงานนักศึกษา</a>
+                            class="nav-link text-gray-300 hover:text-violet-400 px-3 py-2 text-sm font-medium transition duration-150">คอรส์เรียน</a>
                         <a href="#contact"
                             class="nav-link text-gray-300 hover:text-violet-400 px-3 py-2 text-sm font-medium transition duration-150">ติดต่อ</a>
 
                         @if (Route::has('login'))
-                            <div class="sm:fixed sm:top-0 sm:right-0 p-6 text-right z-10">
+                            <div class="sm:top-0 sm:right-0 p-6 text-right z-10">
                                 @auth
                                     <a href="{{ url('/dashboard') }}"
                                         class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Dashboard</a>
@@ -200,9 +200,9 @@
                 <a href="#courses"
                     class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-violet-400 hover:bg-violet-900/50">หลักสูตร</a>
                 <a href="#teachers"
-                    class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-violet-400 hover:bg-violet-900/50">คณาจารย์</a>
+                    class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-violet-400 hover:bg-violet-900/50">อาจารย์ประจำแผนก</a>
                 <a href="#projects"
-                    class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-violet-400 hover:bg-violet-900/50">ผลงานนักศึกษา</a>
+                    class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-violet-400 hover:bg-violet-900/50">คอรส์เรียน</a>
                 <a href="#contact"
                     class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-violet-400 hover:bg-violet-900/50">ติดต่อ</a>
             </div>
@@ -275,13 +275,13 @@
                         <p
                             class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-fuchsia-500">
                             10+</p>
-                        <p class="text-sm text-gray-400">คณาจารย์</p>
+                        <p class="text-sm text-gray-400">อาจารย์ประจำแผนก</p>
                     </div>
                     <div>
                         <p
                             class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-fuchsia-500">
                             45</p>
-                        <p class="text-sm text-gray-400">ห้องปฏิบัติการ</p>
+                        <p class="text-sm text-gray-400">ห้องเรียน</p>
                     </div>
                     <div>
                         <p
@@ -415,8 +415,8 @@
         <section id="teachers" class="py-24">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 fade-in-up" data-delay="700">
                 <div class="text-center mb-16">
-                    <h2 class="text-4xl font-bold text-white">คณาจารย์<span
-                            class="text-fuchsia-400">ผู้เชี่ยวชาญ</span></h2>
+                    <h2 class="text-4xl font-bold text-white">อาจารย์<span class="text-fuchsia-400">ประจำแผนก</span>
+                    </h2>
                     <div class="mt-4 h-1 w-24 bg-violet-500 mx-auto rounded-full"></div>
                 </div>
 
@@ -428,9 +428,9 @@
                         <img src="https://placehold.co/300x300/1F1539/EC4899?text=รณภูมิ" alt="อาจารย์รณภูมิ"
                             class="w-32 h-32 object-cover rounded-full mx-auto ring-4 ring-violet-500/50 hover:ring-fuchsia-500 transition duration-300">
                         <div class="mt-4">
-                            <h3 class="text-lg font-semibold text-white">รณภูมิ นาคสมบูรณ์</h3>
-                            <p class="text-xs text-fuchsia-400">หัวหน้าแผนกวิชา</p>
-                            <p class="text-xs text-gray-500 mt-1">เครือข่ายคอมพิวเตอร์</p>
+                            <h3 class="text-lg font-semibold text-white"></h3>
+                            <p class="text-xs text-fuchsia-400"></p>
+                            <p class="text-xs text-gray-500 mt-1"></p>
                         </div>
                     </div>
 
@@ -540,7 +540,7 @@
         <section id="projects" class="py-24 bg-gray-900/30">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 fade-in-up" data-delay="800">
                 <div class="text-center mb-16">
-                    <h2 class="text-4xl font-bold text-white">ผลงานนักศึกษา<span class="text-violet-400">สุดล้ำ</span>
+                    <h2 class="text-4xl font-bold text-white">คอรส์เรียน<span class="text-violet-400">สุดล้ำ</span>
                     </h2>
                     <div class="mt-4 h-1 w-24 bg-fuchsia-500 mx-auto rounded-full"></div>
                 </div>

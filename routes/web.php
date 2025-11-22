@@ -66,3 +66,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
 require __DIR__.'/auth.php';
 
 
+// --------------------------------------------------------------
+// กำหนดเส้นทางสำหรับ สิทธิ์การเข้าถึงของนักเรียน และ ครู ในการจัดการคอร์สเรียน
+
+// ของนักเรียน
+Route::middleware(['auth', 'student'])->prefix('student')->name('student.')->group(function () {
+    Route::get('/courses', [StudentCourseController::class, 'index'])->name('courses.index');
+
+    // เส้นทางสำหรับการลงทะเบียนเรียนในคอร์ส ของนักเรียน
+    Route::post('/courses/enroll', [StudentCourseController::class, 'enroll'])->name('courses.enroll');
+});
+
+// ของครู
+Route::middleware(['auth', 'teacher'])->prefix('teacher')->name('teacher.')->group(function () {
+    Route::resource('courses', TeacherCourseController::class);
+});

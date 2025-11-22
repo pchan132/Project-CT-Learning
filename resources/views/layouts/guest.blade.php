@@ -14,6 +14,48 @@
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <style>
+        /* Style for the container card (Tech Card look) */
+        .tech-card-form {
+            background-color: var(--card-dark);
+            border: 1px solid rgba(168, 85, 247, 0.5);
+            /* Violet border */
+            border-radius: 1rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), 0 0 15px rgba(236, 72, 153, 0.2);
+            /* Dual shadow */
+        }
+
+        /* Style for the primary gradient button */
+        .btn-primary-neon {
+            background: linear-gradient(90deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 15px rgba(236, 72, 153, 0.4);
+            /* Tailwind classes: text-white font-bold py-2 px-6 rounded-full */
+        }
+
+        .btn-primary-neon:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(168, 85, 247, 0.6);
+        }
+
+        /* Override component styles for dark/neon appearance */
+        .form-input-neon {
+            background-color: #110D25;
+            /* Darker than card */
+            border-color: #5B21B6;
+            /* Violet-700 */
+            color: #E5E7EB;
+            transition: all 0.2s;
+            /* Tailwind classes: block mt-1 w-full rounded-md shadow-sm */
+        }
+
+        .form-input-neon:focus {
+            border-color: var(--secondary-color) !important;
+            box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.4) !important;
+            outline: none;
+        }
+    </style>
 </head>
 
 <body class="font-sans text-gray-900 antialiased">
