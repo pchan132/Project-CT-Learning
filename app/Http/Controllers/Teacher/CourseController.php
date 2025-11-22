@@ -41,12 +41,13 @@ class CourseController extends Controller
         $data = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'cover_image_url' => 'nullable|url',
+            'cover_image_url' => 'image|mimes:jpeg,png,jpg,gif,svg',
         ]);
 
         $data['teacher_id'] = auth()-> id();
 
-        if ($request->hasFile('cover_image_url')){
+        // เพิ่มรูปภาพหน้าปก
+        if ($request->hasFile('cover_image_url')) {
             $data['cover_image_url'] = $request->file('cover_image_url')->store('cover_images', 'public');
         }
 
@@ -84,7 +85,7 @@ class CourseController extends Controller
        $data = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'cover_image_url' => 'nullable|url',
+            'cover_image_url' => 'image|mimes:jpeg,png,jpg,gif,svg',
         ]);
         $course->update($data);
         return redirect()->route('teacher.courses.index');

@@ -15,7 +15,49 @@
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Prompt (Thai) -->
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- SweetAlert2 for pop-ups (แทน alert() / confirm()) -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
     <style>
+        /* กำหนดค่าเริ่มต้นของ Tailwind & Theme สี Neon Tech */
+        :root {
+            --primary-color: #A855F7;
+            /* Violet-500 */
+            --secondary-color: #EC4899;
+            /* Fuchsia-500 */
+            --background-dark: #0A041C;
+            /* พื้นหลังสีม่วงเข้มเกือบดำ */
+            --card-dark: #1E1539;
+            /* สีการ์ดที่เข้มกว่า */
+            --text-light: #E5E7EB;
+        }
+
+        /* Style สำหรับปุ่มหลักที่มี Gradient */
+        .btn-primary {
+            background: linear-gradient(90deg, #A855F7 0%, #EC4899 100%);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(236, 72, 153, 0.4);
+        }
+
+        /* Style สำหรับ Navbar ที่มีความโปร่งแสง */
+        .glass-nav {
+            background-color: rgba(10, 4, 28, 0.9);
+            /* background-dark + opacity */
+            backdrop-filter: blur(8px);
+        }
+
         /* Style for the container card (Tech Card look) */
         .tech-card-form {
             background-color: var(--card-dark);
@@ -68,7 +110,7 @@
         <div class="w-full sm:max-w-4xl mx-auto px-4">
 
             {{-- Form Container --}}
-            <div class="bg-white dark:bg-gray-800 shadow-xl rounded-xl overflow-hidden">
+            <div class="form-input-neon rounded-md shadow-sm block mt-1 w-full py-2 px-3">
                 <div class="flex flex-col lg:flex-row">
                     {{-- รูปภาพด้านซ้าย --}}
                     <div
