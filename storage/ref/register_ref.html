@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Cyberpunk Form</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Font: Inter for a modern look -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Noto+Sans+Thai:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* กำหนดฟอนต์หลัก: Noto Sans Thai สำหรับภาษาไทย และ Inter สำหรับตัวเลข/อังกฤษ */
+        body {
+            font-family: 'Noto Sans Thai', 'Inter', sans-serif;
+            
+            /* พื้นหลังตามรูป: Dark Cosmic / Cyberpunk */
+            background-image: url('https://images.unsplash.com/photo-1547432098-9777174e7939?q=80&w=1920&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed; /* ทำให้พื้นหลังอยู่นิ่ง */
+        }
+
+        /* --- Custom Neon Glow Styles --- */
+
+        /* ขอบเรืองแสงสีฟ้า/เขียว (Cyan/Teal) สำหรับฝั่งซ้าย */
+        .neon-border-cyan {
+            border: 2px solid #06B6D4; /* cyan-500 */
+            box-shadow: 
+                0 0 15px #06B6D4,       /* แสงหลักอ่อนๆ */
+                0 0 30px #06B6D480,      /* แสงแผ่จางๆ */
+                inset 0 0 8px #06B6D4;  /* แสงด้านใน */
+            transition: all 0.3s ease;
+        }
+
+        /* ขอบเรืองแสงสีชมพู/ม่วง (Fuchsia/Pink) สำหรับฝั่งขวา */
+        .neon-border-pink {
+            border: 2px solid #D946EF; /* fuchsia-500 */
+            box-shadow: 
+                0 0 15px #D946EF,       /* แสงหลักอ่อนๆ */
+                0 0 30px #D946EF80,      /* แสงแผ่จางๆ */
+                inset 0 0 8px #D946EF;  /* แสงด้านใน */
+            transition: all 0.3s ease;
+        }
+
+        /* Text Glow สำหรับฝั่งซ้าย (สีฟ้า) */
+        .neon-text-cyan {
+            color: #67E8F9; /* cyan-300 */
+            text-shadow: 
+                0 0 5px #06B6D4, 
+                0 0 15px #06B6D4;
+        }
+        
+        /* สไตล์สำหรับ Input/Select/Progress Bar Fields */
+        .neon-input-field {
+            background-color: transparent;
+            color: white;
+            border: 1px solid #A1A1AA; /* border-zinc-400 */
+            border-radius: 0.5rem; /* rounded-lg */
+            padding: 0.75rem 1rem;
+            box-shadow: inset 0 0 3px rgba(255, 255, 255, 0.1);
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        /* Focus State: ให้เรืองแสงสีชมพูตามรูปเมื่อโฟกัส */
+        .neon-input-field:focus {
+            outline: none;
+            border-color: #D946EF; /* fuchsia-500 */
+            box-shadow: 
+                0 0 8px #D946EF, 
+                inset 0 0 2px #D946EF;
+        }
+
+        /* Custom style for the logo (Hexagon) to give it a layered, glowing look */
+        .neon-logo-glow {
+            filter: drop-shadow(0 0 15px #06B6D4) drop-shadow(0 0 20px #D946EF);
+        }
+
+        /* Progress Bar styles */
+        .progress-bar-container {
+            height: 8px; /* ความหนาของแถบ */
+            background-color: #3F3F46; /* zinc-700 */
+            border-radius: 9999px;
+            overflow: hidden;
+            box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.5);
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            width: 75%; /* 75% Completed */
+            background-color: #D946EF; /* fuchsia-500 */
+            box-shadow: 0 0 5px #D946EF, 0 0 10px #D946EF;
+            border-radius: 9999px;
+        }
+
+        /* Gradient Button with Glow */
+        .neon-button {
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(217, 70, 239, 0.7); /* แสงเริ่มต้น */
+        }
+        .neon-button:hover {
+            box-shadow: 0 0 20px rgba(6, 182, 212, 0.9), 0 0 30px rgba(217, 70, 239, 0.9); /* แสงสว่างขึ้นเมื่อโฮเวอร์ */
+            transform: translateY(-1px);
+        }
+
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+
+    <!-- Main Container Card (Semi-transparent black background) -->
+    <div class="bg-black/50 backdrop-blur-md rounded-3xl p-4 md:p-8 flex flex-col lg:flex-row max-w-6xl w-full space-y-6 lg:space-y-0 lg:space-x-8">
+
+        <!-- 1. Left Panel (Cyan Neon) -->
+        <div class="flex-1 p-8 rounded-2xl neon-border-cyan flex flex-col items-center justify-center text-center space-y-10">
+            
+            <!-- Logo/Icon (Simulated Hexagon Logo with Glow) -->
+            <div class="w-36 h-36 neon-logo-glow">
+                <!-- Inline SVG to mimic the futuristic hexagon logo structure -->
+                <svg viewBox="0 0 100 100" class="w-full h-full">
+                    <!-- Outer Cyan Hexagon -->
+                    <polygon points="50,0 100,25 100,75 50,100 0,75 0,25" fill="none" stroke="#06B6D4" stroke-width="2" opacity="0.8"/>
+                    <!-- Inner Pink Hexagon -->
+                    <polygon points="50,20 80,35 80,65 50,80 20,65 20,35" fill="none" stroke="#D946EF" stroke-width="2" opacity="0.8"/>
+                    <!-- Central Cube-like structure -->
+                    <path d="M50 35 L50 65 M50 35 L80 35 M50 35 L20 35 M50 65 L80 65 M50 65 L20 65" fill="none" stroke="#D946EF" stroke-width="1.5"/>
+                </svg>
+            </div>
+
+            <!-- Thai Welcome Text -->
+            <h1 class="text-5xl font-extrabold neon-text-cyan mt-10 tracking-wider">
+                ยินดีต้อนรับ
+            </h1>
+            <p class="text-xl text-cyan-200/90 leading-relaxed max-w-sm">
+                เข้าสู่ระบบแพลตฟอร์มการเรียนรู้
+            </p>
+            
+            <!-- Animated line elements on the side (Simulated with simple DIVs) -->
+            <div class="absolute inset-y-0 left-0 w-1/12 opacity-50 hidden lg:block">
+                <div class="h-1/5 bg-cyan-400/30 w-0.5 my-8 ml-4 shadow-[0_0_10px_#06B6D4]"></div>
+                <div class="h-1/12 bg-fuchsia-400/30 w-0.5 my-8 ml-8 shadow-[0_0_10px_#D946EF]"></div>
+            </div>
+        </div>
+
+        <!-- 2. Right Panel (Pink Neon Form) -->
+        <div class="flex-1 p-8 rounded-2xl neon-border-pink flex flex-col space-y-4">
+            
+            <h2 class="text-2xl font-bold text-fuchsia-300 text-center mb-4">
+                ลงทะเบียน
+            </h2>
+
+            <form class="space-y-4">
+                <!-- Dropdown (Selection) -->
+                <div>
+                    <select class="neon-input-field appearance-none">
+                        <option value="" disabled selected>เลือกบัญชีผู้ใช้</option>
+                        <option value="student">นักศึกษา (Student)</option>
+                        <option value="teacher">อาจารย์ (Teacher)</option>
+                        <option value="admin">ผู้ดูแลระบบ (Admin)</option>
+                    </select>
+                </div>
+                
+                <!-- Input Fields (Following the image structure) -->
+                <div>
+                    <input type="text" placeholder="Name" class="neon-input-field" required>
+                </div>
+                <div>
+                    <input type="email" placeholder="Email" class="neon-input-field" required>
+                </div>
+                <div>
+                    <input type="password" placeholder="Password" class="neon-input-field" required>
+                </div>
+                <!-- The image has a repeated Email/Password field structure. I replicate the look: -->
+                <div>
+                    <input type="email" placeholder="Email (Re-enter)" class="neon-input-field" required>
+                </div>
+                <div>
+                    <input type="password" placeholder="Password (Re-enter)" class="neon-input-field" required>
+                </div>
+                <div>
+                    <input type="password" placeholder="Confirm Password" class="neon-input-field" required>
+                </div>
+
+                <!-- Progress Bar: 75% Completed -->
+                <div class="pt-4 space-y-2">
+                    <div class="progress-bar-container">
+                        <!-- Tailwind class for visual width: w-[75%] -->
+                        <div class="progress-bar-fill"></div>
+                    </div>
+                    <p class="text-xs text-fuchsia-300/80 tracking-widest text-right">75% Completed</p>
+                </div>
+
+                <!-- Register Button -->
+                <div class="pt-6">
+                    <button type="submit" class="w-full py-3 rounded-lg text-lg font-bold uppercase tracking-widest text-black bg-gradient-to-r from-cyan-400 to-fuchsia-500 neon-button">
+                        REGISTER
+                    </button>
+                </div>
+            </form>
+
+            <!-- Already Registered Link -->
+            <p class="text-center pt-4 text-sm text-gray-400 hover:text-fuchsia-300 transition duration-300 cursor-pointer">
+                Already registered?
+            </p>
+
+        </div>
+    </div>
+
+</body>
+</html>

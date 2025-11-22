@@ -1,22 +1,23 @@
 <x-guest-layout>
-    <form method="POST" action="{{ isset($role) ? ($role === 'student' ? route('register.student.store') : route('register.teacher.store')) : route('register') }}">
+    <form method="POST"
+        action="{{ isset($role) ? ($role === 'student' ? route('register.student.store') : route('register.teacher.store')) : route('register') }}">
         @csrf
 
         {{-- role --}}
-        <div class="mt-4">
+        <div class="mt-4 tech-card-form p-6 md:p-8 w-full max-w-md">
             <x-input-label for="role" :value="__('ลงทะเบียนในฐานะ')" />
-            <select id="role" name="role"
-                class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm block mt-1 w-full"
+            <select id="role" name="role" class="form-input-neon rounded-md shadow-sm block mt-1 w-full py-2 px-3"
                 @isset($role) disabled @endisset>
-                <option value="student" @isset($role) @if($role === 'student') selected @endif @endif>นักศึกษา (Student)</option>
-                <option value="teacher" @isset($role) @if($role === 'teacher') selected @endif @endif>อาจารย์ (Teacher)</option>
+                <option value="student"
+                    @isset($role) @if ($role === 'student') selected @endif @endif>นักศึกษา (Student)</option>
+                <option value="teacher" @isset($role) @if ($role === 'teacher') selected @endif @endif>อาจารย์ (Teacher)</option>
             </select>
             @isset($role)
                 <input type="hidden" name="role" value="{{ $role }}">
             @endisset
-            <x-input-error :messages="$errors->get('role')" class="mt-2" />
+                    <x-input-error :messages="$errors->get('role')" class="mt-2" />
         </div>
-
+        {{-- --------------------------------------------------------------------- --}}
 
         <!-- Name -->
         <div class="mt-4">
@@ -25,7 +26,7 @@
                 required autofocus autocomplete="name" />
             <x-input-error :messages="$errors->get('name')" class="mt-2" />
         </div>
-
+        {{-- --------------------------------------------------------------------- --}}
         <!-- Email Address -->
         <div class="mt-4">
             <x-input-label for="email" :value="__('Email')" />
@@ -34,6 +35,7 @@
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 
+        {{-- --------------------------------------------------------------------- --}}
         <!-- Password -->
         <div class="mt-4">
             <x-input-label for="password" :value="__('Password')" />
