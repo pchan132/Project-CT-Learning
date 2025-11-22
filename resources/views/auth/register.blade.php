@@ -1,10 +1,14 @@
 <x-guest-layout>
+
+    <h1 class="items-center font-semibold text-2xl text-gray-800 dark:text-gray-200 leading-tight mb-2">
+        <span class="text-indigo-500 items-center">|</span> ลงทะเบียนสมัครสมาชิก
+    </h1>
     <form method="POST"
         action="{{ isset($role) ? ($role === 'student' ? route('register.student.store') : route('register.teacher.store')) : route('register') }}">
         @csrf
 
         {{-- role --}}
-        <div class="mt-4 tech-card-form p-6 md:p-8 w-full max-w-md ">
+        <div class="tech-card-form p-6 md:p-8 w-full max-w-md ">
             <x-input-label for="role" :value="__('ลงทะเบียนในฐานะ')" />
             <select id="role" name="role"
                 class="form-input-neon rounded-md shadow-sm block mt-1 w-full py-2 px-3 text-gray-300 bg-gray-900 border-gray-700 focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-600 dark:focus:border-indigo-500 dark:focus:ring-indigo-500 appearance-none"
