@@ -4,9 +4,10 @@
         @csrf
 
         {{-- role --}}
-        <div class="mt-4 tech-card-form p-6 md:p-8 w-full max-w-md">
+        <div class="mt-4 tech-card-form p-6 md:p-8 w-full max-w-md ">
             <x-input-label for="role" :value="__('ลงทะเบียนในฐานะ')" />
-            <select id="role" name="role" class="form-input-neon rounded-md shadow-sm block mt-1 w-full py-2 px-3"
+            <select id="role" name="role"
+                class="form-input-neon rounded-md shadow-sm block mt-1 w-full py-2 px-3 text-gray-300 bg-gray-900 border-gray-700 focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-600 dark:focus:border-indigo-500 dark:focus:ring-indigo-500 appearance-none"
                 @isset($role) disabled @endisset>
                 <option value="student"
                     @isset($role) @if ($role === 'student') selected @endif @endif>นักศึกษา (Student)</option>

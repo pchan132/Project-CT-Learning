@@ -27,107 +27,144 @@
 
 
     <style>
-        /* กำหนดค่าเริ่มต้นของ Tailwind & Theme สี Neon Tech */
-        :root {
-            --primary-color: #A855F7;
-            /* Violet-500 */
-            --secondary-color: #EC4899;
-            /* Fuchsia-500 */
-            --background-dark: #0A041C;
-            /* พื้นหลังสีม่วงเข้มเกือบดำ */
-            --card-dark: #1E1539;
-            /* สีการ์ดที่เข้มกว่า */
-            --text-light: #E5E7EB;
+        body {
+            font-family: 'Prompt', sans-serif;
         }
 
-        /* Style สำหรับปุ่มหลักที่มี Gradient */
-        .btn-primary {
-            background: linear-gradient(90deg, #A855F7 0%, #EC4899 100%);
-            transition: transform 0.2s, box-shadow 0.2s;
+        /* --- RGB BORDER ANIMATION --- */
+        @keyframes spin-slow {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(236, 72, 153, 0.4);
+        .rgb-spinner {
+            background: conic-gradient(from 0deg,
+                    transparent 0deg,
+                    #ff4545 60deg,
+                    #00ff99 120deg,
+                    #006aff 180deg,
+                    #ff0095 240deg,
+                    #ff4545 300deg,
+                    transparent 360deg);
+            /* ปรับ gradient ให้มีช่วง transparent เพื่อให้ดูเหมือนแสงวิ่งไล่กัน */
+            background: conic-gradient(#ff4545, #00ff99, #006aff, #ff0095, #ff4545);
+            animation: spin-slow 4s linear infinite;
+            filter: blur(10px);
+            /* เพิ่ม blur ให้แสงดูฟุ้งๆ เหมือนนีออน */
+            opacity: 0.8;
         }
 
-        /* Style สำหรับ Navbar ที่มีความโปร่งแสง */
-        .glass-nav {
-            background-color: rgba(10, 4, 28, 0.9);
-            /* background-dark + opacity */
-            backdrop-filter: blur(8px);
+        /* ลดความเร็วตอน Hover */
+        .group:hover .rgb-spinner {
+            animation-duration: 2s;
         }
 
-        /* Style for the container card (Tech Card look) */
-        .tech-card-form {
-            background-color: var(--card-dark);
-            border: 1px solid rgba(168, 85, 247, 0.5);
-            /* Violet border */
-            border-radius: 1rem;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), 0 0 15px rgba(236, 72, 153, 0.2);
-            /* Dual shadow */
+        .glass-input {
+            transition: all 0.3s ease;
         }
 
-        /* Style for the primary gradient button */
-        .btn-primary-neon {
-            background: linear-gradient(90deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 4px 15px rgba(236, 72, 153, 0.4);
-            /* Tailwind classes: text-white font-bold py-2 px-6 rounded-full */
+        .glass-input:focus {
+            transform: scale(1.01);
+            box-shadow: 0 0 15px rgba(168, 85, 247, 0.4);
         }
 
-        .btn-primary-neon:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 6px 20px rgba(168, 85, 247, 0.6);
+        /* Animation Background */
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
         }
 
-        /* Override component styles for dark/neon appearance */
-        .form-input-neon {
-            background-color: #110D25;
-            /* Darker than card */
-            border-color: #5B21B6;
-            /* Violet-700 */
-            color: #E5E7EB;
-            transition: all 0.2s;
-            /* Tailwind classes: block mt-1 w-full rounded-md shadow-sm */
-        }
-
-        .form-input-neon:focus {
-            border-color: var(--secondary-color) !important;
-            box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.4) !important;
-            outline: none;
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
         }
     </style>
 </head>
 
-<body class="font-sans text-gray-900 antialiased">
-    <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100 dark:bg-gray-900">
+<body class="bg-black text-gray-100 antialiased overflow-hidden">
 
-        {{-- <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white dark:bg-gray-800 shadow-md overflow-hidden sm:rounded-lg">
-                {{ $slot }}
-            </div> --}}
+    <!-- Main Container -->
+    <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 relative">
 
-        <div class="w-full sm:max-w-4xl mx-auto px-4">
+        <!-- Background Image -->
+        <div class="absolute inset-0 z-0">
+            <img src="https://images.unsplash.com/photo-1538370965046-79c0d6907d47?q=80&w=2069&auto=format&fit=crop"
+                alt="Galaxy Background" class="w-full h-full object-cover opacity-60">
+            <div class="absolute inset-0 bg-gradient-to-b from-black/30 via-black/60 to-black/90"></div>
+        </div>
 
-            {{-- Form Container --}}
-            <div class="form-input-neon rounded-md shadow-sm block mt-1 w-full py-2 px-3">
-                <div class="flex flex-col lg:flex-row">
-                    {{-- รูปภาพด้านซ้าย --}}
-                    <div
-                        class="lg:w-2/5 bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-700 dark:to-gray-600 p-8 flex items-center justify-center">
-                        <div class="text-center">
-                            <x-application-logo class="w-24 h-24 mx-auto mb-4 text-blue-600 dark:text-blue-400" />
-                            <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-2">ยินดีต้อนรับ</h3>
-                            <p class="text-gray-600 dark:text-gray-300">เข้าสู่ระบบเพื่อเริ่มการเรียนรู้</p>
+        <!-- Decorative Blobs -->
+        <div
+            class="absolute top-20 left-20 w-64 h-64 bg-purple-600/30 rounded-full mix-blend-screen filter blur-3xl animate-pulse">
+        </div>
+        <div class="absolute bottom-20 right-20 w-64 h-64 bg-blue-600/30 rounded-full mix-blend-screen filter blur-3xl animate-pulse"
+            style="animation-delay: 2s;"></div>
+
+
+        <!-- Form Wrapper -->
+        <div class="w-full sm:max-w-4xl mx-auto px-4 relative z-10 animate-float group">
+
+            <!-- RGB Border Container -->
+            <!-- ใช้ p-[3px] เพื่อกำหนดความหนาของเส้นขอบไฟวิ่ง -->
+            <div class="relative rounded-3xl overflow-hidden p-[3px] shadow-[0_0_50px_-12px_rgba(168,85,247,0.5)]">
+
+                <!-- 1. The Spinning RGB Layer (พื้นหลังหมุน) -->
+                <div class="absolute inset-[-50%] w-[200%] h-[200%] top-[-50%] left-[-50%] rgb-spinner"></div>
+
+                <!-- 2. The Content Card (ทับอยู่ด้านบน) -->
+                <div
+                    class="relative bg-gray-900/90 backdrop-blur-xl rounded-[calc(1.5rem-3px)] overflow-hidden h-full border border-white/10">
+
+                    <div class="flex flex-col lg:flex-row min-h-[500px]">
+                        <!-- Left Side: Welcome / Logo -->
+                        <div
+                            class="lg:w-2/5 bg-gradient-to-br from-indigo-900/50 to-purple-900/50 p-8 flex flex-col items-center justify-center text-center relative overflow-hidden">
+                            <!-- Grid decorative background -->
+                            <div
+                                class="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20">
+                            </div>
+
+                            <div class="relative z-10">
+                                <div
+                                    class="w-24 h-24 mx-auto mb-6 bg-white/10 rounded-full flex items-center justify-center backdrop-blur-sm border border-white/20 shadow-[0_0_15px_rgba(255,255,255,0.2)]">
+                                    <!-- Mock Logo -->
+                                    <i
+                                        class="fa-solid fa-rocket text-4xl text-transparent bg-clip-text bg-gradient-to-r from-blue-300 to-purple-300"></i>
+                                </div>
+                                <h3 class="text-2xl font-bold text-white mb-2 tracking-wide">WELCOME BACK</h3>
+                                <p class="text-blue-200/70 text-sm mb-8">
+                                    เข้าสู่ระบบเพื่อเริ่มการเรียนรู้ในจักรวาลแห่งใหม่</p>
+
+                                <!-- Decorative dots -->
+                                <div class="flex gap-2 justify-center">
+                                    <div class="w-2 h-2 rounded-full bg-blue-400 animate-bounce"></div>
+                                    <div class="w-2 h-2 rounded-full bg-purple-400 animate-bounce delay-75"></div>
+                                    <div class="w-2 h-2 rounded-full bg-pink-400 animate-bounce delay-150"></div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    {{-- ฟอร์มด้านขวา --}}
-                    <div class="lg:w-3/5 p-8">
-                        {{ $slot }}
+                        {{-- ฟอร์มด้านขวา --}}
+                        <div class="lg:w-3/5 p-8 lg:p-10 bg-black/20">
+                            {{ $slot }}
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+
+
 </body>
 
 </html>
