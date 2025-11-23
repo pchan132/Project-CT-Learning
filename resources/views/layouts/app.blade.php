@@ -15,34 +15,6 @@
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    <!-- โหลด Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- ตั้งค่า Tailwind Configuration สำหรับ Dark Mode และใช้ Font Inter -->
-    <script>
-        tailwind.config = {
-            darkMode: 'class', // ใช้คลาส 'dark' ใน <html> เพื่อสลับโหมด
-            theme: {
-                extend: {
-                    colors: {
-                        'primary-blue': '#1e3a8a', // Navy Blue เข้มสำหรับ Header
-                        'background-light': '#f9fafb', // สีพื้นหลังขาวนวล
-                        'card-light': '#ffffff', // สี Card สว่าง
-                        'background-dark': '#111827', // สีพื้นหลังโหมดมืด
-                        'card-dark': '#1f2937', // สี Card โหมดมืด
-                        'accent-glow': '#3b82f6', // สีฟ้าสำหรับการเน้น
-                    },
-                    boxShadow: {
-                        '3xl': '0 35px 60px -15px rgba(0, 0, 0, 0.3)',
-                        'subtle-white': '0 4px 10px rgba(0, 0, 0, 0.05)',
-                        'subtle-dark': '0 4px 10px rgba(255, 255, 255, 0.05)',
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
 
     <style>
         /* กำหนดฟอนต์ Inter สำหรับ Body */
@@ -58,6 +30,87 @@
             transition: background-color 0.5s, color 0.5s;
         }
     </style>
+
+    <!-- JavaScript สำหรับการทำงานของปุ่มสลับโหมดมืด/สว่าง -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const modeToggle = document.getElementById('mode-toggle');
+            const sunIcon = document.getElementById('sun-icon');
+            const moonIcon = document.getElementById('moon-icon');
+            const html = document.documentElement;
+
+            // ฟังก์ชันตรวจสอบและตั้งค่าโหมดเริ่มต้น
+            function initDarkMode() {
+                // ตรวจสอบว่ามีการบันทึกค่าไว้ใน localStorage หรือไม่
+                const savedMode = localStorage.getItem('darkMode');
+                
+                if (savedMode === 'true') {
+                    html.classList.add('dark');
+                    sunIcon.classList.add('hidden');
+                    moonIcon.classList.remove('hidden');
+                } else if (savedMode === 'false') {
+                    html.classList.remove('dark');
+                    sunIcon.classList.remove('hidden');
+                    moonIcon.classList.add('hidden');
+                } else {
+                    // ถ้าไม่มีการบันทึกไว้ ให้ตรวจสอบการตั้งค่าของระบบ
+                    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    if (prefersDark) {
+                        html.classList.add('dark');
+                        sunIcon.classList.add('hidden');
+                        moonIcon.classList.remove('hidden');
+                    } else {
+                        html.classList.remove('dark');
+                        sunIcon.classList.remove('hidden');
+                        moonIcon.classList.add('hidden');
+                    }
+                }
+            }
+
+            // ฟังก์ชันสลับโหมด
+            function toggleDarkMode() {
+                const isDark = html.classList.contains('dark');
+                
+                if (isDark) {
+                    // สลับไปโหมดสว่าง
+                    html.classList.remove('dark');
+                    sunIcon.classList.remove('hidden');
+                    moonIcon.classList.add('hidden');
+                    localStorage.setItem('darkMode', 'false');
+                } else {
+                    // สลับไปโหมดมืด
+                    html.classList.add('dark');
+                    sunIcon.classList.add('hidden');
+                    moonIcon.classList.remove('hidden');
+                    localStorage.setItem('darkMode', 'true');
+                }
+            }
+
+            // เรียกใช้ฟังก์ชันเริ่มต้น
+            initDarkMode();
+
+            // เพิ่ม event listener ให้ปุ่มสลับ
+            if (modeToggle) {
+                modeToggle.addEventListener('click', toggleDarkMode);
+            }
+
+            // ตรวจสอบการเปลี่ยนแปลงของการตั้งค่าระบบ
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+                // อัปเดตเฉพาะกรณีที่ผู้ใช้ไม่ได้ตั้งค่าไว้
+                if (localStorage.getItem('darkMode') === null) {
+                    if (e.matches) {
+                        html.classList.add('dark');
+                        sunIcon.classList.add('hidden');
+                        moonIcon.classList.remove('hidden');
+                    } else {
+                        html.classList.remove('dark');
+                        sunIcon.classList.remove('hidden');
+                        moonIcon.classList.add('hidden');
+                    }
+                }
+            });
+        });
+    </script>
 
 </head>
 

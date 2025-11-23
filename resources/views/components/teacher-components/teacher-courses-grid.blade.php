@@ -1,6 +1,6 @@
 <!-- ส่วนคอร์สเรียนของฉัน: Grid Layout พร้อมปุ่มดำเนินการ -->
 <section>
-    <h2 class="text-2xl font-bold text-gray-900 mb-6">คอร์สของฉัน</h2>
+    <h2 class="text-2xl font-bold text-gray-900 mb-6 dark:text-white">คอร์สของฉัน</h2>
     @if ($courses->count() > 0)
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             @foreach ($courses as $course)
