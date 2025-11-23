@@ -1,0 +1,229 @@
+<?php
+
+namespace App\Http\Controllers\Teacher;
+
+use App\Http\Controllers\Controller;
+use App\Models\Lesson;
+use App\Models\Module;
+use App\Models\Course;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+
+class LessonController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index(Course $course, Module $module)
+    {
+        // ตรวจสอบว่าครูเป็นเจ้าของคอร์สและ module เป็นของคอร์สนี้
+        if ($course->teacher_id !== auth()->id() || $module->course_id !== $course->id) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $lessons = $module->lessons()->ordered()->get();
+
+        return view('teacher.lessons.index', compact('course', 'module', 'lessons'));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create(Course $course, Module $module)
+    {
+        // ตรวจสอบว่าครูเป็นเจ้าของคอร์สและ module เป็นของคอร์สนี้
+        if ($course->teacher_id !== auth()->id() || $module->course_id !== $course->id) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        // หาลำดับถัดไปสำหรับ lesson ใหม่
+        $nextOrder = $module->lessons()->max('order') + 1;
+
+        return view('teacher.lessons.create', compact('course', 'module', 'nextOrder'));
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request, Course $course, Module $module)
+    {
+        // ตรวจสอบว่าครูเป็นเจ้าของคอร์สและ module เป็นของคอร์สนี้
+        if ($course->teacher_id !== auth()->id() || $module->course_id !== $course->id) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $data = $request->validate([
+            'title' => 'required|string|max:255',
+            'content_type' => 'required|in:PDF,VIDEO,TEXT',
+            'content_url' => 'nullable|required_if:content_type,VIDEO|string|max:500',
+            'content_text' => 'nullable|required_if:content_type,TEXT|string',
+            'file' => 'nullable|required_if:content_type,PDF,PPT|file|mimes:pdf,ppt,pptx|max:10240', // 10MB max
+            'order' => 'required|integer|min:1',
+        ]);
+
+        // จัดการ file upload สำหรับ PDF/PPT
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $contentType = $request->input('content_type');
+            
+            $folder = $contentType === 'PDF' ? 'lessons/pdf' : 'lessons/ppt';
+            $filename = time() . '_' . $file->getClientOriginalName();
+            
+            $path = $file->storeAs($folder, $filename, 'public');
+            $data['content_url'] = $path;
+        }
+
+        // ตรวจสอบว่า order ซ้ำหรือไม่
+        $existingLesson = $module->lessons()->where('order', $data['order'])->first();
+        if ($existingLesson) {
+            // ถ้าซ้ำ ให้ shift lessons ที่มี order >= ที่กรอก
+            $module->lessons()->where('order', '>=', $data['order'])->increment('order');
+        }
+
+        $data['module_id'] = $module->id;
+
+        Lesson::create($data);
+
+        return redirect()
+            ->route('teacher.courses.modules.lessons.index', [$course, $module])
+            ->with('success', 'Lesson ถูกสร้างเรียบร้อยแล้ว');
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(Course $course, Module $module, Lesson $lesson)
+    {
+        // ตรวจสอบสิทธิ์
+        if ($course->teacher_id !== auth()->id() || 
+            $module->course_id !== $course->id || 
+            $lesson->module_id !== $module->id) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        return view('teacher.lessons.show', compact('course', 'module', 'lesson'));
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(Course $course, Module $module, Lesson $lesson)
+    {
+        // ตรวจสอบสิทธิ์
+        if ($course->teacher_id !== auth()->id() || 
+            $module->course_id !== $course->id || 
+            $lesson->module_id !== $module->id) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        return view('teacher.lessons.edit', compact('course', 'module', 'lesson'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, Course $course, Module $module, Lesson $lesson)
+    {
+        // ตรวจสอบสิทธิ์
+        if ($course->teacher_id !== auth()->id() || 
+            $module->course_id !== $course->id || 
+            $lesson->module_id !== $module->id) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $data = $request->validate([
+            'title' => 'required|string|max:255',
+            'content_type' => 'required|in:PDF,VIDEO,TEXT',
+            'content_url' => 'nullable|string|max:500',
+            'content_text' => 'nullable|string',
+            'file' => 'nullable|file|mimes:pdf,ppt,pptx|max:10240', // 10MB max
+            'order' => 'required|integer|min:1',
+        ]);
+
+        // จัดการ file upload ถ้ามีการอัปโหลดไฟล์ใหม่
+        if ($request->hasFile('file')) {
+            // ลบไฟล์เก่าถ้ามี
+            if ($lesson->content_url && $lesson->isFileContent()) {
+                Storage::disk('public')->delete($lesson->content_url);
+            }
+
+            $file = $request->file('file');
+            $contentType = $request->input('content_type');
+            
+            $folder = $contentType === 'PDF' ? 'lessons/pdf' : 'lessons/ppt';
+            $filename = time() . '_' . $file->getClientOriginalName();
+            
+            $path = $file->storeAs($folder, $filename, 'public');
+            $data['content_url'] = $path;
+        } elseif (!$request->hasFile('file') && $request->input('content_type') !== $lesson->content_type) {
+            // ถ้าเปลี่ยน content type แต่ไม่อัปโหลดไฟล์ใหม่ ให้ลบ URL เก่า
+            if ($lesson->content_url && $lesson->isFileContent()) {
+                Storage::disk('public')->delete($lesson->content_url);
+            }
+            $data['content_url'] = null;
+        }
+
+        // ถ้าเปลี่ยน order
+        if ($data['order'] != $lesson->order) {
+            $existingLesson = $module->lessons()
+                ->where('order', $data['order'])
+                ->where('id', '!=', $lesson->id)
+                ->first();
+
+            if ($existingLesson) {
+                // ถ้ามี lesson อื่นอยู่ใน order นั้น ให้ shift
+                if ($data['order'] > $lesson->order) {
+                    // ย้ายไปข้างหลัง - shift lessons ระหว่าง old+1 ถึง new ลง
+                    $module->lessons()
+                        ->where('order', '>', $lesson->order)
+                        ->where('order', '<=', $data['order'])
+                        ->decrement('order');
+                } else {
+                    // ย้ายไปข้างหน้า - shift lessons ระหว่าง new ถึง old-1 ขึ้น
+                    $module->lessons()
+                        ->where('order', '>=', $data['order'])
+                        ->where('order', '<', $lesson->order)
+                        ->increment('order');
+                }
+            }
+        }
+
+        $lesson->update($data);
+
+        return redirect()
+            ->route('teacher.courses.modules.lessons.index', [$course, $module])
+            ->with('success', 'Lesson ถูกอัปเดตเรียบร้อยแล้ว');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Course $course, Module $module, Lesson $lesson)
+    {
+        // ตรวจสอบสิทธิ์
+        if ($course->teacher_id !== auth()->id() || 
+            $module->course_id !== $course->id || 
+            $lesson->module_id !== $module->id) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        // ลบไฟล์ถ้ามี
+        if ($lesson->content_url && $lesson->isFileContent()) {
+            Storage::disk('public')->delete($lesson->content_url);
+        }
+
+        // เก็บ order ปัจจุบันไว้
+        $deletedOrder = $lesson->order;
+
+        $lesson->delete();
+
+        // Shift lessons ที่มี order > ที่ลบ ลงมา 1 ตำแหน่ง
+        $module->lessons()
+            ->where('order', '>', $deletedOrder)
+            ->decrement('order');
+
+        return redirect()
+            ->route('teacher.courses.modules.lessons.index', [$course, $module])
+            ->with('success', 'Lesson ถูกลบเรียบร้อยแล้ว');
+    }
+}

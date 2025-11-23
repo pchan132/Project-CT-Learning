@@ -86,4 +86,26 @@ Route::middleware(['auth', 'student'])->prefix('student')->name('student.')->gro
 // ของครู
 Route::middleware(['auth', 'teacher'])->prefix('teacher')->name('teacher.')->group(function () {
     Route::resource('courses', TeacherCourseController::class);
+    
+    // Routes สำหรับ Modules
+    Route::prefix('courses/{course}/modules')->name('courses.modules.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Teacher\ModuleController::class, 'index'])->name('index');
+        Route::get('/create', [App\Http\Controllers\Teacher\ModuleController::class, 'create'])->name('create');
+        Route::post('/', [App\Http\Controllers\Teacher\ModuleController::class, 'store'])->name('store');
+        Route::get('/{module}', [App\Http\Controllers\Teacher\ModuleController::class, 'show'])->name('show');
+        Route::get('/{module}/edit', [App\Http\Controllers\Teacher\ModuleController::class, 'edit'])->name('edit');
+        Route::put('/{module}', [App\Http\Controllers\Teacher\ModuleController::class, 'update'])->name('update');
+        Route::delete('/{module}', [App\Http\Controllers\Teacher\ModuleController::class, 'destroy'])->name('destroy');
+        
+        // Routes สำหรับ Lessons ภายใน Module
+        Route::prefix('/{module}/lessons')->name('lessons.')->group(function () {
+            Route::get('/', [App\Http\Controllers\Teacher\LessonController::class, 'index'])->name('index');
+            Route::get('/create', [App\Http\Controllers\Teacher\LessonController::class, 'create'])->name('create');
+            Route::post('/', [App\Http\Controllers\Teacher\LessonController::class, 'store'])->name('store');
+            Route::get('/{lesson}', [App\Http\Controllers\Teacher\LessonController::class, 'show'])->name('show');
+            Route::get('/{lesson}/edit', [App\Http\Controllers\Teacher\LessonController::class, 'edit'])->name('edit');
+            Route::put('/{lesson}', [App\Http\Controllers\Teacher\LessonController::class, 'update'])->name('update');
+            Route::delete('/{lesson}', [App\Http\Controllers\Teacher\LessonController::class, 'destroy'])->name('destroy');
+        });
+    });
 });

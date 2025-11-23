@@ -36,21 +36,27 @@
                             <td class="py-3 text-gray-600">{{ Str::limit($course->description, 50) }}</td>
 
                             <td class="py-3">
-                                <a href="{{ route('teacher.courses.edit', $course->id) }}"
-                                    class="text-blue-600 hover:underline mr-3">
-                                    Edit
-                                </a>
+                                <div class="flex gap-2 items-center">
+                                    <a href="{{ route('teacher.courses.modules.index', $course) }}"
+                                        class="inline-flex items-center px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700">
+                                        📚 Modules
+                                    </a>
 
-                                <form class="inline-block"
-                                    action="{{ route('teacher.courses.destroy', parameters: $course->id) }}"
-                                    method="POST" onsubmit="return confirm('Delete this course?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="text-red-600
-                                    hover:underline">
-                                        Delete
-                                    </button>
-                                </form>
+                                    <a href="{{ route('teacher.courses.edit', $course->id) }}"
+                                        class="text-blue-600 hover:underline text-sm">
+                                        Edit
+                                    </a>
+
+                                    <form class="inline-block"
+                                        action="{{ route('teacher.courses.destroy', $course->id) }}" method="POST"
+                                        onsubmit="return confirm('Delete this course?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="text-red-600 hover:underline text-sm">
+                                            Delete
+                                        </button>
+                                    </form>
+                                </div>
                             </td>
                         </tr>
                     @endforeach
