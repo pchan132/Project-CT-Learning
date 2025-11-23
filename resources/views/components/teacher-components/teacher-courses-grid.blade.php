@@ -6,8 +6,9 @@
             @foreach ($courses as $course)
                 <div class="bg-white shadow rounded-lg overflow-hidden">
                     @if ($course->cover_image_url)
-                        <img src="{{ asset('storage/' . $course->cover_image_url) }}" class="w-full h-40 object-cover"
-                            alt="{{ $course->title }}">
+                        <img class="w-full h-40 object-cover opacity-80"
+                            src="{{ asset('storage/' . $course->cover_image_url) }}"
+                            class="w-full h-40 object-cover opacity-80" alt="{{ $course->title }}">
                     @else
                         <div class="w-full h-40 bg-gray-200 flex items-center justify-center">
                             <i class="fas fa-image text-gray-400 text-5xl"></i>
