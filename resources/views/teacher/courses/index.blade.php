@@ -47,14 +47,13 @@
 
                                     <a href="{{ route('teacher.courses.show', $course) }}">View Course</a>
 
-                                    <a href="{{ route('teacher.courses.edit', $course->id) }}"
+                                    <a href="{{ route('teacher.courses.edit', $course) }}"
                                         class="text-blue-600 hover:underline text-sm">
                                         Edit
                                     </a>
 
-                                    <form class="inline-block"
-                                        action="{{ route('teacher.courses.destroy', $course->id) }}" method="POST"
-                                        onsubmit="return confirm('Delete this course?')">
+                                    <form class="inline-block" action="{{ route('teacher.courses.destroy', $course) }}"
+                                        method="POST" onsubmit="return confirm('Delete this course?')">
                                         @csrf
                                         @method('DELETE')
                                         <button class="text-red-600 hover:underline text-sm">
