@@ -1,86 +1,85 @@
-<x-app-layout>
-    <div class="max-w-6xl mx-auto py-6 sm:px-6 lg:px-8">
+@extends('layouts.app')
+
+@section('header')
+    <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+        รายละเอียดบทเรียน
+    </h2>
+@endsection
+
+@section('content')
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Header -->
         <div class="mb-6">
             <div class="flex items-center justify-between">
                 <div class="flex items-center">
                     <a href="{{ route('teacher.courses.modules.lessons.index', [$course, $module]) }}"
-                        class="text-gray-600 hover:text-gray-900 mr-4">
+                        class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 mr-4">
                         <i class="fas fa-arrow-left"></i>
                     </a>
                     <div>
-                        <h1 class="text-2xl font-bold text-gray-900">{{ $lesson->title }}</h1>
-                        <p class="mt-1 text-sm text-gray-600">
+                        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ $lesson->title }}</h1>
+                        <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
                             <a href="{{ route('teacher.courses.index') }}"
-                                class="text-indigo-600 hover:text-indigo-900">คอร์สของฉัน</a>
+                                class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">คอร์สของฉัน</a>
                             <span class="mx-2">/</span>
                             <a href="{{ route('teacher.courses.show', $course) }}"
-                                class="text-indigo-600 hover:text-indigo-900">{{ $course->title }}</a>
+                                class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">{{ $course->title }}</a>
                             <span class="mx-2">/</span>
                             <a href="{{ route('teacher.courses.modules.show', [$course, $module]) }}"
-                                class="text-indigo-600 hover:text-indigo-900">{{ $module->title }}</a>
+                                class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">{{ $module->title }}</a>
                             <span class="mx-2">/</span>
                             บทเรียนที่ {{ $lesson->order }}
                         </p>
                     </div>
                 </div>
-                <div class="flex space-x-2">
-                    <a href="{{ route('teacher.courses.modules.lessons.edit', [$course, $module, $lesson]) }}"
-                        class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">
-                        <i class="fas fa-edit mr-2"></i>แก้ไขบทเรียน
-                    </a>
-                </div>
+                <a href="{{ route('teacher.courses.modules.lessons.edit', [$course, $module, $lesson]) }}"
+                    class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-lg flex items-center">
+                    <i class="fas fa-edit mr-2"></i>แก้ไขบทเรียน
+                </a>
             </div>
         </div>
 
         <!-- Lesson Info Cards -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-            <div class="bg-white overflow-hidden shadow rounded-lg">
-                <div class="px-4 py-5 sm:p-6">
-                    <div class="text-center">
-                        <div class="text-3xl font-bold text-green-600">{{ $lesson->order }}</div>
-                        <div class="text-sm text-gray-500">ลำดับ</div>
-                    </div>
+            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-lg rounded-xl">
+                <div class="px-4 py-5 sm:p-6 text-center">
+                    <div class="text-4xl font-bold text-green-600 dark:text-green-400">{{ $lesson->order }}</div>
+                    <div class="text-sm text-gray-500 dark:text-gray-400 mt-2">ลำดับที่</div>
                 </div>
             </div>
-            <div class="bg-white overflow-hidden shadow rounded-lg">
-                <div class="px-4 py-5 sm:p-6">
-                    <div class="text-center">
-                        <div class="text-lg font-bold text-blue-600">{{ $lesson->content_type_label }}</div>
-                        <div class="text-sm text-gray-500">ประเภทเนื้อหา</div>
-                    </div>
+            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-lg rounded-xl">
+                <div class="px-4 py-5 sm:p-6 text-center">
+                    <div class="text-xl font-bold text-blue-600 dark:text-blue-400">
+                        {{ $lesson->content_type_label ?? ucfirst($lesson->content_type) }}</div>
+                    <div class="text-sm text-gray-500 dark:text-gray-400 mt-2">ประเภทเนื้อหา</div>
                 </div>
             </div>
-            <div class="bg-white overflow-hidden shadow rounded-lg">
-                <div class="px-4 py-5 sm:p-6">
-                    <div class="text-center">
-                        <div class="text-3xl font-bold text-purple-600">{{ $lesson->created_at->format('d/m/Y') }}
-                        </div>
-                        <div class="text-sm text-gray-500">สร้างเมื่อ</div>
-                    </div>
+            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-lg rounded-xl">
+                <div class="px-4 py-5 sm:p-6 text-center">
+                    <div class="text-2xl font-bold text-purple-600 dark:text-purple-400">
+                        {{ $lesson->created_at->format('d/m/Y') }}</div>
+                    <div class="text-sm text-gray-500 dark:text-gray-400 mt-2">สร้างเมื่อ</div>
                 </div>
             </div>
-            <div class="bg-white overflow-hidden shadow rounded-lg">
-                <div class="px-4 py-5 sm:p-6">
-                    <div class="text-center">
-                        <div class="text-3xl font-bold text-indigo-600">{{ $lesson->updated_at->format('d/m/Y') }}
-                        </div>
-                        <div class="text-sm text-gray-500">อัปเดตเมื่อ</div>
-                    </div>
+            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-lg rounded-xl">
+                <div class="px-4 py-5 sm:p-6 text-center">
+                    <div class="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                        {{ $lesson->updated_at->format('d/m/Y') }}</div>
+                    <div class="text-sm text-gray-500 dark:text-gray-400 mt-2">อัปเดตล่าสุด</div>
                 </div>
             </div>
         </div>
 
         <!-- Content Display -->
-        <div class="bg-white shadow overflow-hidden sm:rounded-lg mb-6">
-            <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
-                <h3 class="text-lg leading-6 font-medium text-gray-900">เนื้อหาบทเรียน</h3>
-                <p class="mt-1 max-w-2xl text-sm text-gray-500">
+        <div class="bg-white dark:bg-gray-800 shadow-lg rounded-xl overflow-hidden mb-6">
+            <div class="px-6 py-5 border-b border-gray-200 dark:border-gray-700">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">เนื้อหาบทเรียน</h3>
+                <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
                     แสดงเนื้อหาของบทเรียน "{{ $lesson->title }}"
                 </p>
             </div>
 
-            <div class="px-4 py-5 sm:p-6">
+            <div class="px-6 py-6">
                 @if ($lesson->isFileContent())
                     <!-- PDF/PPT Content -->
                     <div class="text-center">
@@ -100,8 +99,7 @@
                             @if ($lesson->content_type === 'PDF')
                                 <div class="mt-6">
                                     <iframe src="{{ $lesson->content_display_url }}"
-                                        class="w-full h-96 border border-gray-300 rounded-lg"
-                                        title="{{ $lesson->title }}">
+                                        class="w-full h-96 border border-gray-300 rounded-lg" title="{{ $lesson->title }}">
                                     </iframe>
                                 </div>
                             @endif
@@ -169,46 +167,50 @@
         </div>
 
         <!-- Lesson Details -->
-        <div class="bg-white shadow overflow-hidden sm:rounded-lg">
-            <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
-                <h3 class="text-lg leading-6 font-medium text-gray-900">รายละเอียดบทเรียน</h3>
+        <div class="bg-white dark:bg-gray-800 shadow-lg rounded-xl overflow-hidden">
+            <div class="px-6 py-5 border-b border-gray-200 dark:border-gray-700">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">รายละเอียดบทเรียน</h3>
             </div>
-            <div class="px-4 py-5 sm:p-6">
-                <dl class="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2">
+            <div class="px-6 py-6">
+                <dl class="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
                     <div>
-                        <dt class="text-sm font-medium text-gray-500">ชื่อบทเรียน</dt>
-                        <dd class="mt-1 text-sm text-gray-900">{{ $lesson->title }}</dd>
+                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">ชื่อบทเรียน</dt>
+                        <dd class="mt-1 text-sm text-gray-900 dark:text-white font-semibold">{{ $lesson->title }}</dd>
                     </div>
                     <div>
-                        <dt class="text-sm font-medium text-gray-500">ประเภทเนื้อหา</dt>
-                        <dd class="mt-1 text-sm text-gray-900">{{ $lesson->content_type_label }}</dd>
+                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">ประเภทเนื้อหา</dt>
+                        <dd class="mt-1 text-sm text-gray-900 dark:text-white font-semibold">
+                            {{ $lesson->content_type_label ?? ucfirst($lesson->content_type) }}</dd>
                     </div>
                     <div>
-                        <dt class="text-sm font-medium text-gray-500">ลำดับที่</dt>
-                        <dd class="mt-1 text-sm text-gray-900">{{ $lesson->order }}</dd>
+                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">ลำดับที่</dt>
+                        <dd class="mt-1 text-sm text-gray-900 dark:text-white font-semibold">{{ $lesson->order }}</dd>
                     </div>
                     <div>
-                        <dt class="text-sm font-medium text-gray-500">Module</dt>
-                        <dd class="mt-1 text-sm text-gray-900">{{ $module->title }} (ลำดับ {{ $module->order }})</dd>
+                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Module</dt>
+                        <dd class="mt-1 text-sm text-gray-900 dark:text-white font-semibold">{{ $module->title }} (ลำดับ
+                            {{ $module->order }})</dd>
                     </div>
                     <div>
-                        <dt class="text-sm font-medium text-gray-500">สร้างเมื่อ</dt>
-                        <dd class="mt-1 text-sm text-gray-900">{{ $lesson->created_at->format('d/m/Y H:i:s') }}</dd>
+                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">สร้างเมื่อ</dt>
+                        <dd class="mt-1 text-sm text-gray-900 dark:text-white font-semibold">
+                            {{ $lesson->created_at->format('d/m/Y H:i:s') }}</dd>
                     </div>
                     <div>
-                        <dt class="text-sm font-medium text-gray-500">อัปเดตล่าสุด</dt>
-                        <dd class="mt-1 text-sm text-gray-900">{{ $lesson->updated_at->format('d/m/Y H:i:s') }}</dd>
+                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">อัปเดตล่าสุด</dt>
+                        <dd class="mt-1 text-sm text-gray-900 dark:text-white font-semibold">
+                            {{ $lesson->updated_at->format('d/m/Y H:i:s') }}</dd>
                     </div>
                 </dl>
             </div>
         </div>
 
         <!-- Back Button -->
-        <div class="mt-6">
+        <div class="mt-8">
             <a href="{{ route('teacher.courses.modules.lessons.index', [$course, $module]) }}"
-                class="text-gray-600 hover:text-gray-900">
+                class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 font-medium transition">
                 <i class="fas fa-arrow-left mr-2"></i>กลับไปที่รายการบทเรียน
             </a>
         </div>
     </div>
-</x-app-layout>
+@endsection

@@ -177,4 +177,25 @@ class ModuleController extends Controller
             ->route('teacher.courses.modules.index', $course)
             ->with('success', 'Module ถูกลบเรียบร้อยแล้ว');
     }
+
+    /**
+     * Reorder modules via drag-and-drop
+     */
+    public function reorder(Request $request, Course $course)
+    {
+        // ตรวจสอบว่าครูเป็นเจ้าของคอร์สหรือไม่
+        if ($course->teacher_id !== auth()->id()) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
+        }
+
+        $order = $request->input('order', []);
+
+        foreach ($order as $index => $moduleId) {
+            Module::where('id', $moduleId)
+                ->where('course_id', $course->id)
+                ->update(['order' => $index + 1]);
+        }
+
+        return response()->json(['success' => true]);
+    }
 }

@@ -123,6 +123,7 @@ Route::middleware(['auth', 'teacher'])->prefix('teacher')->name('teacher.')->gro
         Route::get('/', [App\Http\Controllers\Teacher\ModuleController::class, 'index'])->name('index');
         Route::get('/create', [App\Http\Controllers\Teacher\ModuleController::class, 'create'])->name('create');
         Route::post('/', [App\Http\Controllers\Teacher\ModuleController::class, 'store'])->name('store');
+        Route::post('/reorder', [App\Http\Controllers\Teacher\ModuleController::class, 'reorder'])->name('reorder');
         Route::get('/{module}', [App\Http\Controllers\Teacher\ModuleController::class, 'show'])->name('show');
         Route::get('/{module}/edit', [App\Http\Controllers\Teacher\ModuleController::class, 'edit'])->name('edit');
         Route::put('/{module}', [App\Http\Controllers\Teacher\ModuleController::class, 'update'])->name('update');
@@ -133,6 +134,7 @@ Route::middleware(['auth', 'teacher'])->prefix('teacher')->name('teacher.')->gro
             Route::get('/', [App\Http\Controllers\Teacher\LessonController::class, 'index'])->name('index');
             Route::get('/create', [App\Http\Controllers\Teacher\LessonController::class, 'create'])->name('create');
             Route::post('/', [App\Http\Controllers\Teacher\LessonController::class, 'store'])->name('store');
+            Route::post('/reorder', [App\Http\Controllers\Teacher\LessonController::class, 'reorder'])->name('reorder');
             Route::get('/{lesson}', [App\Http\Controllers\Teacher\LessonController::class, 'show'])->name('show');
             Route::get('/{lesson}/edit', [App\Http\Controllers\Teacher\LessonController::class, 'edit'])->name('edit');
             Route::put('/{lesson}', [App\Http\Controllers\Teacher\LessonController::class, 'update'])->name('update');

@@ -53,12 +53,12 @@
         @endif
 
         <!-- Modules List -->
-        <div class="space-y-4">
+        <div class="space-y-4" id="modules-list">
             @if ($modules->count() > 0)
                 @foreach ($modules as $module)
                     <!-- Module Card -->
-                    <div
-                        class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300">
+                    <div class="module-item bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 cursor-move"
+                        data-id="{{ $module->id }}">
                         <!-- Module Header Row -->
                         <div class="px-6 py-5 border-b border-gray-100 dark:border-gray-700">
                             <div class="flex items-center justify-between">
@@ -209,3 +209,51 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const modulesList = document.getElementById('modules-list');
+
+            if (modulesList && typeof Sortable !== 'undefined') {
+                new Sortable(modulesList, {
+                    animation: 150,
+                    handle: '.module-item',
+                    ghostClass: 'opacity-50',
+                    onEnd: function(evt) {
+                        // Get all module IDs in new order
+                        const moduleIds = Array.from(modulesList.querySelectorAll('.module-item'))
+                            .map(item => item.dataset.id);
+
+                        // Send AJAX request to update order
+                        fetch('{{ route('teacher.courses.modules.reorder', $course) }}', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                },
+                                body: JSON.stringify({
+                                    order: moduleIds
+                                })
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    // Update order badges
+                                    modulesList.querySelectorAll('.module-item').forEach((item,
+                                        index) => {
+                                        const orderBadge = item.querySelector(
+                                            '.flex-shrink-0.w-10.h-10');
+                                        if (orderBadge) {
+                                            orderBadge.textContent = index + 1;
+                                        }
+                                    });
+                                }
+                            })
+                            .catch(error => console.error('Error:', error));
+                    }
+                });
+            }
+        });
+    </script>
+@endpush

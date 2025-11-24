@@ -116,12 +116,25 @@
                         class="inline-flex items-center px-5 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                         ยกเลิก
                     </a>
-                    <button type="submit"
-                        class="inline-flex items-center px-5 py-2.5 border border-transparent rounded-lg text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                        <i class="fas fa-save mr-2"></i>บันทึกการแก้ไข
+                    <button type="submit" id="submit-btn"
+                        class="inline-flex items-center px-5 py-2.5 border border-transparent rounded-lg text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed">
+                        <i class="fas fa-save mr-2" id="submit-icon"></i>
+                        <span id="submit-text">บันทึกการแก้ไข</span>
                     </button>
                 </div>
             </form>
+
+            <!-- Loading Overlay -->
+            <div id="loading-overlay" class="fixed inset-0 bg-black bg-opacity-50 items-center justify-center z-50"
+                style="display: none;">
+                <div class="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-2xl">
+                    <div class="flex flex-col items-center">
+                        <div class="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mb-4"></div>
+                        <p class="text-lg font-semibold text-gray-900 dark:text-white">กำลังอัปเดต Module...</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">กรุณารอสักครู่</p>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Delete Section -->
@@ -156,3 +169,19 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+    <script>
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const submitBtn = document.getElementById('submit-btn');
+            const submitIcon = document.getElementById('submit-icon');
+            const submitText = document.getElementById('submit-text');
+            const loadingOverlay = document.getElementById('loading-overlay');
+
+            submitBtn.disabled = true;
+            submitIcon.className = 'fas fa-spinner fa-spin mr-2';
+            submitText.textContent = 'กำลังอัปเดต...';
+            loadingOverlay.style.display = 'flex';
+        });
+    </script>
+@endpush

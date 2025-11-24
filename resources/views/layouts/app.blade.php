@@ -15,6 +15,11 @@
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
+    <!-- TinyMCE -->
+    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+
+    <!-- SortableJS for Drag and Drop -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 
     <style>
         /* กำหนดฟอนต์ Inter สำหรับ Body */
@@ -132,6 +137,9 @@
             @yield('content')
         </main>
     </div>
+
+    <!-- Additional Scripts Stack -->
+    @stack('scripts')
 </body>
 
 </html>
