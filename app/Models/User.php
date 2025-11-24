@@ -54,6 +54,10 @@ class User extends Authenticatable
         return $this->role === 'teacher';
     }
 
+    public function isAdmin(): bool{
+        return $this->role === 'admin';
+    }
+
     // ความสัมพันธ์กับตาราง LessonCompletion
     // คือ student 1 คน มีการบันทึกการเรียนเสร็จหลายรายการ
     public function lessonCompletions()

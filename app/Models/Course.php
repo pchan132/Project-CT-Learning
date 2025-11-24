@@ -41,7 +41,9 @@ class Course extends Model
     // คือ คอร์ส 1 คอร์ส มีหลาย lessons (ทุก lessons ในทุก modules)
     public function lessons()
     {
-        return $this->hasManyThrough(Lesson::class, Module::class)->orderBy('order');
+        return $this->hasManyThrough(Lesson::class, Module::class)
+            ->orderBy('modules.order')
+            ->orderBy('lessons.order');
     }
 
     /**

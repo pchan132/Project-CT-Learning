@@ -52,7 +52,8 @@ class CourseController extends Controller
         }
 
         Course::create($data);
-        return redirect()->route('teacher.courses.index');
+        return redirect()->route('teacher.courses.index')
+            ->with('success', 'สร้างคอร์สสำเร็จ!');
     }
 
     /**
@@ -99,7 +100,8 @@ class CourseController extends Controller
         }
 
         $course->update($data);
-        return redirect()->route('teacher.courses.index');
+        return redirect()->route('teacher.courses.index')
+            ->with('success', 'อัพเดทคอร์สสำเร็จ!');
     }
 
     /**
@@ -120,6 +122,7 @@ class CourseController extends Controller
         // ลบคอร์สเรียน
         $course->delete();
         
-        return redirect()->route('teacher.courses.index');
+        return redirect()->route('teacher.courses.index')
+            ->with('success', 'ลบคอร์สสำเร็จ!');
     }
 }
