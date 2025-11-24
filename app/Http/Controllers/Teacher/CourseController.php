@@ -19,8 +19,8 @@ class CourseController extends Controller
         // คอร์สทั้งหมดที่ครูผู้สอนคนนี้เป็นเจ้าของ
         // เก็บไว้ในตัวแปร $courses
         $courses = Course::where('teacher_id', auth()->id())->get();
-        // ส่ง $courses ไปที่มุมมอง teacher.courses.index
-        return view('teacher.courses.index', compact('courses'));
+        // ส่ง $courses ไปที่มุมมอง teacher.dashboard
+        return view('teacher.dashboard', compact('courses'));
     }
 
     /**

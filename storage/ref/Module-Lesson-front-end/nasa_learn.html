@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galactic Learn: LMS Platform</title>
+    <!-- โหลด Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- ตั้งค่า Tailwind Configuration สำหรับ Dark Mode และใช้ Font Inter -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class', // ใช้คลาส 'dark' ใน <html> เพื่อสลับโหมด
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-blue': '#1e3a8a', // Navy Blue เข้มสำหรับ Header
+                        'background-light': '#f9fafb', // สีพื้นหลังขาวนวล
+                        'card-light': '#ffffff', // สี Card สว่าง
+                        'background-dark': '#111827', // สีพื้นหลังโหมดมืด
+                        'card-dark': '#1f2937', // สี Card โหมดมืด
+                        'accent-glow': '#3b82f6', // สีฟ้าสำหรับการเน้น
+                    },
+                    boxShadow: {
+                        '3xl': '0 35px 60px -15px rgba(0, 0, 0, 0.3)',
+                        'subtle-white': '0 4px 10px rgba(0, 0, 0, 0.05)',
+                        'subtle-dark': '0 4px 10px rgba(255, 255, 255, 0.05)',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* กำหนดฟอนต์ Inter สำหรับ Body */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+        /* สไตล์สำหรับปุ่มสลับโหมด (SVG Icon) */
+        .mode-toggle-icon {
+            transition: all 0.3s ease-in-out;
+        }
+
+        /* สไตล์หลักสำหรับพื้นหลังและการเปลี่ยนสีอย่างนุ่มนวล */
+        body {
+            transition: background-color 0.5s, color 0.5s;
+        }
+    </style>
+</head>
+
+<!-- Body จะใช้ class 'dark' เมื่อผู้ใช้สลับไปที่โหมดมืด -->
+
+<body class="bg-background-light dark:bg-background-dark text-gray-800 dark:text-gray-200 font-sans">
+
+    <!-- Navbar: โครงสร้างนำทางแบบลอยตัวที่ดูแข็งแกร่ง -->
+    <header class="sticky top-0 z-50 bg-primary-blue dark:bg-gray-900 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
+            <!-- โลโก้/ชื่อแพลตฟอร์ม -->
+            <div class="text-2xl font-extrabold text-white tracking-wider cursor-pointer">
+                <span class="text-accent-glow">Galactic</span> Learn
+            </div>
+
+            <!-- เมนูนำทาง (ซ่อนใน Mobile, แสดงใน Desktop) -->
+            <nav class="hidden md:flex space-x-6">
+                <a href="#"
+                    class="text-white hover:text-accent-glow transition duration-300 font-medium border-b-2 border-transparent hover:border-accent-glow pb-1">แดชบอร์ด</a>
+                <a href="#" class="text-white hover:text-accent-glow transition duration-300 font-medium">หลักสูตร</a>
+                <a href="#" class="text-white hover:text-accent-glow transition duration-300 font-medium">โปรไฟล์</a>
+                <a href="#" class="text-white hover:text-accent-glow transition duration-300 font-medium">การตั้งค่า</a>
+            </nav>
+
+            <!-- ปุ่มสลับโหมดและโปรไฟล์ -->
+            <div class="flex items-center space-x-4">
+                <!-- ปุ่มสลับโหมดมืด/สว่าง -->
+                <button id="mode-toggle"
+                    class="p-2 rounded-full text-white bg-primary-blue/80 hover:bg-primary-blue transition duration-300 focus:outline-none focus:ring-2 focus:ring-accent-glow">
+                    <!-- ไอคอนพระอาทิตย์ (Light Mode) / พระจันทร์ (Dark Mode) -->
+                    <svg id="sun-icon" class="mode-toggle-icon w-6 h-6" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z">
+                        </path>
+                    </svg>
+                    <svg id="moon-icon" class="mode-toggle-icon w-6 h-6 hidden" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z">
+                        </path>
+                    </svg>
+                </button>
+
+                <a href="#"
+                    class="text-white font-semibold hover:text-accent-glow transition duration-300 hidden sm:block">
+                    ชื่อผู้ใช้งาน
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- เนื้อหาหลัก -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+        <!-- ส่วนสถิติ: "ข้อมูลภาพรวม" ที่ใช้การออกแบบแบบ Glass/Sleek Card -->
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold mb-6 text-gray-900 dark:text-white">ภาพรวมระบบปฏิบัติการ</h2>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <!-- Card ที่ 1: จำนวนคอร์ส -->
+                <div
+                    class="p-6 rounded-xl bg-card-light dark:bg-card-dark shadow-subtle-white dark:shadow-subtle-dark transition duration-500 hover:shadow-lg hover:ring-2 hover:ring-accent-glow/50 transform hover:-translate-y-1">
+                    <p class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase">จำนวนคอร์สที่ลงทะเบียน
+                    </p>
+                    <div class="flex items-end justify-between mt-1">
+                        <span class="text-4xl font-extrabold text-primary-blue dark:text-accent-glow">4</span>
+                        <!-- Icon Placeholder (ใช้ Lucide Icon style) -->
+                        <svg class="w-8 h-8 text-primary-blue/50 dark:text-accent-glow/50" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15 10l4.552-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.448.894L15 14M15 10v4M2 12h3m1 6h5a1 1 0 001-1V7a1 1 0 00-1-1H6a1 1 0 00-1 1v10a1 1 0 001 1z">
+                            </path>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Card ที่ 2: ผู้เรียนทั้งหมด -->
+                <div
+                    class="p-6 rounded-xl bg-card-light dark:bg-card-dark shadow-subtle-white dark:shadow-subtle-dark transition duration-500 hover:shadow-lg hover:ring-2 hover:ring-accent-glow/50 transform hover:-translate-y-1">
+                    <p class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase">ผู้เรียนทั้งหมดในระบบ
+                    </p>
+                    <div class="flex items-end justify-between mt-1">
+                        <span class="text-4xl font-extrabold text-primary-blue dark:text-accent-glow">4890</span>
+                        <svg class="w-8 h-8 text-primary-blue/50 dark:text-accent-glow/50" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20v-2m-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h10a2 2 0 012 2v10a2 2 0 01-2 2zM9 9h.01M15 9h.01M9 13h.01M15 13h.01M10 17h4">
+                            </path>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Card ที่ 3: ใบรับรองที่ได้รับ -->
+                <div
+                    class="p-6 rounded-xl bg-card-light dark:bg-card-dark shadow-subtle-white dark:shadow-subtle-dark transition duration-500 hover:shadow-lg hover:ring-2 hover:ring-accent-glow/50 transform hover:-translate-y-1">
+                    <p class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase">ใบรับรองที่ได้รับ</p>
+                    <div class="flex items-end justify-between mt-1">
+                        <span class="text-4xl font-extrabold text-primary-blue dark:text-accent-glow">1223</span>
+                        <svg class="w-8 h-8 text-primary-blue/50 dark:text-accent-glow/50" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                            </path>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Card ที่ 4: คะแนนเฉลี่ย (เพิ่มให้ดูครบถ้วน) -->
+                <div
+                    class="p-6 rounded-xl bg-card-light dark:bg-card-dark shadow-subtle-white dark:shadow-subtle-dark transition duration-500 hover:shadow-lg hover:ring-2 hover:ring-accent-glow/50 transform hover:-translate-y-1 hidden xl:block">
+                    <p class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase">คะแนนเฉลี่ยรวม</p>
+                    <div class="flex items-end justify-between mt-1">
+                        <span class="text-4xl font-extrabold text-primary-blue dark:text-accent-glow">92.5%</span>
+                        <svg class="w-8 h-8 text-primary-blue/50 dark:text-accent-glow/50" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 8c1.657 0 3 .895 3 2s-1.343 2-3 2-3-.895-3-2 1.343-2 3-2zM9 17v-1.5a2.5 2.5 0 015 0V17h3a2 2 0 012 2v2a1 1 0 01-1 1H7a1 1 0 01-1-1v-2a2 2 0 012-2h3z">
+                            </path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ส่วนคอร์สเรียนของฉัน: Grid Layout พร้อมปุ่มดำเนินการ -->
+        <section>
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-3xl font-bold text-gray-900 dark:text-white">คอร์สของฉัน</h2>
+                <button
+                    class="flex items-center space-x-2 px-4 py-2 bg-accent-glow text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-accent-glow/50">
+                    <!-- Icon + (ใช้ Lucide Icon style) -->
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    <span>สร้างคอร์สใหม่</span>
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+                <!-- Course Card 1: Introduction to Web Development -->
+                <div
+                    class="rounded-xl overflow-hidden bg-card-light dark:bg-card-dark shadow-subtle-white dark:shadow-subtle-dark transition duration-500 hover:shadow-xl hover:ring-4 hover:ring-primary-blue/10">
+                    <div class="relative h-48 bg-gray-200 dark:bg-gray-700">
+                        <img src="https://placehold.co/800x400/1f2937/ffffff?text=Web+Dev"
+                            onerror="this.onerror=null;this.src='https://placehold.co/800x400/1f2937/ffffff?text=Web+Dev';"
+                            alt="ภาพประกอบคอร์ส Web Development" class="w-full h-full object-cover">
+                        <span
+                            class="absolute top-3 right-3 px-3 py-1 text-xs font-bold text-white bg-green-500 rounded-full">Beginner</span>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2 text-gray-900 dark:text-white">Introduction to Web Development
+                        </h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                            เรียนรู้พื้นฐานการพัฒนาเว็บไซต์ตั้งแต่เริ่มต้น ทั้ง HTML, CSS และ JavaScript</p>
+                        <div class="flex justify-between items-center text-xs text-gray-500 dark:text-gray-400 mb-4">
+                            <span><strong class="text-primary-blue dark:text-accent-glow">12</strong> บทเรียน</span>
+                            <span><strong class="text-primary-blue dark:text-accent-glow">1,056</strong> ผู้เรียน</span>
+                        </div>
+                        <a href="#"
+                            class="block w-full text-center px-4 py-3 bg-primary-blue text-white font-semibold rounded-lg hover:bg-primary-blue/90 transition duration-300 transform hover:scale-[1.02]">
+                            รายละเอียดคอร์ส
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Course Card 2: Data Science with Python -->
+                <div
+                    class="rounded-xl overflow-hidden bg-card-light dark:bg-card-dark shadow-subtle-white dark:shadow-subtle-dark transition duration-500 hover:shadow-xl hover:ring-4 hover:ring-primary-blue/10">
+                    <div class="relative h-48 bg-gray-200 dark:bg-gray-700">
+                        <img src="https://placehold.co/800x400/1f2937/ffffff?text=Data+Science"
+                            onerror="this.onerror=null;this.src='https://placehold.co/800x400/1f2937/ffffff?text=Data+Science';"
+                            alt="ภาพประกอบคอร์ส Data Science" class="w-full h-full object-cover">
+                        <span
+                            class="absolute top-3 right-3 px-3 py-1 text-xs font-bold text-white bg-yellow-500 rounded-full">Intermediate</span>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2 text-gray-900 dark:text-white">Data Science with Python</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">เจาะลึกการวิเคราะห์ข้อมูลด้วย Python,
+                            Pandas และ Machine Learning</p>
+                        <div class="flex justify-between items-center text-xs text-gray-500 dark:text-gray-400 mb-4">
+                            <span><strong class="text-primary-blue dark:text-accent-glow">16</strong> บทเรียน</span>
+                            <span><strong class="text-primary-blue dark:text-accent-glow">890</strong> ผู้เรียน</span>
+                        </div>
+                        <a href="#"
+                            class="block w-full text-center px-4 py-3 bg-primary-blue text-white font-semibold rounded-lg hover:bg-primary-blue/90 transition duration-300 transform hover:scale-[1.02]">
+                            รายละเอียดคอร์ส
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Course Card 3: Digital Marketing Masterclass -->
+                <div
+                    class="rounded-xl overflow-hidden bg-card-light dark:bg-card-dark shadow-subtle-white dark:shadow-subtle-dark transition duration-500 hover:shadow-xl hover:ring-4 hover:ring-primary-blue/10">
+                    <div class="relative h-48 bg-gray-200 dark:bg-gray-700">
+                        <img src="https://placehold.co/800x400/1f2937/ffffff?text=Digital+Marketing"
+                            onerror="this.onerror=null;this.src='https://placehold.co/800x400/1f2937/ffffff?text=Digital+Marketing';"
+                            alt="ภาพประกอบคอร์ส Digital Marketing" class="w-full h-full object-cover">
+                        <span
+                            class="absolute top-3 right-3 px-3 py-1 text-xs font-bold text-white bg-red-500 rounded-full">Advanced</span>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2 text-gray-900 dark:text-white">Digital Marketing Masterclass
+                        </h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">กลยุทธ์การตลาดดิจิทัลที่ล้ำสมัย Social
+                            Media และ Content Marketing</p>
+                        <div class="flex justify-between items-center text-xs text-gray-500 dark:text-gray-400 mb-4">
+                            <span><strong class="text-primary-blue dark:text-accent-glow">20</strong> บทเรียน</span>
+                            <span><strong class="text-primary-blue dark:text-accent-glow">2,100</strong> ผู้เรียน</span>
+                        </div>
+                        <a href="#"
+                            class="block w-full text-center px-4 py-3 bg-primary-blue text-white font-semibold rounded-lg hover:bg-primary-blue/90 transition duration-300 transform hover:scale-[1.02]">
+                            รายละเอียดคอร์ส
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- JavaScript สำหรับ Dark Mode Toggle -->
+    <script>
+        const htmlElement = document.documentElement;
+        const toggleButton = document.getElementById('mode-toggle');
+        const sunIcon = document.getElementById('sun-icon');
+        const moonIcon = document.getElementById('moon-icon');
+
+        // ตรวจสอบสถานะ Dark Mode จาก localStorage หรือตั้งค่าเริ่มต้นเป็น Light Mode
+        const isDarkMode = localStorage.getItem('darkMode') === 'true';
+
+        // ตั้งค่าเริ่มต้น
+        if (isDarkMode) {
+            htmlElement.classList.add('dark');
+            sunIcon.classList.add('hidden');
+            moonIcon.classList.remove('hidden');
+        } else {
+            htmlElement.classList.remove('dark');
+            sunIcon.classList.remove('hidden');
+            moonIcon.classList.add('hidden');
+        }
+
+        // ฟังก์ชันสลับโหมด
+        toggleButton.addEventListener('click', () => {
+            if (htmlElement.classList.contains('dark')) {
+                // สลับไป Light Mode
+                htmlElement.classList.remove('dark');
+                localStorage.setItem('darkMode', 'false');
+                sunIcon.classList.remove('hidden');
+                moonIcon.classList.add('hidden');
+            } else {
+                // สลับไป Dark Mode
+                htmlElement.classList.add('dark');
+                localStorage.setItem('darkMode', 'true');
+                sunIcon.classList.add('hidden');
+                moonIcon.classList.remove('hidden');
+            }
+        });
+    </script>
+</body>
+
+</html>

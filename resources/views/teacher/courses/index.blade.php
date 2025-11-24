@@ -1,6 +1,7 @@
 <x-app-layout>
     <div class="max-w-5xl mx-auto py-10">
 
+        {{-- ปุ่ม สร้าง Course --}}
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-2xl font-bold">My Courses</h1>
             <a href="{{ route('teacher.courses.create') }}"
@@ -9,6 +10,7 @@
             </a>
         </div>
 
+        {{-- ตารางแสดงรายการคอร์ส --}}
         <div class="bg-white shadow rounded-lg p-6">
             <table class="w-full text-left border-collapse">
                 <thead>
@@ -20,6 +22,7 @@
                     </tr>
                 </thead>
 
+                {{-- แสดงรายการคอร์ส ในตาราง --}}
                 <tbody>
                     @foreach ($courses as $course)
                         <tr class="border-b hover:bg-gray-50">
@@ -42,14 +45,15 @@
                                         📚 Modules
                                     </a>
 
-                                    <a href="{{ route('teacher.courses.edit', $course->id) }}"
+                                    <a href="{{ route('teacher.courses.show', $course) }}">View Course</a>
+
+                                    <a href="{{ route('teacher.courses.edit', $course) }}"
                                         class="text-blue-600 hover:underline text-sm">
                                         Edit
                                     </a>
 
-                                    <form class="inline-block"
-                                        action="{{ route('teacher.courses.destroy', $course->id) }}" method="POST"
-                                        onsubmit="return confirm('Delete this course?')">
+                                    <form class="inline-block" action="{{ route('teacher.courses.destroy', $course) }}"
+                                        method="POST" onsubmit="return confirm('Delete this course?')">
                                         @csrf
                                         @method('DELETE')
                                         <button class="text-red-600 hover:underline text-sm">
@@ -72,6 +76,5 @@
                 </tbody>
             </table>
         </div>
-
     </div>
 </x-app-layout>

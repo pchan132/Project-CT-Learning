@@ -65,9 +65,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return view('student.dashboard');
     })->name('student.dashboard')->middleware('student');
     
-    Route::get('/teacher/dashboard', function () {
-        return view('teacher.dashboard');
-    })->name('teacher.dashboard')->middleware('teacher');
+    // ส่งไปที่ TeacherCourseController 
+    // และไปที่ฟังก์ชัน index 
+    Route::get('/teacher/dashboard', [TeacherCourseController::class, 'index'])
+        ->name('teacher.dashboard')
+        ->middleware('teacher');
 });
 
 require __DIR__.'/auth.php';
@@ -83,8 +85,9 @@ Route::middleware(['auth', 'student'])->prefix('student')->name('student.')->gro
     Route::post('/courses/enroll', [StudentCourseController::class, 'enroll'])->name('courses.enroll');
 });
 
-// ของครู
+// ของครู 
 Route::middleware(['auth', 'teacher'])->prefix('teacher')->name('teacher.')->group(function () {
+    // ส่ง corse ไปที่ TeacherCourseController
     Route::resource('courses', TeacherCourseController::class);
     
     // Routes สำหรับ Modules
