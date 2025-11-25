@@ -208,14 +208,17 @@ resources/views/teacher/
   - Preview functionality
 
 #### 3.3 Rich Text Editor
-- **Editor**: TinyMCE
-- **API Key**: `qagffr3pkuv17a8onygc0nh1ic02c4vqvj3sxxbfz0ewj6qp`
+- **Editor**: Quill.js (Open Source - No API Key Required)
+- **Source**: CDN (https://cdn.jsdelivr.net/npm/quill@2.0.2/)
 - **Features**:
+  - 100% Open Source - ไม่ต้องใช้ API Key
+  - ไม่มีข้อจำกัด - ใช้ฟีเจอร์เต็มรูปแบบฟรี
   - Word-like interface
-  - Dark mode support
-  - Paste from Word cleanup
+  - Dark mode support (พร้อม CSS custom)
+  - Paste from Word cleanup (automatic)
   - Auto-save prevention
   - Responsive design
+  - Complete toolbar: Headers, Formatting, Lists, Links, Images, Videos
 
 #### 3.4 Video Integration
 - **Platforms**: YouTube, Vimeo, Direct MP4, **Video Upload**
