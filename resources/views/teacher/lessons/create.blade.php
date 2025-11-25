@@ -289,7 +289,7 @@
                 });
             }
 
-            // Initialize TinyMCE
+            // Initialize TinyMCE with Enhanced Word-like Features
             function initTinyMCE() {
                 if (typeof tinymce === 'undefined') {
                     console.error('TinyMCE not loaded');
@@ -301,23 +301,49 @@
                     editorInstance = null;
                 }
 
-                tinymce.init({
+                // Use global configuration with overrides
+                const config = Object.assign({}, window.tinymceConfig || {}, {
                     selector: '#content_text',
-                    height: 400,
-                    menubar: false,
-                    plugins: [
-                        'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-                        'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                        'insertdatetime', 'media', 'table', 'help', 'wordcount'
-                    ],
-                    toolbar: 'undo redo | blocks | bold italic forecolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
-                    content_style: 'body { font-family:Inter,sans-serif; font-size:14px }',
                     skin: document.documentElement.classList.contains('dark') ? 'oxide-dark' : 'oxide',
                     content_css: document.documentElement.classList.contains('dark') ? 'dark' : 'default',
                     setup: function(editor) {
                         editorInstance = editor;
+
+                        // Add custom Word import handler
+                        editor.on('paste', function(e) {
+                            const clipboardData = e.clipboardData || window.clipboardData;
+                            const items = clipboardData.items;
+
+                            // ตรวจจับการ paste จาก Word
+                            for (let i = 0; i < items.length; i++) {
+                                if (items[i].type === 'text/html') {
+                                    e.preventDefault();
+                                    items[i].getAsString(function(html) {
+                                        // Clean Word HTML but keep formatting
+                                        const cleanHtml = cleanWordHtml(html);
+                                        editor.insertContent(cleanHtml);
+                                    });
+                                    break;
+                                }
+                            }
+                        });
                     }
                 });
+
+                tinymce.init(config);
+            }
+
+            // Function to clean Word HTML while preserving formatting
+            function cleanWordHtml(html) {
+                // Remove Microsoft Word specific tags and attributes
+                let cleaned = html
+                    .replace(/<o:p>.*?<\/o:p>/gi, '')
+                    .replace(/<\/?\w+:[^>]*>/gi, '')
+                    .replace(/class="?Mso[^"]*"?/gi, '')
+                    .replace(/style="[^"]*mso-[^"]*"/gi, '')
+                    .replace(/<!--\[if[^\]]*\]>[\s\S]*?<!\[endif\]-->/gi, '');
+
+                return cleaned;
             }
 
             function toggleFields() {

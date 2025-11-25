@@ -178,7 +178,7 @@
 
         <!-- Back Button -->
         <div class="mt-8">
-            <a href="{{ route('teacher.courses.modules.show', [$course, $module]) }}"
+            <a href="{{ route('teacher.courses.show', [$course, $module]) }}"
                 class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 font-medium transition">
                 <i class="fas fa-arrow-left mr-2"></i>กลับไปที่ Module
             </a>
