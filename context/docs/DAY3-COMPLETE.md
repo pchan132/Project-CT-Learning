@@ -175,7 +175,11 @@ resources/views/teacher/
 - **Vimeo video embed**: Full Picture-in-Picture support
 - **External video URLs**: HTML5 player พร้อม controls
 - **Uploaded video files**: Player พร้อม download button
-- **Rich text display**: Typography พร้อม dark mode
+- **Rich text display**:
+  - `prose` class สำหรับ typography
+  - Dark mode support (`dark:prose-invert`)
+  - HTML sanitization พร้อม `{!! !!}`
+  - Responsive container พร้อม background
 - **Video Features**:
   - Auto-detect ประเภทวิดีโอ (YouTube/Vimeo/External/Uploaded)
   - Badge แสดงประเภท พร้อมสี
@@ -354,20 +358,155 @@ videoTypeRadios.forEach(radio => {
 });
 ```
 
-### TinyMCE Configuration
+### Quill Rich Text Editor Setup
+
+#### 1. CDN Integration (app.blade.php)
+```html
+<!-- Quill Rich Text Editor (Open Source - No Limits) -->
+<link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+```
+
+#### 2. Global Configuration (app.blade.php)
 ```javascript
-tinymce.init({
-    selector: '#content_text',
-    skin: document.documentElement.classList.contains('dark') ? 'oxide-dark' : 'oxide',
-    plugins: 'paste autoresize',
-    setup: function(editor) {
-        editor.on('paste', function(e) {
-            // Clean Word HTML
-            const cleanHtml = cleanWordHtml(e.clipboardData.getData('text/html'));
-            editor.insertContent(cleanHtml);
-        });
+window.quillConfig = {
+    modules: {
+        toolbar: [
+            [{'header': [1, 2, 3, 4, 5, 6, false]}],
+            [{'font': []}],
+            [{'size': ['small', false, 'large', 'huge']}],
+            ['bold', 'italic', 'underline', 'strike'],
+            [{'color': []}, {'background': []}],
+            [{'script': 'sub'}, {'script': 'super'}],
+            [{'list': 'ordered'}, {'list': 'bullet'}],
+            [{'indent': '-1'}, {'indent': '+1'}],
+            [{'direction': 'rtl'}],
+            [{'align': []}],
+            ['blockquote', 'code-block'],
+            ['link', 'image', 'video'],
+            ['clean']
+        ]
+    },
+    theme: 'snow',
+    placeholder: 'พิมพ์เนื้อหาบทเรียนที่นี่...',
+};
+```
+
+#### 3. Dark Mode Support (app.blade.php)
+```css
+/* Dark Mode Support for Quill */
+.dark .ql-toolbar { background-color: #374151; border-color: #4b5563; }
+.dark .ql-container { background-color: #1f2937; border-color: #4b5563; color: #f3f4f6; }
+.dark .ql-editor { color: #f3f4f6; }
+.dark .ql-editor.ql-blank::before { color: #6b7280; }
+.dark .ql-stroke { stroke: #9ca3af; }
+.dark .ql-fill { fill: #9ca3af; }
+.dark .ql-picker-label { color: #9ca3af; }
+.dark .ql-picker-options { background-color: #374151; border-color: #4b5563; }
+.dark .ql-picker-item { color: #9ca3af; }
+.dark .ql-picker-item:hover { background-color: #4b5563; color: #f3f4f6; }
+.dark .ql-toolbar button:hover,
+.dark .ql-toolbar button.ql-active { background-color: #4b5563; }
+.dark .ql-tooltip { background-color: #374151; border-color: #4b5563; color: #f3f4f6; }
+```
+
+#### 4. Editor Initialization (create.blade.php & edit.blade.php)
+```javascript
+// Initialize Quill Rich Text Editor
+function initQuillEditor() {
+    if (typeof Quill === 'undefined') {
+        console.error('Quill not loaded');
+        return;
+    }
+
+    // Create Quill editor
+    editorInstance = new Quill('#quill-editor', window.quillConfig);
+
+    // Set initial content if exists
+    const textarea = document.getElementById('content_text');
+    if (textarea.value) {
+        editorInstance.root.innerHTML = textarea.value;
+    }
+
+    // Update textarea on content change
+    editorInstance.on('text-change', function() {
+        textarea.value = editorInstance.root.innerHTML;
+    });
+
+    // Handle Word paste - Quill handles it automatically
+    editorInstance.clipboard.addMatcher(Node.ELEMENT_NODE, function(node, delta) {
+        return delta; // Quill cleans Word formatting automatically
+    });
+}
+```
+
+#### 5. How to Add New Features to Quill
+
+**Adding Custom Toolbar Buttons:**
+```javascript
+// ใน quillConfig
+modules: {
+    toolbar: [
+        // เพิ่มปุ่มใหม่ที่นี่
+        ['bold', 'italic', 'underline'],
+        ['link', 'image', 'video'],
+        // เพิ่ม custom button
+        [{
+            'custom-button': {
+                text: 'Custom',
+                handler: function() {
+                    // Custom functionality
+                }
+            }
+        }]
+    ]
+}
+```
+
+**Adding Custom Formats:**
+```javascript
+// ใน initQuillEditor
+const formats = [
+    'header', 'font', 'size',
+    'bold', 'italic', 'underline', 'strike',
+    'color', 'background',
+    'list', 'bullet', 'indent',
+    'link', 'image', 'video',
+    'align', 'direction',
+    'blockquote', 'code-block',
+    'custom-format' // เพิ่ม format ใหม่
+];
+
+const editorInstance = new Quill('#quill-editor', {
+    ...window.quillConfig,
+    formats: formats
+});
+```
+
+**Adding Plugins:**
+```javascript
+// ติดตั้ง plugin ผ่าน CDN หรือ npm
+// ตัวอย่าง: Quill Image Resize
+<script src="https://cdn.jsdelivr.net/npm/quill-image-resize@3.0.0/image-resize.min.js"></script>
+
+// ใน initQuillEditor
+Quill.register('modules/imageResize', ImageResize);
+const editorInstance = new Quill('#quill-editor', {
+    modules: {
+        ...window.quillConfig.modules,
+        imageResize: true
     }
 });
+```
+
+#### 6. Rich Text Display (show.blade.php)
+```html
+<!-- Rich Text Display -->
+<div class="prose prose-lg max-w-none dark:prose-invert">
+    <div class="bg-gray-50 dark:bg-gray-900/50 p-6 rounded-lg">
+        {!! $lesson->content_text ?: '<p class="text-gray-500">ไม่มีเนื้อหาข้อความ</p>' !!}
+    </div>
+</div>
 ```
 
 ---
@@ -415,7 +554,7 @@ tinymce.init({
 - ✅ `resources/views/teacher/lessons/index.blade.php` (241 lines)
 - ✅ `resources/views/teacher/lessons/create.blade.php` (510 lines) **+ Video Upload**
 - ✅ `resources/views/teacher/lessons/edit.blade.php` (437 lines)
-- ✅ `resources/views/teacher/lessons/show.blade.php` (217 lines)
+- ✅ `resources/views/teacher/lessons/show.blade.php` (299 lines)
 
 ### Routes
 - ✅ `routes/web.php` (lines 122-163) - Module & Lesson routes

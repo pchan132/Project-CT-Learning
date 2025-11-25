@@ -6,6 +6,203 @@
     </h2>
 @endsection
 
+@push('scripts')
+    <style>
+        /* Quill Content Display Styles */
+        .ql-editor-display {
+            font-family: 'Sarabun', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .ql-editor-display p {
+            margin-bottom: 1em;
+        }
+
+        .ql-editor-display h1 {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 0.5em;
+            margin-top: 0.67em;
+        }
+
+        .ql-editor-display h2 {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 0.5em;
+            margin-top: 0.83em;
+        }
+
+        .ql-editor-display h3 {
+            font-size: 1.17em;
+            font-weight: bold;
+            margin-bottom: 0.5em;
+            margin-top: 1em;
+        }
+
+        .ql-editor-display h4 {
+            font-size: 1em;
+            font-weight: bold;
+            margin-bottom: 0.5em;
+            margin-top: 1.33em;
+        }
+
+        .ql-editor-display h5 {
+            font-size: 0.83em;
+            font-weight: bold;
+            margin-bottom: 0.5em;
+            margin-top: 1.67em;
+        }
+
+        .ql-editor-display h6 {
+            font-size: 0.67em;
+            font-weight: bold;
+            margin-bottom: 0.5em;
+            margin-top: 2.33em;
+        }
+
+        .ql-editor-display strong {
+            font-weight: bold;
+        }
+
+        .ql-editor-display em {
+            font-style: italic;
+        }
+
+        .ql-editor-display u {
+            text-decoration: underline;
+        }
+
+        .ql-editor-display s {
+            text-decoration: line-through;
+        }
+
+        .ql-editor-display ul {
+            list-style-type: disc;
+            padding-left: 1.5em;
+            margin-bottom: 1em;
+        }
+
+        .ql-editor-display ol {
+            list-style-type: decimal;
+            padding-left: 1.5em;
+            margin-bottom: 1em;
+        }
+
+        .ql-editor-display li {
+            margin-bottom: 0.5em;
+        }
+
+        .ql-editor-display blockquote {
+            border-left: 4px solid #ccc;
+            padding-left: 1em;
+            margin-left: 0;
+            margin-right: 0;
+            font-style: italic;
+            color: #666;
+        }
+
+        .dark .ql-editor-display blockquote {
+            border-left-color: #555;
+            color: #aaa;
+        }
+
+        .ql-editor-display code {
+            background-color: #f4f4f4;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        .dark .ql-editor-display code {
+            background-color: #2d3748;
+            color: #e2e8f0;
+        }
+
+        .ql-editor-display pre {
+            background-color: #f4f4f4;
+            padding: 1em;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin-bottom: 1em;
+        }
+
+        .dark .ql-editor-display pre {
+            background-color: #2d3748;
+        }
+
+        .ql-editor-display a {
+            color: #3b82f6;
+            text-decoration: underline;
+        }
+
+        .dark .ql-editor-display a {
+            color: #60a5fa;
+        }
+
+        .ql-editor-display img {
+            max-width: 100%;
+            height: auto;
+            margin: 1em 0;
+        }
+
+        .ql-editor-display .ql-align-center {
+            text-align: center;
+        }
+
+        .ql-editor-display .ql-align-right {
+            text-align: right;
+        }
+
+        .ql-editor-display .ql-align-justify {
+            text-align: justify;
+        }
+
+        .ql-editor-display .ql-indent-1 {
+            padding-left: 3em;
+        }
+
+        .ql-editor-display .ql-indent-2 {
+            padding-left: 6em;
+        }
+
+        .ql-editor-display .ql-indent-3 {
+            padding-left: 9em;
+        }
+
+        .ql-editor-display .ql-indent-4 {
+            padding-left: 12em;
+        }
+
+        .ql-editor-display .ql-indent-5 {
+            padding-left: 15em;
+        }
+
+        .ql-editor-display .ql-indent-6 {
+            padding-left: 18em;
+        }
+
+        .ql-editor-display .ql-indent-7 {
+            padding-left: 21em;
+        }
+
+        .ql-editor-display .ql-indent-8 {
+            padding-left: 24em;
+        }
+
+        .ql-editor-display sub {
+            vertical-align: sub;
+            font-size: smaller;
+        }
+
+        .ql-editor-display sup {
+            vertical-align: super;
+            font-size: smaller;
+        }
+    </style>
+@endpush
+
 @section('content')
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Header -->
@@ -195,8 +392,8 @@
                     <!-- Text Content -->
                     <div>
                         <div class="prose prose-lg max-w-none dark:prose-invert">
-                            <div class="bg-gray-50 dark:bg-gray-900/50 p-6 rounded-lg">
-                                {!! $lesson->content_text ?: '<p class="text-gray-500">ไม่มีเนื้อหาข้อความ</p>' !!}
+                            <div class="bg-gray-50 dark:bg-gray-900/50 p-6 rounded-lg ql-editor-display">
+                                {!! $lesson->content_text ?: '<p class="text-gray-500 dark:text-gray-400">ไม่มีเนื้อหาข้อความ</p>' !!}
                             </div>
                         </div>
                     </div>
