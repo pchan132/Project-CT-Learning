@@ -149,13 +149,15 @@ resources/views/teacher/
 - Statistics cards (total lessons, PDF count, video count)
 - CRUD buttons พร้อม icons
 
-**create.blade.php** (397 lines)
+**create.blade.php** (510 lines)
 - Dynamic form ตาม content type
+- **Video Upload Options**: 2 วิธี (URL และ Upload)
 - File upload พร้อม preview และ validation
 - TinyMCE integration สำหรับ text content
 - YouTube URL parsing
-- File size validation (10MB limit)
-- Real-time form switching
+- **Video File Upload**: รองรับ MP4, WebM, OGG, MOV (100MB)
+- **PDF/PPT Upload**: ขนาดสูงสุด 10MB
+- Real-time form switching พร้อม video type toggle
 
 **edit.blade.php** (437 lines)
 - Edit form พร้อม existing data
@@ -165,11 +167,23 @@ resources/views/teacher/
 - Enhanced TinyMCE with Word paste support
 - Delete confirmation
 
-**show.blade.php** (217 lines)
+**show.blade.php** (299 lines)
 - Content display ตาม type
-- PDF embed viewer
-- YouTube video embed
-- Rich text display with typography
+- **Advanced Video Display**: รองรับทุกรูปแบบ
+- **PDF embed viewer**: แสดงภายใน iframe
+- **YouTube video embed**: Auto-detect + responsive player
+- **Vimeo video embed**: Full Picture-in-Picture support
+- **External video URLs**: HTML5 player พร้อม controls
+- **Uploaded video files**: Player พร้อม download button
+- **Rich text display**: Typography พร้อม dark mode
+- **Video Features**:
+  - Auto-detect ประเภทวิดีโอ (YouTube/Vimeo/External/Uploaded)
+  - Badge แสดงประเภท พร้อมสี
+  - Responsive aspect ratio (16:9)
+  - Fullscreen support
+  - Picture-in-Picture (YouTube/Vimeo)
+  - Download button (uploaded files)
+  - Security controls (no download, preload metadata)
 - Lesson details grid
 - Navigation breadcrumbs
 
@@ -204,12 +218,16 @@ resources/views/teacher/
   - Responsive design
 
 #### 3.4 Video Integration
-- **Platforms**: YouTube, Vimeo, Direct MP4
+- **Platforms**: YouTube, Vimeo, Direct MP4, **Video Upload**
 - **Features**:
+  - **Dual Video Options**: URL หรือ Upload ไฟล์
+  - **Video Upload Support**: MP4, WebM, OGG, MOV
+  - **File Size Limits**: 100MB สำหรับวิดีโอ
   - Automatic YouTube ID extraction
   - Embed generation
   - Responsive video player
   - Fallback for unsupported formats
+  - **Video Preview**: แสดงชื่อไฟล์และขนาด
 
 #### 3.5 UI/UX Enhancements
 - **Color Scheme**:
@@ -233,6 +251,7 @@ resources/views/teacher/
       ├── index, create, store, show, edit, update, destroy
       └── reorder
   ```
+- **Video Upload Routes**: ใช้ routes เดิม พร้อม file validation
 
 #### 4.2 Authorization
 - **Middleware**: `teacher` middleware group
@@ -270,11 +289,27 @@ $module->lessons()
     ->where('order', '<=', $newOrder)
     ->decrement('order');
 
-// When moving item backward  
+// When moving item backward
 $module->lessons()
     ->where('order', '>=', $newOrder)
     ->where('order', '<', $oldOrder)
     ->increment('order');
+```
+
+### Video Upload Logic
+```php
+// Store video file with unique name
+if ($request->hasFile('video_file')) {
+    $videoFile = $request->file('video_file');
+    $filename = time() . '_' . $videoFile->getClientOriginalName();
+    $path = $videoFile->storeAs('lessons/videos', $filename, 'public');
+    $data['content_url'] = $path;
+}
+
+// Clean up old video file
+if ($lesson->content_url && $lesson->isVideoContent() && !filter_var($lesson->content_url, FILTER_VALIDATE_URL)) {
+    Storage::disk('public')->delete($lesson->content_url);
+}
 ```
 
 ### Drag & Drop Implementation
@@ -290,6 +325,29 @@ new Sortable(modulesList, {
             body: JSON.stringify({ order: moduleIds })
         });
     }
+});
+```
+
+### Video Type Toggle Implementation
+```javascript
+// Video type toggle between URL and Upload
+videoTypeRadios.forEach(radio => {
+    radio.addEventListener('change', function() {
+        const videoUrlInput = document.getElementById('video-url-input');
+        const videoUploadInput = document.getElementById('video-upload-input');
+
+        if (this.value === 'url') {
+            videoUrlInput.classList.remove('hidden');
+            videoUploadInput.classList.add('hidden');
+            document.getElementById('content_url').removeAttribute('disabled');
+            document.getElementById('video_file').setAttribute('disabled', 'disabled');
+        } else {
+            videoUrlInput.classList.add('hidden');
+            videoUploadInput.classList.remove('hidden');
+            document.getElementById('content_url').setAttribute('disabled', 'disabled');
+            document.getElementById('video_file').removeAttribute('disabled');
+        }
+    });
 });
 ```
 
@@ -352,7 +410,7 @@ tinymce.init({
 
 ### Views - Lessons
 - ✅ `resources/views/teacher/lessons/index.blade.php` (241 lines)
-- ✅ `resources/views/teacher/lessons/create.blade.php` (397 lines)
+- ✅ `resources/views/teacher/lessons/create.blade.php` (510 lines) **+ Video Upload**
 - ✅ `resources/views/teacher/lessons/edit.blade.php` (437 lines)
 - ✅ `resources/views/teacher/lessons/show.blade.php` (217 lines)
 
@@ -398,9 +456,16 @@ tinymce.init({
 - **Impact**: No functional impact, works correctly
 
 ### File Upload Limits
-- **Current**: 10MB per file
+- **Current**:
+  - PDF/PPT: 10MB per file
+  - Video: 100MB per file
 - **Recommendation**: Adjust based on hosting environment
-- **Configuration**: `php.ini` `upload_max_filesize` and `post_max_size`
+- **Configuration**: `php.ini`
+  ```ini
+  upload_max_filesize = 100M
+  post_max_size = 100M
+  max_execution_time = 300
+  ```
 
 ---
 
@@ -417,7 +482,9 @@ Day 3 Module & Lesson Management พร้อมใช้งานเต็ม�
 
 ### ✅ Advanced Features
 - File upload system
-- Video embedding
+- **Video Upload System**: อัปโหลดไฟล์วิดีโอตรง (MP4, WebM, OGG, MOV)
+- **Dual Video Options**: เลือกระหว่าง URL และ Upload
+- Video embedding (YouTube/Vimeo)
 - Dark mode support
 - Responsive design
 - Real-time updates
@@ -427,6 +494,13 @@ Day 3 Module & Lesson Management พร้อมใช้งานเต็ม�
 - Error handling
 - Performance optimization
 - Accessibility compliance
+
+### 🎬 Video Upload Features
+- **2 วิธี**: URL วิดีโอ (YouTube, Vimeo) หรือ อัปโหลดไฟล์ตรง
+- **รองรับ**: MP4, WebM, OGG, MOV (100MB)
+- **Preview**: แสดงชื่อไฟล์และขนาด
+- **Auto-cleanup**: ลบไฟล์เก่าอัตโนมัติ
+- **Validation**: ตรวจสอบประเภทและขนาดไฟล์
 
 ระบบพร้อมสำหรับการใช้งานจริงในสภาพแวดล้อม Production แล้ว! 🚀
 

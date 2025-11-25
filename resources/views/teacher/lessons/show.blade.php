@@ -114,40 +114,81 @@
                         <div class="mb-4">
                             <i class="fas fa-video text-6xl text-purple-500"></i>
                         </div>
-                        <h4 class="text-lg font-medium text-gray-900 mb-2">วิดีโอ</h4>
+                        <h4 class="text-lg font-medium text-gray-900 dark:text-white mb-2">วิดีโอ</h4>
                         @if ($lesson->content_url)
-                            <p class="text-sm text-gray-500 mb-4">URL: {{ $lesson->content_url }}</p>
+                            @php
+                                // ตรวจสอบว่าเป็น URL หรือไฟล์อัปโหลด
+                                $isExternalUrl = filter_var($lesson->content_url, FILTER_VALIDATE_URL);
+                            @endphp
 
-                            <!-- YouTube Embed -->
-                            @if (str_contains($lesson->content_url, 'youtube.com') || str_contains($lesson->content_url, 'youtu.be'))
-                                @php
-                                    $videoId = '';
-                                    if (str_contains($lesson->content_url, 'youtube.com/watch')) {
-                                        parse_str(parse_url($lesson->content_url, PHP_URL_QUERY), $query);
-                                        $videoId = $query['v'] ?? '';
-                                    } elseif (str_contains($lesson->content_url, 'youtu.be/')) {
-                                        $videoId = substr(parse_url($lesson->content_url, PHP_URL_PATH), 1);
-                                    }
-                                @endphp
-                                @if ($videoId)
+                            @if ($isExternalUrl)
+                                <!-- External URL Video (YouTube, Vimeo, etc.) -->
+                                <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">URL: {{ $lesson->content_url }}
+                                </p>
+
+                                <!-- YouTube Embed -->
+                                @if (str_contains($lesson->content_url, 'youtube.com') || str_contains($lesson->content_url, 'youtu.be'))
+                                    @php
+                                        $videoId = '';
+                                        if (str_contains($lesson->content_url, 'youtube.com/watch')) {
+                                            parse_str(parse_url($lesson->content_url, PHP_URL_QUERY), $query);
+                                            $videoId = $query['v'] ?? '';
+                                        } elseif (str_contains($lesson->content_url, 'youtu.be/')) {
+                                            $videoId = substr(parse_url($lesson->content_url, PHP_URL_PATH), 1);
+                                        }
+                                    @endphp
+                                    @if ($videoId)
+                                        <div class="mt-6">
+                                            <iframe src="https://www.youtube.com/embed/{{ $videoId }}"
+                                                class="w-full min-h-[600px] border border-gray-300 dark:border-gray-600 rounded-lg"
+                                                title="{{ $lesson->title }}" allowfullscreen>
+                                            </iframe>
+                                        </div>
+                                    @endif
+                                @else
+                                    <!-- Other External Video URL -->
                                     <div class="mt-6">
-                                        <iframe src="https://www.youtube.com/embed/{{ $videoId }}"
-                                            class="w-full min-h-[600px] border border-gray-300 rounded-lg"
-                                            title="{{ $lesson->title }}" allowfullscreen>
-                                        </iframe>
+                                        <video controls
+                                            class="w-full max-w-2xl mx-auto rounded-lg border border-gray-300 dark:border-gray-600"
+                                            title="{{ $lesson->title }}">
+                                            <source src="{{ $lesson->content_url }}" type="video/mp4">
+                                            เบราว์เซอร์ของคุณไม่รองรับแท็กวิดีโอ
+                                        </video>
                                     </div>
                                 @endif
                             @else
-                                <!-- Other Video Embed -->
+                                <!-- Uploaded Video File -->
+                                <div class="mb-4">
+                                    <span
+                                        class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-300">
+                                        <i class="fas fa-upload mr-2"></i>วิดีโอที่อัปโหลด
+                                    </span>
+                                </div>
+                                <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">ไฟล์:
+                                    {{ basename($lesson->content_url) }}</p>
+
                                 <div class="mt-6">
-                                    <video controls class="w-full max-w-2xl mx-auto" title="{{ $lesson->title }}">
-                                        <source src="{{ $lesson->content_url }}" type="video/mp4">
+                                    <video controls
+                                        class="w-full max-w-4xl mx-auto rounded-lg border border-gray-300 dark:border-gray-600 bg-black"
+                                        title="{{ $lesson->title }}" preload="metadata">
+                                        <source src="{{ asset('storage/' . $lesson->content_url) }}" type="video/mp4">
+                                        <source src="{{ asset('storage/' . $lesson->content_url) }}" type="video/webm">
+                                        <source src="{{ asset('storage/' . $lesson->content_url) }}" type="video/ogg">
                                         เบราว์เซอร์ของคุณไม่รองรับแท็กวิดีโอ
                                     </video>
                                 </div>
+
+                                <!-- Download Button -->
+                                <div class="mt-4">
+                                    <a href="{{ asset('storage/' . $lesson->content_url) }}"
+                                        download="{{ basename($lesson->content_url) }}"
+                                        class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                                        <i class="fas fa-download mr-2"></i>ดาวน์โหลดวิดีโอ
+                                    </a>
+                                </div>
                             @endif
                         @else
-                            <p class="text-red-600">ไม่พบ URL วิดีโอ</p>
+                            <p class="text-red-600 dark:text-red-400">ไม่พบ URL วิดีโอ</p>
                         @endif
                     </div>
                 @elseif($lesson->isTextContent())

@@ -55,9 +55,11 @@ class LessonController extends Controller
         $data = $request->validate([
             'title' => 'required|string|max:255',
             'content_type' => 'required|in:PDF,VIDEO,TEXT',
-            'content_url' => 'nullable|required_if:content_type,VIDEO|string|max:500',
+            'content_url' => 'nullable|string|max:500',
             'content_text' => 'nullable|required_if:content_type,TEXT|string',
             'file' => 'nullable|required_if:content_type,PDF,PPT|file|mimes:pdf,ppt,pptx|max:10240', // 10MB max
+            'video_file' => 'nullable|file|mimes:mp4,webm,ogg,mov|max:102400', // 100MB max
+            'video_type' => 'nullable|in:url,upload',
             'order' => 'required|integer|min:1',
         ]);
 
@@ -70,6 +72,15 @@ class LessonController extends Controller
             $filename = time() . '_' . $file->getClientOriginalName();
             
             $path = $file->storeAs($folder, $filename, 'public');
+            $data['content_url'] = $path;
+        }
+
+        // จัดการ video upload
+        if ($request->hasFile('video_file')) {
+            $videoFile = $request->file('video_file');
+            $filename = time() . '_' . $videoFile->getClientOriginalName();
+            
+            $path = $videoFile->storeAs('lessons/videos', $filename, 'public');
             $data['content_url'] = $path;
         }
 
@@ -137,6 +148,8 @@ class LessonController extends Controller
             'content_url' => 'nullable|string|max:500',
             'content_text' => 'nullable|string',
             'file' => 'nullable|file|mimes:pdf,ppt,pptx|max:10240', // 10MB max
+            'video_file' => 'nullable|file|mimes:mp4,webm,ogg,mov|max:102400', // 100MB max
+            'video_type' => 'nullable|in:url,upload',
             'order' => 'required|integer|min:1',
         ]);
 
@@ -155,9 +168,26 @@ class LessonController extends Controller
             
             $path = $file->storeAs($folder, $filename, 'public');
             $data['content_url'] = $path;
-        } elseif (!$request->hasFile('file') && $request->input('content_type') !== $lesson->content_type) {
-            // ถ้าเปลี่ยน content type แต่ไม่อัปโหลดไฟล์ใหม่ ให้ลบ URL เก่า
-            if ($lesson->content_url && $lesson->isFileContent()) {
+        }
+
+        // จัดการ video upload
+        if ($request->hasFile('video_file')) {
+            // ลบไฟล์เก่าถ้ามี
+            if ($lesson->content_url && $lesson->isVideoContent() && !filter_var($lesson->content_url, FILTER_VALIDATE_URL)) {
+                Storage::disk('public')->delete($lesson->content_url);
+            }
+
+            $videoFile = $request->file('video_file');
+            $filename = time() . '_' . $videoFile->getClientOriginalName();
+            
+            $path = $videoFile->storeAs('lessons/videos', $filename, 'public');
+            $data['content_url'] = $path;
+        }
+        
+        // ถ้าเปลี่ยน content type แต่ไม่อัปโหลดไฟล์ใหม่
+        if (!$request->hasFile('file') && !$request->hasFile('video_file') && $request->input('content_type') !== $lesson->content_type) {
+            // ลบ URL เก่าถ้าเป็นไฟล์
+            if ($lesson->content_url && ($lesson->isFileContent() || ($lesson->isVideoContent() && !filter_var($lesson->content_url, FILTER_VALIDATE_URL)))) {
                 Storage::disk('public')->delete($lesson->content_url);
             }
             $data['content_url'] = null;
