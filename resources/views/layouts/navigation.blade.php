@@ -12,9 +12,38 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
-                    </x-nav-link>
+                    <!-- Admin Navigation -->
+                    @if (auth()->user()->isAdmin())
+                        <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
+                            {{ __('Dashboard') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('admin.users')" :active="request()->routeIs('admin.users*')">
+                            {{ __('จัดการผู้ใช้') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('admin.statistics')" :active="request()->routeIs('admin.statistics')">
+                            {{ __('สถิติระบบ') }}
+                        </x-nav-link>
+                    @endif
+
+                    <!-- Teacher Navigation -->
+                    @if (auth()->user()->isTeacher())
+                        <x-nav-link :href="route('teacher.dashboard')" :active="request()->routeIs('teacher.dashboard')">
+                            {{ __('Dashboard') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('teacher.courses.index')" :active="request()->routeIs('teacher.courses.*')">
+                            {{ __('จัดการคอร์ส') }}
+                        </x-nav-link>
+                    @endif
+
+                    <!-- Student Navigation -->
+                    @if (auth()->user()->isStudent())
+                        <x-nav-link :href="route('student.dashboard')" :active="request()->routeIs('student.dashboard')">
+                            {{ __('Dashboard') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('student.courses.index')" :active="request()->routeIs('student.courses.*')">
+                            {{ __('คอร์สเรียน') }}
+                        </x-nav-link>
+                    @endif
                 </div>
             </div>
 
@@ -96,9 +125,38 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{ 'block': open, 'hidden': !open }" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                {{ __('Dashboard') }}
-            </x-responsive-nav-link>
+            <!-- Admin Navigation -->
+            @if (auth()->user()->isAdmin())
+                <x-responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
+                    {{ __('Dashboard') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.users')" :active="request()->routeIs('admin.users*')">
+                    {{ __('จัดการผู้ใช้') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.statistics')" :active="request()->routeIs('admin.statistics')">
+                    {{ __('สถิติระบบ') }}
+                </x-responsive-nav-link>
+            @endif
+
+            <!-- Teacher Navigation -->
+            @if (auth()->user()->isTeacher())
+                <x-responsive-nav-link :href="route('teacher.dashboard')" :active="request()->routeIs('teacher.dashboard')">
+                    {{ __('Dashboard') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('teacher.courses.index')" :active="request()->routeIs('teacher.courses.*')">
+                    {{ __('จัดการคอร์ส') }}
+                </x-responsive-nav-link>
+            @endif
+
+            <!-- Student Navigation -->
+            @if (auth()->user()->isStudent())
+                <x-responsive-nav-link :href="route('student.dashboard')" :active="request()->routeIs('student.dashboard')">
+                    {{ __('Dashboard') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('student.courses.index')" :active="request()->routeIs('student.courses.*')">
+                    {{ __('คอร์สเรียน') }}
+                </x-responsive-nav-link>
+            @endif
         </div>
 
         <!-- Responsive Settings Options -->

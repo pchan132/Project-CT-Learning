@@ -12,6 +12,7 @@ class Module extends Model
     protected $fillable = [
         'course_id',
         'title',
+        'description',
         'order',
     ];
 
@@ -65,6 +66,14 @@ class Module extends Model
 
         $completedLessons = $this->getCompletedLessonsCount($studentId);
         return round(($completedLessons / $totalLessons) * 100, 2);
+    }
+
+    /**
+     * Module has many Quizzes
+     */
+    public function quizzes()
+    {
+        return $this->hasMany(Quiz::class);
     }
 
     /**

@@ -226,4 +226,25 @@ class LessonController extends Controller
             ->route('teacher.courses.modules.lessons.index', [$course, $module])
             ->with('success', 'Lesson ถูกลบเรียบร้อยแล้ว');
     }
+
+    /**
+     * Reorder lessons via drag-and-drop
+     */
+    public function reorder(Request $request, Course $course, Module $module)
+    {
+        // ตรวจสอบว่าครูเป็นเจ้าของคอร์สและ module เป็นของคอร์สนี้
+        if ($course->teacher_id !== auth()->id() || $module->course_id !== $course->id) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
+        }
+
+        $order = $request->input('order', []);
+
+        foreach ($order as $index => $lessonId) {
+            Lesson::where('id', $lessonId)
+                ->where('module_id', $module->id)
+                ->update(['order' => $index + 1]);
+        }
+
+        return response()->json(['success' => true]);
+    }
 }

@@ -1,232 +1,286 @@
-<x-app-layout>
-    <!-- Custom CSS for the Clean, Structured Theme -->
-    <style>
-        /* Define custom colors */
-        :root {
-            --header-bg: #0E2A5D;
-            /* Deep Navy Blue */
-            --accent-blue: #1D4ED8;
-            /* Tailwind blue-700 */
-        }
+@extends('layouts.app')
 
-        .futuristic-card {
-            background-color: white;
-            border: 1px solid #e5e7eb;
-            /* Subtle gray border */
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-            /* Soft shadow */
-            transition: all 0.3s ease-in-out;
-        }
+@section('header')
+    <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+        จัดการเนื้อหาวิชา
+    </h2>
+@endsection
 
-        .futuristic-card:hover {
-            box-shadow: 0 10px 15px -3px rgba(30, 64, 175, 0.1), 0 4px 6px -4px rgba(30, 64, 175, 0.05);
-            transform: translateY(-2px);
-            /* Slight lift */
-        }
-
-        /* Floating/Slide-in Animation for sequential elements */
-        @keyframes slide-in-up {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .animate-slide-in {
-            animation: slide-in-up 0.5s ease-out forwards;
-            opacity: 0;
-        }
-
-        /* Icon for drag handle */
-        .drag-handle {
-            color: #9ca3af;
-            cursor: grab;
-        }
-    </style>
-
-    <!-- Header Section: Deep Blue Bar (Matching Image) -->
-    <div class="bg-[var(--header-bg)] text-white pt-4 pb-12 px-4 sm:px-6 lg:px-8">
-        <div class="max-w-7xl mx-auto">
-            <!-- Top Nav/Status Bar -->
-            <div class="flex justify-between items-center mb-6">
-                <a href="{{ route('teacher.courses.show', $course) }}"
-                    class="text-blue-300 hover:text-white text-sm font-light">
-                    <i class="fas fa-arrow-left mr-2"></i>กลับไปหน้าหลักของคอร์ส
-                </a>
-                <!-- Static Stats Mockup (Assuming these properties are available on $course) -->
-                <div class="text-sm font-light bg-blue-800 px-3 py-1 rounded-full">
-                    {{ $course->total_modules ?? 'X' }} โมดูล · {{ $course->total_lessons ?? 'Y' }} บทเรียน
+@section('content')
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Course Header -->
+        <div class="mb-8 bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
+            <div class="bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-8 text-white">
+                <div class="flex justify-between items-start mb-4">
+                    <a href="{{ route('teacher.courses.show', $course) }}"
+                        class="text-blue-100 hover:text-white flex items-center text-sm">
+                        <i class="fas fa-arrow-left mr-2"></i>กลับไปหน้าหลักของคอร์ส
+                    </a>
+                    <div class="flex items-center space-x-3 text-sm bg-white/20 px-4 py-2 rounded-full backdrop-blur-sm">
+                        <span>{{ $modules->count() }} โมดูล</span>
+                        <span>·</span>
+                        <span>{{ $modules->sum(function ($m) {return $m->lessons->count();}) }} บทเรียน</span>
+                    </div>
                 </div>
+                <h1 class="text-3xl font-bold mb-2">จัดการเนื้อหาวิชา</h1>
+                <p class="text-blue-100">{{ $course->title }}</p>
             </div>
-            <!-- Main Title -->
-            <h1 class="text-3xl font-bold">จัดการเนื้อหาวิชา</h1>
-            <p class="text-blue-200 mt-1">{{ $course->title }}</p>
         </div>
-    </div>
-
-    <!-- Main Content Area: Overlaps Header -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8">
 
         <!-- Module Header and Add Button -->
         <div class="flex justify-between items-center mb-6">
-            <h2 class="text-2xl font-bold text-gray-900">โมดูลและบทเรียน</h2>
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white">โมดูลและบทเรียน</h2>
             <a href="{{ route('teacher.courses.modules.create', $course) }}"
-                class="bg-[var(--accent-blue)] hover:bg-blue-800 text-white font-semibold py-2 px-4 rounded-lg shadow-md flex items-center">
+                class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-5 rounded-lg shadow-lg flex items-center transition-all hover:shadow-xl">
                 <i class="fas fa-plus mr-2"></i>เพิ่มโมดูล
             </a>
         </div>
 
-        <!-- Success/Error Messages (Styled to match the white theme) -->
+        <!-- Success/Error Messages -->
         @if (session('success'))
-            <div class="bg-green-50 border border-green-300 text-green-700 px-4 py-3 rounded-lg relative mb-6"
-                role="alert">
-                <span class="block sm:inline font-medium"><i class="fas fa-check-circle mr-2"></i></span>
-                <span class="block sm:inline">{{ session('success') }}</span>
+            <div
+                class="bg-green-50 dark:bg-green-900/20 border border-green-300 dark:border-green-800 text-green-700 dark:text-green-400 px-4 py-3 rounded-lg relative mb-6">
+                <span class="font-medium"><i class="fas fa-check-circle mr-2"></i></span>
+                <span>{{ session('success') }}</span>
             </div>
         @endif
         @if (session('error'))
-            <div class="bg-red-50 border border-red-300 text-red-700 px-4 py-3 rounded-lg relative mb-6" role="alert">
-                <span class="block sm:inline font-medium"><i class="fas fa-times-circle mr-2"></i></span>
-                <span class="block sm:inline">{{ session('error') }}</span>
+            <div
+                class="bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg relative mb-6">
+                <span class="font-medium"><i class="fas fa-times-circle mr-2"></i></span>
+                <span>{{ session('error') }}</span>
             </div>
         @endif
 
         <!-- Modules List -->
-        <div>
+        <div class="space-y-4" id="modules-list">
             @if ($modules->count() > 0)
-                <ul class="space-y-4">
-                    @foreach ($modules as $module)
-                        <!-- Module Card with Staggered Animation -->
-                        <li class="futuristic-card rounded-xl animate-slide-in"
-                            style="animation-delay: {{ $loop->index * 0.1 }}s;">
-
-                            <!-- Module Header Row -->
-                            <div class="px-6 py-4 flex items-center justify-between border-b border-gray-100">
+                @foreach ($modules as $module)
+                    <!-- Module Card -->
+                    <div class="module-item bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 cursor-move"
+                        data-id="{{ $module->id }}">
+                        <!-- Module Header Row -->
+                        <div class="px-6 py-5 border-b border-gray-100 dark:border-gray-700">
+                            <div class="flex items-center justify-between">
                                 <div class="flex items-center space-x-4 flex-1">
-                                    <!-- Drag Handle Placeholder -->
-                                    <i class="fas fa-grip-vertical drag-handle text-lg"></i>
+                                    <!-- Order Badge -->
+                                    <div
+                                        class="flex-shrink-0 w-10 h-10 bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 rounded-lg flex items-center justify-center font-bold">
+                                        {{ $module->order }}
+                                    </div>
 
                                     <!-- Module Info -->
-                                    <div>
-                                        <h3 class="text-lg font-semibold text-gray-900">
-                                            โมดูล {{ $module->order }}: {{ $module->title }}
+                                    <div class="flex-1">
+                                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                                            {{ $module->title }}
                                         </h3>
-                                        <p class="text-sm text-gray-500 mt-1">
-                                            {{ $module->description ?? 'คำอธิบาย Module' }}</p>
-                                        <span
-                                            class="inline-flex items-center px-2.5 py-0.5 mt-2 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                            {{ $module->total_lessons }} บทเรียน
-                                        </span>
+                                        <div class="flex items-center space-x-3 mt-1">
+                                            <span
+                                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-300">
+                                                <i class="fas fa-book-reader mr-1"></i>
+                                                {{ $module->lessons->count() }} บทเรียน
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
 
                                 <!-- Module Actions -->
-                                <div class="flex items-center space-x-2 text-gray-500">
-                                    <!-- Expand/Collapse Placeholder -->
-                                    <button class="p-2 hover:bg-gray-100 rounded-full transition"><i
-                                            class="fas fa-chevron-up"></i></button>
+                                <div class="flex items-center space-x-2">
+                                    <!-- View Module -->
+                                    <a href="{{ route('teacher.courses.modules.show', [$course, $module]) }}"
+                                        class="px-3 py-2 text-sm font-medium text-white bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600 rounded-lg transition inline-flex items-center space-x-1"
+                                        title="ดู Module">
+                                        <i class="fas fa-eye"></i>
+                                        <span>ดู</span>
+                                    </a>
 
                                     <!-- Edit Module -->
                                     <a href="{{ route('teacher.courses.modules.edit', [$course, $module]) }}"
-                                        class="p-2 hover:bg-gray-100 rounded-full transition hover:text-blue-600">
+                                        class="px-3 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 rounded-lg transition inline-flex items-center space-x-1"
+                                        title="แก้ไข Module">
                                         <i class="fas fa-edit"></i>
+                                        <span>แก้ไข</span>
                                     </a>
 
                                     <!-- Delete Module -->
                                     <form action="{{ route('teacher.courses.modules.destroy', [$course, $module]) }}"
-                                        method="POST" class="inline-block">
+                                        method="POST" class="inline-block"
+                                        onsubmit="return confirm('คุณแน่ใจหรือไม่ที่จะลบ Module นี้?\nหาก Module นี้มีบทเรียน จะถูกลบทั้งหมด!')">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit"
-                                            class="p-2 hover:bg-red-50 rounded-full transition hover:text-red-600">
+                                            class="px-3 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-600 rounded-lg transition inline-flex items-center space-x-1"
+                                            title="ลบ Module">
                                             <i class="fas fa-trash"></i>
+                                            <span>ลบ</span>
                                         </button>
                                     </form>
                                 </div>
                             </div>
+                        </div>
 
-                            <!-- Nested Lesson List Container -->
-                            <div class="divide-y divide-gray-100">
-                                {{-- NOTE: Assuming $module->lessons exists. Below is a mock structure for the visual. --}}
-                                @if ($module->lessons->count() > 0)
-                                    @foreach ($module->lessons as $lesson)
-                                        <div class="pl-12 pr-6 py-3 flex items-center justify-between hover:bg-gray-50">
+                        <!-- Nested Lesson List -->
+                        <div class="divide-y divide-gray-100 dark:divide-gray-700">
+                            @if ($module->lessons->count() > 0)
+                                @foreach ($module->lessons as $lesson)
+                                    <div class="px-6 py-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
+                                        <div class="flex items-center justify-between">
                                             <div class="flex items-center space-x-4 flex-1">
-                                                <!-- Drag Handle & Lesson Order -->
-                                                <i class="fas fa-grip-lines drag-handle text-sm"></i>
+                                                <!-- Lesson Order -->
+                                                <div
+                                                    class="flex-shrink-0 w-8 h-8 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 rounded-lg flex items-center justify-center text-sm font-semibold">
+                                                    {{ $lesson->order }}
+                                                </div>
 
-                                                <!-- Lesson Title & Info -->
-                                                <div>
-                                                    <span class="text-gray-700 font-medium">
-                                                        {{ $lesson->order }}. {{ $lesson->title }}
-                                                        <span
-                                                            class="text-sm text-gray-400">({{ $lesson->duration ?? '10 นาที' }})</span>
-                                                    </span>
-                                                    <p class="text-xs text-gray-500">ประเภท:
-                                                        {{ $lesson->content_type ?? 'วิดีโอ' }}</p>
+                                                <!-- Lesson Info -->
+                                                <div class="flex-1 select-none">
+                                                    <h4 class="font-medium text-gray-900 dark:text-white">
+                                                        {{ $lesson->title }}
+                                                    </h4>
+                                                    <div class="flex items-center space-x-2 mt-1">
+                                                        <span class="text-xs text-gray-500 dark:text-gray-400">
+                                                            <i
+                                                                class="fas fa-{{ $lesson->content_type === 'video' ? 'play-circle' : 'file-alt' }} mr-1"></i>
+                                                            {{ ucfirst($lesson->content_type ?? 'video') }}
+                                                        </span>
+                                                        @if ($lesson->duration)
+                                                            <span class="text-xs text-gray-400 dark:text-gray-500">·</span>
+                                                            <span class="text-xs text-gray-500 dark:text-gray-400">
+                                                                <i class="fas fa-clock mr-1"></i>{{ $lesson->duration }}
+                                                                นาที
+                                                            </span>
+                                                        @endif
+                                                    </div>
                                                 </div>
                                             </div>
 
                                             <!-- Lesson Actions -->
-                                            <div class="flex items-center space-x-1 text-gray-500">
+                                            <div class="flex items-center space-x-2 flex-shrink-0">
+                                                <!-- View Lesson -->
+                                                <a href="{{ route('teacher.courses.modules.lessons.show', [$course, $module, $lesson]) }}"
+                                                    class="px-3 py-1.5 text-xs font-medium text-white bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600 rounded-md transition inline-flex items-center space-x-1.5 shadow-sm"
+                                                    title="ดูบทเรียน">
+                                                    <i class="fas fa-eye"></i>
+                                                    <span>ดู</span>
+                                                </a>
+
                                                 <!-- Edit Lesson -->
                                                 <a href="{{ route('teacher.courses.modules.lessons.edit', [$course, $module, $lesson]) }}"
-                                                    class="p-2 hover:bg-gray-100 rounded-full transition hover:text-blue-600">
-                                                    <i class="fas fa-edit text-sm"></i>
+                                                    class="px-3 py-1.5 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 rounded-md transition inline-flex items-center space-x-1.5 shadow-sm"
+                                                    title="แก้ไขบทเรียน">
+                                                    <i class="fas fa-edit"></i>
+                                                    <span>แก้ไข</span>
                                                 </a>
 
                                                 <!-- Delete Lesson -->
                                                 <form
                                                     action="{{ route('teacher.courses.modules.lessons.destroy', [$course, $module, $lesson]) }}"
-                                                    method="POST" class="inline-block">
+                                                    method="POST" class="inline-block"
+                                                    onsubmit="return confirm('คุณแน่ใจหรือไม่ที่จะลบบทเรียนนี้?')">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit"
-                                                        class="p-2 hover:bg-red-50 rounded-full transition hover:text-red-600">
-                                                        <i class="fas fa-trash text-sm"></i>
+                                                        class="px-3 py-1.5 text-xs font-medium text-white bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-600 rounded-md transition inline-flex items-center space-x-1.5 shadow-sm"
+                                                        title="ลบบทเรียน">
+                                                        <i class="fas fa-trash"></i>
+                                                        <span>ลบ</span>
                                                     </button>
                                                 </form>
                                             </div>
                                         </div>
-                                    @endforeach
-                                @endif
-
-                                <!-- Add Lesson Button -->
-                                <div class="px-6 py-4">
-                                    <a href="{{ route('teacher.courses.modules.lessons.create', [$course, $module]) }}"
-                                        class="text-blue-600 hover:text-blue-800 w-full py-2 flex items-center justify-center border-2 border-dashed border-blue-200 hover:border-blue-400 rounded-lg transition">
-                                        <i class="fas fa-plus mr-2"></i>เพิ่มบทเรียน
-                                    </a>
+                                    </div>
+                                @endforeach
+                            @else
+                                <div class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
+                                    <i class="fas fa-info-circle mr-2"></i>
+                                    ยังไม่มีบทเรียนใน Module นี้
                                 </div>
+                            @endif
+
+                            <!-- Add Lesson Button -->
+                            <div class="px-6 py-4 bg-gray-50 dark:bg-gray-700/30">
+                                <a href="{{ route('teacher.courses.modules.lessons.create', [$course, $module]) }}"
+                                    class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 w-full py-2.5 flex items-center justify-center border-2 border-dashed border-blue-200 dark:border-blue-800 hover:border-blue-400 dark:hover:border-blue-600 rounded-lg transition">
+                                    <i class="fas fa-plus mr-2"></i>เพิ่มบทเรียน
+                                </a>
                             </div>
-                        </li>
-                    @endforeach
-                </ul>
+                        </div>
+                    </div>
+                @endforeach
             @else
                 <!-- No Modules Found -->
-                <div class="text-center py-16 futuristic-card rounded-xl">
-                    <i class="fas fa-folder-open text-gray-400 text-6xl mb-4"></i>
-                    <h3 class="text-xl font-semibold text-gray-900 mb-2">ยังไม่มี Modules</h3>
-                    <p class="text-gray-600 mb-6">เริ่มต้นการสร้าง Module แรกสำหรับคอร์สนี้</p>
+                <div class="text-center py-20 bg-white dark:bg-gray-800 rounded-xl shadow-lg">
+                    <div
+                        class="inline-flex items-center justify-center w-20 h-20 bg-gray-100 dark:bg-gray-700 rounded-full mb-4">
+                        <i class="fas fa-folder-open text-gray-400 dark:text-gray-500 text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">ยังไม่มี Modules</h3>
+                    <p class="text-gray-600 dark:text-gray-400 mb-6">เริ่มต้นการสร้าง Module แรกสำหรับคอร์สนี้</p>
                     <a href="{{ route('teacher.courses.modules.create', $course) }}"
-                        class="bg-[var(--accent-blue)] hover:bg-blue-800 text-white font-bold py-3 px-6 rounded-lg shadow-xl transition transform hover:scale-105">
+                        class="inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition-all hover:shadow-xl">
                         <i class="fas fa-plus mr-2"></i>สร้าง Module แรก
                     </a>
                 </div>
             @endif
         </div>
 
-        <!-- Bottom Back Button (Removed from original file, but good practice to keep the navigation clean) -->
-        <div class="mt-10 pt-6 border-t border-gray-200">
+        <!-- Bottom Back Button -->
+        <div class="mt-10 pt-6 border-t border-gray-200 dark:border-gray-700">
             <a href="{{ route('teacher.courses.show', $course) }}"
-                class="text-gray-500 hover:text-blue-600 font-medium transition duration-150">
+                class="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition">
                 <i class="fas fa-arrow-left mr-2"></i>กลับไปที่รายละเอียดคอร์ส
             </a>
         </div>
     </div>
-</x-app-layout>
+@endsection
+
+@push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const modulesList = document.getElementById('modules-list');
+
+            if (modulesList && typeof Sortable !== 'undefined') {
+                new Sortable(modulesList, {
+                    animation: 150,
+                    ghostClass: 'opacity-50',
+                    dragClass: 'cursor-grabbing',
+                    forceFallback: true,
+                    fallbackTolerance: 3,
+                    preventOnFilter: false,
+                    onEnd: function(evt) {
+                        // Get all module IDs in new order
+                        const moduleIds = Array.from(modulesList.querySelectorAll('.module-item'))
+                            .map(item => item.dataset.id);
+
+                        // Send AJAX request to update order
+                        fetch('{{ route('teacher.courses.modules.reorder', $course) }}', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                },
+                                body: JSON.stringify({
+                                    order: moduleIds
+                                })
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    // Update order badges
+                                    modulesList.querySelectorAll('.module-item').forEach((item,
+                                        index) => {
+                                        const orderBadge = item.querySelector(
+                                            '.w-10.h-10');
+                                        if (orderBadge) {
+                                            orderBadge.textContent = index + 1;
+                                        }
+                                    });
+                                }
+                            })
+                            .catch(error => console.error('Error:', error));
+                    }
+                });
+            }
+        });
+    </script>
+@endpush

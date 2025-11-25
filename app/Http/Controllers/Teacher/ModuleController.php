@@ -156,16 +156,14 @@ class ModuleController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        // ตรวจสอบว่ามี lessons อยู่หรือไม่
-        if ($module->lessons()->count() > 0) {
-            return redirect()
-                ->route('teacher.courses.modules.index', $course)
-                ->with('error', 'ไม่สามารถลบ Module ที่มี Lessons อยู่ได้ กรุณาลบ Lessons ก่อน');
-        }
-
         // เก็บ order ปัจจุบันไว้
         $deletedOrder = $module->order;
 
+        // ลบ lessons ทั้งหมดใน module ก่อน (cascade delete)
+        $lessonCount = $module->lessons()->count();
+        $module->lessons()->delete();
+
+        // ลบ module
         $module->delete();
 
         // Shift modules ที่มี order > ที่ลบ ลงมา 1 ตำแหน่ง
@@ -173,8 +171,34 @@ class ModuleController extends Controller
             ->where('order', '>', $deletedOrder)
             ->decrement('order');
 
+        $message = 'Module ถูกลบเรียบร้อยแล้ว';
+        if ($lessonCount > 0) {
+            $message .= ' (รวม ' . $lessonCount . ' บทเรียน)';
+        }
+
         return redirect()
             ->route('teacher.courses.modules.index', $course)
-            ->with('success', 'Module ถูกลบเรียบร้อยแล้ว');
+            ->with('success', $message);
+    }
+
+    /**
+     * Reorder modules via drag-and-drop
+     */
+    public function reorder(Request $request, Course $course)
+    {
+        // ตรวจสอบว่าครูเป็นเจ้าของคอร์สหรือไม่
+        if ($course->teacher_id !== auth()->id()) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
+        }
+
+        $order = $request->input('order', []);
+
+        foreach ($order as $index => $moduleId) {
+            Module::where('id', $moduleId)
+                ->where('course_id', $course->id)
+                ->update(['order' => $index + 1]);
+        }
+
+        return response()->json(['success' => true]);
     }
 }

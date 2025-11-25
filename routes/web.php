@@ -25,9 +25,17 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// ------ Dashboard Route -----------**
+// ------ Dashboard Route - Redirect based on role -----------**
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    $user = auth()->user();
+    
+    if ($user->isAdmin()) {
+        return redirect()->route('admin.dashboard');
+    } elseif ($user->isTeacher()) {
+        return redirect()->route('teacher.dashboard');
+    } else {
+        return redirect()->route('student.dashboard');
+    }
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 // ------ โปรไฟล์ผู้ใช้ -----------**
@@ -79,10 +87,30 @@ require __DIR__.'/auth.php';
 // กำหนดเส้นทางสำหรับ สิทธิ์การเข้าถึงของนักเรียน และ ครู ในการจัดการคอร์สเรียน ******************
 // ของนักเรียน
 Route::middleware(['auth', 'student'])->prefix('student')->name('student.')->group(function () {
+    // Course routes
     Route::get('/courses', [StudentCourseController::class, 'index'])->name('courses.index');
-
-    // เส้นทางสำหรับการลงทะเบียนเรียนในคอร์ส ของนักเรียน
-    Route::post('/courses/enroll', [StudentCourseController::class, 'enroll'])->name('courses.enroll');
+    Route::get('/courses/my-courses', [StudentCourseController::class, 'myCourses'])->name('courses.my-courses');
+    Route::get('/courses/{course}', [StudentCourseController::class, 'show'])->name('courses.show');
+    
+    // Enrollment routes
+    Route::post('/courses/{course}/enroll', [StudentCourseController::class, 'enroll'])->name('courses.enroll');
+    Route::delete('/courses/{course}/unenroll', [StudentCourseController::class, 'unenroll'])->name('courses.unenroll');
+    
+    // Lesson learning routes
+    Route::get('/courses/{course}/lessons/{lesson}', [StudentCourseController::class, 'learnLesson'])->name('courses.learn-lesson');
+    Route::post('/courses/{course}/lessons/{lesson}/complete', [StudentCourseController::class, 'completeLesson'])->name('courses.complete-lesson');
+    
+    // Quiz routes for students
+    Route::get('/quizzes/{quiz}', [App\Http\Controllers\Student\QuizController::class, 'show'])->name('quizzes.show');
+    Route::get('/quizzes/{quiz}/start', [App\Http\Controllers\Student\QuizController::class, 'start'])->name('quizzes.start');
+    Route::post('/quizzes/{quiz}/submit', [App\Http\Controllers\Student\QuizController::class, 'submit'])->name('quizzes.submit');
+    Route::get('/quiz-attempts/{attempt}/result', [App\Http\Controllers\Student\QuizController::class, 'result'])->name('quizzes.result');
+    
+    // Certificate routes for students
+    Route::get('/certificates', [App\Http\Controllers\Student\CertificateController::class, 'index'])->name('certificates.index');
+    Route::post('/courses/{course}/certificates/generate', [App\Http\Controllers\Student\CertificateController::class, 'generate'])->name('certificates.generate');
+    Route::get('/certificates/{certificate}', [App\Http\Controllers\Student\CertificateController::class, 'show'])->name('certificates.show');
+    Route::get('/certificates/{certificate}/download', [App\Http\Controllers\Student\CertificateController::class, 'download'])->name('certificates.download');
 });
 
 // ของครู 
@@ -95,6 +123,7 @@ Route::middleware(['auth', 'teacher'])->prefix('teacher')->name('teacher.')->gro
         Route::get('/', [App\Http\Controllers\Teacher\ModuleController::class, 'index'])->name('index');
         Route::get('/create', [App\Http\Controllers\Teacher\ModuleController::class, 'create'])->name('create');
         Route::post('/', [App\Http\Controllers\Teacher\ModuleController::class, 'store'])->name('store');
+        Route::post('/reorder', [App\Http\Controllers\Teacher\ModuleController::class, 'reorder'])->name('reorder');
         Route::get('/{module}', [App\Http\Controllers\Teacher\ModuleController::class, 'show'])->name('show');
         Route::get('/{module}/edit', [App\Http\Controllers\Teacher\ModuleController::class, 'edit'])->name('edit');
         Route::put('/{module}', [App\Http\Controllers\Teacher\ModuleController::class, 'update'])->name('update');
@@ -105,10 +134,47 @@ Route::middleware(['auth', 'teacher'])->prefix('teacher')->name('teacher.')->gro
             Route::get('/', [App\Http\Controllers\Teacher\LessonController::class, 'index'])->name('index');
             Route::get('/create', [App\Http\Controllers\Teacher\LessonController::class, 'create'])->name('create');
             Route::post('/', [App\Http\Controllers\Teacher\LessonController::class, 'store'])->name('store');
+            Route::post('/reorder', [App\Http\Controllers\Teacher\LessonController::class, 'reorder'])->name('reorder');
             Route::get('/{lesson}', [App\Http\Controllers\Teacher\LessonController::class, 'show'])->name('show');
             Route::get('/{lesson}/edit', [App\Http\Controllers\Teacher\LessonController::class, 'edit'])->name('edit');
             Route::put('/{lesson}', [App\Http\Controllers\Teacher\LessonController::class, 'update'])->name('update');
             Route::delete('/{lesson}', [App\Http\Controllers\Teacher\LessonController::class, 'destroy'])->name('destroy');
         });
+        
+        // Routes สำหรับ Quizzes ภายใน Module
+        Route::prefix('/{module}/quizzes')->name('quizzes.')->group(function () {
+            Route::get('/', [App\Http\Controllers\Teacher\QuizController::class, 'index'])->name('index');
+            Route::get('/create', [App\Http\Controllers\Teacher\QuizController::class, 'create'])->name('create');
+            Route::post('/', [App\Http\Controllers\Teacher\QuizController::class, 'store'])->name('store');
+            Route::get('/{quiz}', [App\Http\Controllers\Teacher\QuizController::class, 'show'])->name('show');
+            Route::get('/{quiz}/edit', [App\Http\Controllers\Teacher\QuizController::class, 'edit'])->name('edit');
+            Route::put('/{quiz}', [App\Http\Controllers\Teacher\QuizController::class, 'update'])->name('update');
+            Route::delete('/{quiz}', [App\Http\Controllers\Teacher\QuizController::class, 'destroy'])->name('destroy');
+            
+            // Routes สำหรับ Questions ภายใน Quiz
+            Route::prefix('/{quiz}/questions')->name('questions.')->group(function () {
+                Route::get('/create', [App\Http\Controllers\Teacher\QuestionController::class, 'create'])->name('create');
+                Route::post('/', [App\Http\Controllers\Teacher\QuestionController::class, 'store'])->name('store');
+                Route::get('/{question}/edit', [App\Http\Controllers\Teacher\QuestionController::class, 'edit'])->name('edit');
+                Route::put('/{question}', [App\Http\Controllers\Teacher\QuestionController::class, 'update'])->name('update');
+                Route::delete('/{question}', [App\Http\Controllers\Teacher\QuestionController::class, 'destroy'])->name('destroy');
+            });
+        });
     });
+});
+
+// Admin Routes
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard', [App\Http\Controllers\Admin\AdminController::class, 'index'])->name('dashboard');
+    
+    // User Management
+    Route::get('/users', [App\Http\Controllers\Admin\AdminController::class, 'users'])->name('users');
+    Route::get('/users/create', [App\Http\Controllers\Admin\AdminController::class, 'createUser'])->name('users.create');
+    Route::post('/users', [App\Http\Controllers\Admin\AdminController::class, 'storeUser'])->name('users.store');
+    Route::get('/users/{user}/edit', [App\Http\Controllers\Admin\AdminController::class, 'editUser'])->name('users.edit');
+    Route::put('/users/{user}', [App\Http\Controllers\Admin\AdminController::class, 'updateUser'])->name('users.update');
+    Route::delete('/users/{user}', [App\Http\Controllers\Admin\AdminController::class, 'destroyUser'])->name('users.destroy');
+    
+    // Statistics
+    Route::get('/statistics', [App\Http\Controllers\Admin\AdminController::class, 'statistics'])->name('statistics');
 });
