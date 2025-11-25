@@ -99,7 +99,8 @@
                             @if ($lesson->content_type === 'PDF')
                                 <div class="mt-6">
                                     <iframe src="{{ $lesson->content_display_url }}"
-                                        class="w-full h-96 border border-gray-300 rounded-lg" title="{{ $lesson->title }}">
+                                        class="w-full min-h-[600px] border border-gray-300 rounded-lg"
+                                        title="{{ $lesson->title }}">
                                     </iframe>
                                 </div>
                             @endif
@@ -131,7 +132,7 @@
                                 @if ($videoId)
                                     <div class="mt-6">
                                         <iframe src="https://www.youtube.com/embed/{{ $videoId }}"
-                                            class="w-full h-96 border border-gray-300 rounded-lg"
+                                            class="w-full min-h-[600px] border border-gray-300 rounded-lg"
                                             title="{{ $lesson->title }}" allowfullscreen>
                                         </iframe>
                                     </div>
@@ -152,9 +153,9 @@
                 @elseif($lesson->isTextContent())
                     <!-- Text Content -->
                     <div>
-                        <div class="prose max-w-none">
-                            <div class="bg-gray-50 p-6 rounded-lg">
-                                <p class="whitespace-pre-wrap">{{ $lesson->content_text ?: 'ไม่มีเนื้อหาข้อความ' }}</p>
+                        <div class="prose prose-lg max-w-none dark:prose-invert">
+                            <div class="bg-gray-50 dark:bg-gray-900/50 p-6 rounded-lg">
+                                {!! $lesson->content_text ?: '<p class="text-gray-500">ไม่มีเนื้อหาข้อความ</p>' !!}
                             </div>
                         </div>
                     </div>

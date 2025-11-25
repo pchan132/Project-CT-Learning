@@ -226,6 +226,18 @@
             </form>
         </div>
 
+        <!-- Loading Overlay -->
+        <div id="loading-overlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+            style="display: none;">
+            <div class="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-2xl">
+                <div class="flex flex-col items-center">
+                    <div class="animate-spin rounded-full h-16 w-16 border-b-2 border-green-600 mb-4"></div>
+                    <p class="text-lg font-semibold text-gray-900 dark:text-white">กำลังอัปเดตบทเรียน...</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">กรุณารอสักครู่</p>
+                </div>
+            </div>
+        </div>
+
         <!-- Delete Section -->
         <div class="mt-6 bg-white dark:bg-gray-800 shadow-lg rounded-xl overflow-hidden">
             <div class="px-6 py-6">
@@ -308,12 +320,19 @@
                     submitBtn.disabled = true;
                     submitIcon.className = 'fas fa-spinner fa-spin mr-2';
                     submitText.textContent = 'กำลังอัปเดต...';
-                    loadingOverlay.classList.remove('hidden');
+                    loadingOverlay.style.display = 'flex';
+                }, {
+                    once: true
                 });
             }
 
             // Initialize TinyMCE
             function initTinyMCE() {
+                if (typeof tinymce === 'undefined') {
+                    console.error('TinyMCE not loaded');
+                    return;
+                }
+
                 if (editorInstance) {
                     tinymce.remove('#content_text');
                     editorInstance = null;
@@ -360,7 +379,7 @@
                         @if (!$lesson->content_url || !$lesson->isFileContent())
                             document.getElementById('file').setAttribute('required', '');
                         @endif
-                        if (editorInstance) {
+                        if (editorInstance && typeof tinymce !== 'undefined') {
                             tinymce.remove('#content_text');
                             editorInstance = null;
                         }
@@ -368,7 +387,7 @@
                     case 'VIDEO':
                         videoField.classList.remove('hidden');
                         document.getElementById('content_url').setAttribute('required', '');
-                        if (editorInstance) {
+                        if (editorInstance && typeof tinymce !== 'undefined') {
                             tinymce.remove('#content_text');
                             editorInstance = null;
                         }

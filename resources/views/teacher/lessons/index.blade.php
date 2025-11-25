@@ -103,24 +103,30 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="flex items-center space-x-2">
+                                <div class="flex items-center space-x-2 ml-4">
                                     <a href="{{ route('teacher.courses.modules.lessons.show', [$course, $module, $lesson]) }}"
-                                        class="p-2 text-green-600 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/30 rounded-lg transition">
+                                        class="px-4 py-2 text-sm font-medium text-white bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600 rounded-lg transition inline-flex items-center space-x-2 shadow-sm"
+                                        title="ดูบทเรียน">
                                         <i class="fas fa-eye"></i>
+                                        <span>ดู</span>
                                     </a>
                                     <a href="{{ route('teacher.courses.modules.lessons.edit', [$course, $module, $lesson]) }}"
-                                        class="p-2 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition">
+                                        class="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 rounded-lg transition inline-flex items-center space-x-2 shadow-sm"
+                                        title="แก้ไขบทเรียน">
                                         <i class="fas fa-edit"></i>
+                                        <span>แก้ไข</span>
                                     </a>
                                     <form
                                         action="{{ route('teacher.courses.modules.lessons.destroy', [$course, $module, $lesson]) }}"
                                         method="POST" class="inline-block"
-                                        onsubmit="return confirm('คุณต้องการลบบทเรียนนี้ใช่หรือไม่?')">
+                                        onsubmit="return confirm('คุณแน่ใจหรือไม่ที่จะลบบทเรียนนี้?')">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit"
-                                            class="p-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition">
+                                            class="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-600 rounded-lg transition inline-flex items-center space-x-2 shadow-sm"
+                                            title="ลบบทเรียน">
                                             <i class="fas fa-trash"></i>
+                                            <span>ลบ</span>
                                         </button>
                                     </form>
                                 </div>
@@ -188,8 +194,8 @@
             if (lessonsList && typeof Sortable !== 'undefined') {
                 new Sortable(lessonsList, {
                     animation: 150,
-                    handle: '.lesson-item',
                     ghostClass: 'opacity-50',
+                    dragClass: 'cursor-grabbing',
                     onEnd: function(evt) {
                         // Get all lesson IDs in new order
                         const lessonIds = Array.from(lessonsList.querySelectorAll('.lesson-item'))
@@ -218,10 +224,9 @@
                                             orderBadge.textContent = index + 1;
                                         }
                                         // Update "บทเรียนที่" text
-                                        const orderText = item.querySelector(
-                                            '.flex-1 .mt-1 span:first-child');
-                                        if (orderText) {
-                                            orderText.textContent = 'บทเรียนที่ ' + (index +
+                                        const spans = item.querySelectorAll('.mt-1 span');
+                                        if (spans.length > 0) {
+                                            spans[0].textContent = 'บทเรียนที่ ' + (index +
                                                 1);
                                         }
                                     });

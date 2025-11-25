@@ -86,21 +86,33 @@
 
                                 <!-- Module Actions -->
                                 <div class="flex items-center space-x-2">
+                                    <!-- View Module -->
+                                    <a href="{{ route('teacher.courses.modules.show', [$course, $module]) }}"
+                                        class="px-3 py-2 text-sm font-medium text-white bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600 rounded-lg transition inline-flex items-center space-x-1"
+                                        title="ดู Module">
+                                        <i class="fas fa-eye"></i>
+                                        <span>ดู</span>
+                                    </a>
+
                                     <!-- Edit Module -->
                                     <a href="{{ route('teacher.courses.modules.edit', [$course, $module]) }}"
-                                        class="p-2 text-gray-500 dark:text-gray-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 hover:text-blue-600 dark:hover:text-blue-400 rounded-lg transition">
+                                        class="px-3 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 rounded-lg transition inline-flex items-center space-x-1"
+                                        title="แก้ไข Module">
                                         <i class="fas fa-edit"></i>
+                                        <span>แก้ไข</span>
                                     </a>
 
                                     <!-- Delete Module -->
                                     <form action="{{ route('teacher.courses.modules.destroy', [$course, $module]) }}"
                                         method="POST" class="inline-block"
-                                        onsubmit="return confirm('คุณแน่ใจหรือไม่ที่จะลบ Module นี้?')">
+                                        onsubmit="return confirm('คุณแน่ใจหรือไม่ที่จะลบ Module นี้?\nหาก Module นี้มีบทเรียน จะถูกลบทั้งหมด!')">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit"
-                                            class="p-2 text-gray-500 dark:text-gray-400 hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 rounded-lg transition">
+                                            class="px-3 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-600 rounded-lg transition inline-flex items-center space-x-1"
+                                            title="ลบ Module">
                                             <i class="fas fa-trash"></i>
+                                            <span>ลบ</span>
                                         </button>
                                     </form>
                                 </div>
@@ -121,7 +133,7 @@
                                                 </div>
 
                                                 <!-- Lesson Info -->
-                                                <div class="flex-1">
+                                                <div class="flex-1 select-none">
                                                     <h4 class="font-medium text-gray-900 dark:text-white">
                                                         {{ $lesson->title }}
                                                     </h4>
@@ -143,11 +155,21 @@
                                             </div>
 
                                             <!-- Lesson Actions -->
-                                            <div class="flex items-center space-x-1">
+                                            <div class="flex items-center space-x-2 flex-shrink-0">
+                                                <!-- View Lesson -->
+                                                <a href="{{ route('teacher.courses.modules.lessons.show', [$course, $module, $lesson]) }}"
+                                                    class="px-3 py-1.5 text-xs font-medium text-white bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600 rounded-md transition inline-flex items-center space-x-1.5 shadow-sm"
+                                                    title="ดูบทเรียน">
+                                                    <i class="fas fa-eye"></i>
+                                                    <span>ดู</span>
+                                                </a>
+
                                                 <!-- Edit Lesson -->
                                                 <a href="{{ route('teacher.courses.modules.lessons.edit', [$course, $module, $lesson]) }}"
-                                                    class="p-2 text-gray-500 dark:text-gray-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 hover:text-blue-600 dark:hover:text-blue-400 rounded-lg transition">
-                                                    <i class="fas fa-edit text-sm"></i>
+                                                    class="px-3 py-1.5 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 rounded-md transition inline-flex items-center space-x-1.5 shadow-sm"
+                                                    title="แก้ไขบทเรียน">
+                                                    <i class="fas fa-edit"></i>
+                                                    <span>แก้ไข</span>
                                                 </a>
 
                                                 <!-- Delete Lesson -->
@@ -158,8 +180,10 @@
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit"
-                                                        class="p-2 text-gray-500 dark:text-gray-400 hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 rounded-lg transition">
-                                                        <i class="fas fa-trash text-sm"></i>
+                                                        class="px-3 py-1.5 text-xs font-medium text-white bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-600 rounded-md transition inline-flex items-center space-x-1.5 shadow-sm"
+                                                        title="ลบบทเรียน">
+                                                        <i class="fas fa-trash"></i>
+                                                        <span>ลบ</span>
                                                     </button>
                                                 </form>
                                             </div>
@@ -218,8 +242,11 @@
             if (modulesList && typeof Sortable !== 'undefined') {
                 new Sortable(modulesList, {
                     animation: 150,
-                    handle: '.module-item',
                     ghostClass: 'opacity-50',
+                    dragClass: 'cursor-grabbing',
+                    forceFallback: true,
+                    fallbackTolerance: 3,
+                    preventOnFilter: false,
                     onEnd: function(evt) {
                         // Get all module IDs in new order
                         const moduleIds = Array.from(modulesList.querySelectorAll('.module-item'))
@@ -243,7 +270,7 @@
                                     modulesList.querySelectorAll('.module-item').forEach((item,
                                         index) => {
                                         const orderBadge = item.querySelector(
-                                            '.flex-shrink-0.w-10.h-10');
+                                            '.w-10.h-10');
                                         if (orderBadge) {
                                             orderBadge.textContent = index + 1;
                                         }

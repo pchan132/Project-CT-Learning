@@ -145,26 +145,26 @@
                     การลบ Module จะลบข้อมูลถาวรและไม่สามารถกู้คืนได้ หากมีบทเรียนอยู่ใน Module นี้ จะไม่สามารถลบได้
                 </p>
 
-                @if ($module->lessons->count() == 0)
-                    <form action="{{ route('teacher.courses.modules.destroy', [$course, $module]) }}" method="POST"
-                        class="mt-4"
-                        onsubmit="return confirm('คุณต้องการลบ Module นี้ใช่หรือไม่? การกระทำนี้ไม่สามารถกู้คืนได้')">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit"
-                            class="inline-flex items-center px-5 py-2.5 border border-transparent rounded-lg text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
-                            <i class="fas fa-trash mr-2"></i>ลบ Module
-                        </button>
-                    </form>
-                @else
+                @if ($module->lessons->count() > 0)
                     <div
-                        class="mt-4 p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
+                        class="mt-4 p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg mb-4">
                         <p class="text-sm text-yellow-800 dark:text-yellow-400">
                             <i class="fas fa-exclamation-triangle mr-2"></i>
-                            ไม่สามารถลบ Module นี้ได้เนื่องจากมี {{ $module->lessons->count() }} บทเรียนอยู่
+                            <strong>คำเตือน:</strong> Module นี้มี {{ $module->lessons->count() }} บทเรียน
+                            การลบจะลบบทเรียนทั้งหมดด้วย
                         </p>
                     </div>
                 @endif
+
+                <form id="delete-module-form" action="{{ route('teacher.courses.modules.destroy', [$course, $module]) }}"
+                    method="POST" class="mt-4">
+                    @csrf
+                    @method('DELETE')
+                    <button type="button" onclick="confirmDeleteModule({{ $module->lessons->count() }})"
+                        class="inline-flex items-center px-5 py-2.5 border border-transparent rounded-lg text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                        <i class="fas fa-trash mr-2"></i>ลบ Module
+                    </button>
+                </form>
             </div>
         </div>
     </div>
@@ -172,16 +172,37 @@
 
 @push('scripts')
     <script>
-        document.querySelector('form').addEventListener('submit', function(e) {
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('form:not(#delete-module-form)');
             const submitBtn = document.getElementById('submit-btn');
             const submitIcon = document.getElementById('submit-icon');
             const submitText = document.getElementById('submit-text');
             const loadingOverlay = document.getElementById('loading-overlay');
 
-            submitBtn.disabled = true;
-            submitIcon.className = 'fas fa-spinner fa-spin mr-2';
-            submitText.textContent = 'กำลังอัปเดต...';
-            loadingOverlay.style.display = 'flex';
+            if (form && submitBtn) {
+                form.addEventListener('submit', function(e) {
+                    submitBtn.disabled = true;
+                    submitIcon.className = 'fas fa-spinner fa-spin mr-2';
+                    submitText.textContent = 'กำลังอัปเดต...';
+                    loadingOverlay.style.display = 'flex';
+                }, {
+                    once: true
+                });
+            }
         });
+
+        function confirmDeleteModule(lessonCount) {
+            let message = 'คุณต้องการลบ Module นี้ใช่หรือไม่?';
+            if (lessonCount > 0) {
+                message =
+                    `⚠️ คำเตือน!\n\nModule นี้มี ${lessonCount} บทเรียน\n\nการลบ Module จะลบบทเรียนทั้งหมดด้วย\nและไม่สามารถกู้คืนได้\n\nคุณแน่ใจหรือไม่ที่จะดำเนินการต่อ?`;
+            } else {
+                message = 'คุณต้องการลบ Module นี้ใช่หรือไม่?\nการกระทำนี้ไม่สามารถกู้คืนได้';
+            }
+
+            if (confirm(message)) {
+                document.getElementById('delete-module-form').submit();
+            }
+        }
     </script>
 @endpush

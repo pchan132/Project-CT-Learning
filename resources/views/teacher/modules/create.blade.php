@@ -125,16 +125,23 @@
 
 @push('scripts')
     <script>
-        document.querySelector('form').addEventListener('submit', function(e) {
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('form');
             const submitBtn = document.getElementById('submit-btn');
             const submitIcon = document.getElementById('submit-icon');
             const submitText = document.getElementById('submit-text');
             const loadingOverlay = document.getElementById('loading-overlay');
 
-            submitBtn.disabled = true;
-            submitIcon.className = 'fas fa-spinner fa-spin mr-2';
-            submitText.textContent = 'กำลังสร้าง...';
-            loadingOverlay.style.display = 'flex';
+            if (form && submitBtn) {
+                form.addEventListener('submit', function(e) {
+                    submitBtn.disabled = true;
+                    submitIcon.className = 'fas fa-spinner fa-spin mr-2';
+                    submitText.textContent = 'กำลังสร้าง...';
+                    loadingOverlay.style.display = 'flex';
+                }, {
+                    once: true
+                });
+            }
         });
     </script>
 @endpush
