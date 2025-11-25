@@ -146,21 +146,87 @@
                             </div>
                         </div>
 
-                        <!-- Video URL -->
+                        <!-- Video Options -->
                         <div id="video-field" class="mb-6 hidden">
-                            <label for="content_url"
-                                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                URL วิดีโอ <span class="text-red-500">*</span>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                                ประเภทวิดีโอ <span class="text-red-500">*</span>
                             </label>
-                            <input type="url" id="content_url" name="content_url" value="{{ old('content_url') }}"
-                                class="mt-1 block w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 @error('content_url') border-red-500 @enderror"
-                                placeholder="https://www.youtube.com/watch?v=...">
-                            @error('content_url')
-                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
-                            <p class="mt-1 text-sm text-gray-500">
-                                ใส่ URL จาก YouTube, Vimeo หรือแพลตฟอร์มวิดีโออื่นๆ
-                            </p>
+
+                            <div class="space-y-3 mb-4">
+                                <label
+                                    class="flex items-center p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700">
+                                    <input type="radio" name="video_type" value="url"
+                                        class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 dark:border-gray-600"
+                                        checked>
+                                    <span class="ml-3 text-sm text-gray-700 dark:text-gray-300">
+                                        <i class="fas fa-link mr-2 text-blue-500"></i>URL วิดีโอ (YouTube, Vimeo)
+                                    </span>
+                                </label>
+                                <label
+                                    class="flex items-center p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700">
+                                    <input type="radio" name="video_type" value="upload"
+                                        class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 dark:border-gray-600">
+                                    <span class="ml-3 text-sm text-gray-700 dark:text-gray-300">
+                                        <i class="fas fa-upload mr-2 text-green-500"></i>อัปโหลดไฟล์วิดีโอ
+                                    </span>
+                                </label>
+                            </div>
+
+                            <!-- URL Input -->
+                            <div id="video-url-input" class="video-option">
+                                <label for="content_url"
+                                    class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    URL วิดีโอ
+                                </label>
+                                <input type="url" id="content_url" name="content_url"
+                                    value="{{ old('content_url') }}"
+                                    class="mt-1 block w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 @error('content_url') border-red-500 @enderror"
+                                    placeholder="https://www.youtube.com/watch?v=...">
+                                @error('content_url')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                                    ใส่ URL จาก YouTube, Vimeo หรือแพลตฟอร์มวิดีโออื่นๆ
+                                </p>
+                            </div>
+
+                            <!-- Upload Input -->
+                            <div id="video-upload-input" class="video-option hidden">
+                                <label for="video_file"
+                                    class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    อัปโหลดไฟล์วิดีโอ
+                                </label>
+                                <input type="file" id="video_file" name="video_file"
+                                    accept="video/mp4,video/webm,video/ogg,video/quicktime"
+                                    class="mt-1 block w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 @error('video_file') border-red-500 @enderror">
+                                @error('video_file')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                                    รองรับไฟล์ MP4, WebM, OGG, MOV ขนาดสูงสุด 100MB
+                                </p>
+                                <!-- Video Preview -->
+                                <div id="video-preview" class="mt-3 hidden">
+                                    <div
+                                        class="p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg border border-purple-200 dark:border-purple-800">
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex items-center space-x-3">
+                                                <i class="fas fa-video text-purple-500 text-2xl"></i>
+                                                <div>
+                                                    <p id="video-name"
+                                                        class="text-sm font-medium text-gray-900 dark:text-white"></p>
+                                                    <p id="video-size" class="text-xs text-gray-500 dark:text-gray-400">
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <button type="button" onclick="clearVideoInput()"
+                                                class="text-red-600 hover:text-red-800">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <!-- Text Content -->
@@ -169,9 +235,8 @@
                                 class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                 เนื้อหาข้อความ <span class="text-red-500">*</span>
                             </label>
-                            <textarea id="content_text" name="content_text" rows="8"
-                                class="mt-1 block w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 @error('content_text') border-red-500 @enderror"
-                                placeholder="พิมพ์เนื้อหาบทเรียนที่นี่...">{{ old('content_text') }}</textarea>
+                            <textarea id="content_text" name="content_text" style="display: none;">{{ old('content_text') }}</textarea>
+                            <div id="quill-editor" style="height: 400px;"></div>
                             @error('content_text')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
@@ -213,11 +278,21 @@
         <!-- Loading Overlay -->
         <div id="loading-overlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
             style="display: none;">
-            <div class="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-2xl">
+            <div class="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-2xl max-w-md w-full mx-4">
                 <div class="flex flex-col items-center">
                     <div class="animate-spin rounded-full h-16 w-16 border-b-2 border-green-600 mb-4"></div>
-                    <p class="text-lg font-semibold text-gray-900 dark:text-white">กำลังสร้างบทเรียน...</p>
-                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">กรุณารอสักครู่</p>
+                    <p class="text-lg font-semibold text-gray-900 dark:text-white mb-2" id="upload-status">
+                        กำลังสร้างบทเรียน...</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 text-center" id="upload-message">กรุณารอสักครู่</p>
+
+                    <!-- Progress Bar -->
+                    <div id="progress-container" class="w-full mt-4 hidden">
+                        <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
+                            <div id="progress-bar" class="bg-green-600 h-2.5 rounded-full transition-all duration-300"
+                                style="width: 0%"></div>
+                        </div>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-2 text-center" id="progress-text">0%</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -231,6 +306,11 @@
         function clearFileInput() {
             document.getElementById('file').value = '';
             document.getElementById('file-preview').classList.add('hidden');
+        }
+
+        function clearVideoInput() {
+            document.getElementById('video_file').value = '';
+            document.getElementById('video-preview').classList.add('hidden');
         }
 
         function formatFileSize(bytes) {
@@ -248,6 +328,8 @@
             const videoField = document.getElementById('video-field');
             const textField = document.getElementById('text-field');
             const fileInput = document.getElementById('file');
+            const videoFileInput = document.getElementById('video_file');
+            const videoTypeRadios = document.querySelectorAll('input[name="video_type"]');
             let editorInstance = null;
 
             // File upload preview
@@ -270,80 +352,150 @@
                 });
             }
 
+            // Video upload preview
+            if (videoFileInput) {
+                videoFileInput.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        // Validate file size (100MB)
+                        if (file.size > 100 * 1024 * 1024) {
+                            alert('ไฟล์วิดีโอมีขนาดใหญ่เกิน 100MB กรุณาเลือกไฟล์ใหม่');
+                            clearVideoInput();
+                            return;
+                        }
+
+                        // Show preview
+                        document.getElementById('video-name').textContent = file.name;
+                        document.getElementById('video-size').textContent = formatFileSize(file.size);
+                        document.getElementById('video-preview').classList.remove('hidden');
+                    }
+                });
+            }
+
+            // Video type toggle
+            videoTypeRadios.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    const videoUrlInput = document.getElementById('video-url-input');
+                    const videoUploadInput = document.getElementById('video-upload-input');
+
+                    if (this.value === 'url') {
+                        videoUrlInput.classList.remove('hidden');
+                        videoUploadInput.classList.add('hidden');
+                        document.getElementById('content_url').removeAttribute('disabled');
+                        document.getElementById('video_file').setAttribute('disabled', 'disabled');
+                    } else {
+                        videoUrlInput.classList.add('hidden');
+                        videoUploadInput.classList.remove('hidden');
+                        document.getElementById('content_url').setAttribute('disabled', 'disabled');
+                        document.getElementById('video_file').removeAttribute('disabled');
+                    }
+                });
+            });
+
             // Form submission loading
             const form = document.querySelector('form');
             const submitBtn = document.getElementById('submit-btn');
             const submitIcon = document.getElementById('submit-icon');
             const submitText = document.getElementById('submit-text');
             const loadingOverlay = document.getElementById('loading-overlay');
+            const uploadStatus = document.getElementById('upload-status');
+            const uploadMessage = document.getElementById('upload-message');
+            const progressContainer = document.getElementById('progress-container');
+            const progressBar = document.getElementById('progress-bar');
+            const progressText = document.getElementById('progress-text');
 
             if (form && submitBtn) {
                 form.addEventListener('submit', function(e) {
-                    // Show loading
+                    // ป้องกันการ submit ซ้ำ
+                    if (submitBtn.disabled) {
+                        e.preventDefault();
+                        return false;
+                    }
+
+                    // ตรวจสอบว่ามีการอัปโหลดวิดีโอหรือไฟล์ขนาดใหญ่
+                    const contentType = document.querySelector('input[name="content_type"]:checked')?.value;
+                    const videoFile = document.getElementById('video_file')?.files[0];
+                    const pdfFile = document.getElementById('file')?.files[0];
+
+                    let hasLargeFile = false;
+                    let fileType = '';
+
+                    if (contentType === 'VIDEO' && videoFile) {
+                        hasLargeFile = true;
+                        fileType = 'วิดีโอ';
+                    } else if (contentType === 'PDF' && pdfFile) {
+                        hasLargeFile = true;
+                        fileType = 'ไฟล์';
+                    }
+
+                    // แสดง loading
                     submitBtn.disabled = true;
                     submitIcon.className = 'fas fa-spinner fa-spin mr-2';
                     submitText.textContent = 'กำลังบันทึก...';
                     loadingOverlay.style.display = 'flex';
+
+                    if (hasLargeFile) {
+                        uploadStatus.textContent = `กำลังอัปโหลด${fileType}...`;
+                        uploadMessage.textContent = 'กรุณาอย่าปิดหน้าต่างนี้ การอัปโหลดอาจใช้เวลาสักครู่';
+                        progressContainer.classList.remove('hidden');
+
+                        // จำลอง progress (เนื่องจาก HTML form ไม่สามารถแสดง progress จริงได้)
+                        let progress = 0;
+                        const interval = setInterval(() => {
+                            if (progress < 90) {
+                                progress += Math.random() * 10;
+                                if (progress > 90) progress = 90;
+                                progressBar.style.width = progress + '%';
+                                progressText.textContent = Math.round(progress) + '%';
+                            }
+                        }, 500);
+
+                        // เก็บ interval ID เพื่อ clear ภายหลัง
+                        form.dataset.progressInterval = interval;
+                    } else {
+                        uploadStatus.textContent = 'กำลังสร้างบทเรียน...';
+                        uploadMessage.textContent = 'กรุณารอสักครู่';
+                    }
                 }, {
                     once: true
                 });
             }
 
-            // Initialize TinyMCE with Enhanced Word-like Features
-            function initTinyMCE() {
-                if (typeof tinymce === 'undefined') {
-                    console.error('TinyMCE not loaded');
+            // Initialize Quill Rich Text Editor
+            function initQuillEditor() {
+                if (typeof Quill === 'undefined') {
+                    console.error('Quill not loaded');
                     return;
                 }
 
                 if (editorInstance) {
-                    tinymce.remove('#content_text');
-                    editorInstance = null;
+                    // Remove existing editor
+                    const editorContainer = document.querySelector('#content_text').parentNode;
+                    editorContainer.innerHTML =
+                        '<textarea id="content_text" name="content_text" style="display:none;"></textarea><div id="quill-editor"></div>';
                 }
 
-                // Use global configuration with overrides
-                const config = Object.assign({}, window.tinymceConfig || {}, {
-                    selector: '#content_text',
-                    skin: document.documentElement.classList.contains('dark') ? 'oxide-dark' : 'oxide',
-                    content_css: document.documentElement.classList.contains('dark') ? 'dark' : 'default',
-                    setup: function(editor) {
-                        editorInstance = editor;
+                // Create Quill editor
+                const quillEditor = document.getElementById('quill-editor');
+                const textarea = document.getElementById('content_text');
 
-                        // Add custom Word import handler
-                        editor.on('paste', function(e) {
-                            const clipboardData = e.clipboardData || window.clipboardData;
-                            const items = clipboardData.items;
+                editorInstance = new Quill('#quill-editor', window.quillConfig);
 
-                            // ตรวจจับการ paste จาก Word
-                            for (let i = 0; i < items.length; i++) {
-                                if (items[i].type === 'text/html') {
-                                    e.preventDefault();
-                                    items[i].getAsString(function(html) {
-                                        // Clean Word HTML but keep formatting
-                                        const cleanHtml = cleanWordHtml(html);
-                                        editor.insertContent(cleanHtml);
-                                    });
-                                    break;
-                                }
-                            }
-                        });
-                    }
+                // Set initial content if exists
+                if (textarea.value) {
+                    editorInstance.root.innerHTML = textarea.value;
+                }
+
+                // Update textarea on content change
+                editorInstance.on('text-change', function() {
+                    textarea.value = editorInstance.root.innerHTML;
                 });
 
-                tinymce.init(config);
-            }
-
-            // Function to clean Word HTML while preserving formatting
-            function cleanWordHtml(html) {
-                // Remove Microsoft Word specific tags and attributes
-                let cleaned = html
-                    .replace(/<o:p>.*?<\/o:p>/gi, '')
-                    .replace(/<\/?\w+:[^>]*>/gi, '')
-                    .replace(/class="?Mso[^"]*"?/gi, '')
-                    .replace(/style="[^"]*mso-[^"]*"/gi, '')
-                    .replace(/<!--\[if[^\]]*\]>[\s\S]*?<!\[endif\]-->/gi, '');
-
-                return cleaned;
+                // Handle Word paste - Quill handles it automatically
+                editorInstance.clipboard.addMatcher(Node.ELEMENT_NODE, function(node, delta) {
+                    // Clean Word formatting but keep basic styles
+                    return delta;
+                });
             }
 
             function toggleFields() {
@@ -365,23 +517,25 @@
                     case 'PDF':
                         fileField.classList.remove('hidden');
                         document.getElementById('file').setAttribute('required', '');
-                        if (editorInstance && typeof tinymce !== 'undefined') {
-                            tinymce.remove('#content_text');
+                        if (editorInstance) {
+                            const quillEditor = document.getElementById('quill-editor');
+                            if (quillEditor) quillEditor.innerHTML = '';
                             editorInstance = null;
                         }
                         break;
                     case 'VIDEO':
                         videoField.classList.remove('hidden');
                         document.getElementById('content_url').setAttribute('required', '');
-                        if (editorInstance && typeof tinymce !== 'undefined') {
-                            tinymce.remove('#content_text');
+                        if (editorInstance) {
+                            const quillEditor = document.getElementById('quill-editor');
+                            if (quillEditor) quillEditor.innerHTML = '';
                             editorInstance = null;
                         }
                         break;
                     case 'TEXT':
                         textField.classList.remove('hidden');
                         document.getElementById('content_text').setAttribute('required', '');
-                        setTimeout(initTinyMCE, 100);
+                        setTimeout(initQuillEditor, 100);
                         break;
                 }
             }

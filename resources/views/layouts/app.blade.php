@@ -15,127 +15,161 @@
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    <!-- TinyMCE with PowerPaste Plugin -->
-    <script src="https://cdn.tiny.cloud/1/qagffr3pkuv17a8onygc0nh1ic02c4vqvj3sxxbfz0ewj6qp/tinymce/6/tinymce.min.js"
-        referrerpolicy="origin"></script>
+    <!-- Quill Rich Text Editor (Open Source - No Limits) -->
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
 
     <!-- SortableJS for Drag and Drop -->
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 
-    <!-- TinyMCE Global Configuration -->
-    <script>
-        window.tinymceConfig = {
-            height: 500,
-            menubar: 'file edit view insert format tools table',
-            plugins: [
-                'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-                'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                'insertdatetime', 'media', 'table', 'help', 'wordcount',
-                'paste', 'importcss', 'directionality', 'emoticons', 'template',
-                'codesample', 'pagebreak', 'nonbreaking', 'quickbars'
-            ],
-            toolbar: 'undo redo | styles | bold italic underline strikethrough | ' +
-                'forecolor backcolor | alignleft aligncenter alignright alignjustify | ' +
-                'bullist numlist outdent indent | table tabledelete | ' +
-                'link image media | removeformat code fullscreen | help',
-            toolbar_mode: 'sliding',
-            paste_data_images: true,
-            paste_as_text: false,
-            paste_word_valid_elements: "b,strong,i,em,h1,h2,h3,h4,h5,h6,p,br,ul,ol,li,table,tr,td,th,span,div",
-            paste_retain_style_properties: "color font-size background-color",
-            paste_merge_formats: true,
-            paste_remove_styles_if_webkit: false,
-            automatic_uploads: true,
-            images_upload_url: '/upload-image',
-            file_picker_types: 'image',
-            content_style: `
-                body { 
-                    font-family: 'Sarabun', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
-                    font-size: 16px;
-                    line-height: 1.6;
-                    padding: 20px;
-                }
-                @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap');
-            `,
-            style_formats: [{
-                    title: 'Heading 1',
-                    format: 'h1'
-                },
-                {
-                    title: 'Heading 2',
-                    format: 'h2'
-                },
-                {
-                    title: 'Heading 3',
-                    format: 'h3'
-                },
-                {
-                    title: 'Heading 4',
-                    format: 'h4'
-                },
-                {
-                    title: 'Heading 5',
-                    format: 'h5'
-                },
-                {
-                    title: 'Heading 6',
-                    format: 'h6'
-                },
-                {
-                    title: 'Paragraph',
-                    format: 'p'
-                },
-                {
-                    title: 'Blockquote',
-                    format: 'blockquote'
-                },
-                {
-                    title: 'Code',
-                    format: 'code'
-                },
-                {
-                    title: 'Preformatted',
-                    format: 'pre'
-                }
-            ],
-            font_size_formats: '8pt 10pt 12pt 14pt 16pt 18pt 24pt 36pt 48pt',
-            fontsize_formats: '8pt 10pt 12pt 14pt 16pt 18pt 24pt 36pt 48pt',
-            block_formats: 'Paragraph=p; Heading 1=h1; Heading 2=h2; Heading 3=h3; Heading 4=h4; Heading 5=h5; Heading 6=h6; Preformatted=pre',
-            importcss_append: true,
-            template_cdate_format: '[Date Created (CDATE): %d/%m/%Y : %H:%M:%S]',
-            template_mdate_format: '[Date Modified (MDATE): %d/%m/%Y : %H:%M:%S]',
-            image_advtab: true,
-            image_caption: true,
-            quickbars_selection_toolbar: 'bold italic | quicklink h2 h3 blockquote',
-            quickbars_insert_toolbar: 'quickimage quicktable',
-            contextmenu: 'link image table',
-            branding: false,
-            promotion: false,
-            resize: true,
-            statusbar: true,
-            elementpath: true,
-            setup: function(editor) {
-                // Add Word Import Button
-                editor.ui.registry.addButton('wordimport', {
-                    text: 'นำเข้าจาก Word',
-                    icon: 'paste-text',
-                    tooltip: 'วางเนื้อหาจาก Microsoft Word',
-                    onAction: function() {
-                        const content = prompt('กรุณาคัดลอกเนื้อหาจาก Word และวางที่นี่:');
-                        if (content) {
-                            editor.insertContent(content);
-                        }
-                    }
-                });
+    <!-- Quill Editor Configuration -->
+    <style>
+        /* Quill Editor Styles */
+        .ql-container {
+            font-family: 'Sarabun', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
+        }
 
-                editor.on('PastePreProcess', function(e) {
-                    // อนุญาตให้วาง HTML จาก Word โดยตรง
-                    if (e.content.indexOf('mso-') !== -1 || e.content.indexOf('class="Mso') !== -1) {
-                        // Word content detected
-                        console.log('Word content detected - processing...');
-                    }
-                });
-            }
+        .ql-editor {
+            min-height: 300px;
+            max-height: 500px;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .ql-editor.ql-blank::before {
+            font-style: normal;
+            color: #9ca3af;
+        }
+
+        /* Dark Mode Support */
+        .dark .ql-toolbar {
+            background-color: #374151;
+            border-color: #4b5563;
+        }
+
+        .dark .ql-container {
+            background-color: #1f2937;
+            border-color: #4b5563;
+            color: #f3f4f6;
+        }
+
+        .dark .ql-editor {
+            color: #f3f4f6;
+        }
+
+        .dark .ql-editor.ql-blank::before {
+            color: #6b7280;
+        }
+
+        .dark .ql-stroke {
+            stroke: #9ca3af;
+        }
+
+        .dark .ql-fill {
+            fill: #9ca3af;
+        }
+
+        .dark .ql-picker-label {
+            color: #9ca3af;
+        }
+
+        .dark .ql-picker-options {
+            background-color: #374151;
+            border-color: #4b5563;
+        }
+
+        .dark .ql-picker-item {
+            color: #9ca3af;
+        }
+
+        .dark .ql-picker-item:hover {
+            background-color: #4b5563;
+            color: #f3f4f6;
+        }
+
+        .dark .ql-toolbar button:hover,
+        .dark .ql-toolbar button.ql-active {
+            background-color: #4b5563;
+        }
+
+        .dark .ql-toolbar button:hover .ql-stroke,
+        .dark .ql-toolbar button.ql-active .ql-stroke {
+            stroke: #60a5fa;
+        }
+
+        .dark .ql-toolbar button:hover .ql-fill,
+        .dark .ql-toolbar button.ql-active .ql-fill {
+            fill: #60a5fa;
+        }
+
+        .dark .ql-tooltip {
+            background-color: #374151;
+            border-color: #4b5563;
+            color: #f3f4f6;
+        }
+
+        .dark .ql-tooltip input[type=text] {
+            background-color: #1f2937;
+            border-color: #4b5563;
+            color: #f3f4f6;
+        }
+
+        .dark .ql-action::after,
+        .dark .ql-remove::before {
+            color: #60a5fa;
+        }
+    </style>
+
+    <script>
+        // Quill Global Configuration
+        window.quillConfig = {
+            modules: {
+                toolbar: [
+                    [{
+                        'header': [1, 2, 3, 4, 5, 6, false]
+                    }],
+                    [{
+                        'font': []
+                    }],
+                    [{
+                        'size': ['small', false, 'large', 'huge']
+                    }],
+                    ['bold', 'italic', 'underline', 'strike'],
+                    [{
+                        'color': []
+                    }, {
+                        'background': []
+                    }],
+                    [{
+                        'script': 'sub'
+                    }, {
+                        'script': 'super'
+                    }],
+                    [{
+                        'list': 'ordered'
+                    }, {
+                        'list': 'bullet'
+                    }],
+                    [{
+                        'indent': '-1'
+                    }, {
+                        'indent': '+1'
+                    }],
+                    [{
+                        'direction': 'rtl'
+                    }],
+                    [{
+                        'align': []
+                    }],
+                    ['blockquote', 'code-block'],
+                    ['link', 'image', 'video'],
+                    ['clean']
+                ]
+            },
+            theme: 'snow',
+            placeholder: 'พิมพ์เนื้อหาบทเรียนที่นี่...',
         };
     </script>
 

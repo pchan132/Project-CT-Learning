@@ -184,9 +184,8 @@
                                 class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                 เนื้อหาข้อความ
                             </label>
-                            <textarea id="content_text" name="content_text" rows="8"
-                                class="mt-1 block w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 @error('content_text') border-red-500 @enderror"
-                                placeholder="พิมพ์เนื้อหาบทเรียนที่นี่...">{{ old('content_text', $lesson->content_text) }}</textarea>
+                            <textarea id="content_text" name="content_text" style="display: none;">{{ old('content_text', $lesson->content_text) }}</textarea>
+                            <div id="quill-editor" style="height: 400px;"></div>
                             @error('content_text')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
@@ -229,11 +228,21 @@
         <!-- Loading Overlay -->
         <div id="loading-overlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
             style="display: none;">
-            <div class="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-2xl">
+            <div class="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-2xl max-w-md w-full mx-4">
                 <div class="flex flex-col items-center">
                     <div class="animate-spin rounded-full h-16 w-16 border-b-2 border-green-600 mb-4"></div>
-                    <p class="text-lg font-semibold text-gray-900 dark:text-white">กำลังอัปเดตบทเรียน...</p>
-                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">กรุณารอสักครู่</p>
+                    <p class="text-lg font-semibold text-gray-900 dark:text-white mb-2" id="upload-status">
+                        กำลังอัปเดตบทเรียน...</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 text-center" id="upload-message">กรุณารอสักครู่</p>
+
+                    <!-- Progress Bar -->
+                    <div id="progress-container" class="w-full mt-4 hidden">
+                        <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
+                            <div id="progress-bar" class="bg-green-600 h-2.5 rounded-full transition-all duration-300"
+                                style="width: 0%"></div>
+                        </div>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-2 text-center" id="progress-text">0%</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -313,74 +322,98 @@
             const submitIcon = document.getElementById('submit-icon');
             const submitText = document.getElementById('submit-text');
             const loadingOverlay = document.getElementById('loading-overlay');
+            const uploadStatus = document.getElementById('upload-status');
+            const uploadMessage = document.getElementById('upload-message');
+            const progressContainer = document.getElementById('progress-container');
+            const progressBar = document.getElementById('progress-bar');
+            const progressText = document.getElementById('progress-text');
 
             if (form && submitBtn) {
                 form.addEventListener('submit', function(e) {
-                    // Show loading
+                    // ป้องกันการ submit ซ้ำ
+                    if (submitBtn.disabled) {
+                        e.preventDefault();
+                        return false;
+                    }
+
+                    // ตรวจสอบว่ามีการอัปโหลดไฟล์ใหม่หรือไม่
+                    const contentType = document.querySelector('input[name="content_type"]:checked')?.value;
+                    const pdfFile = document.getElementById('file')?.files[0];
+
+                    let hasNewFile = false;
+                    let fileType = '';
+
+                    if (pdfFile) {
+                        hasNewFile = true;
+                        fileType = 'ไฟล์';
+                    }
+
+                    // แสดง loading
                     submitBtn.disabled = true;
                     submitIcon.className = 'fas fa-spinner fa-spin mr-2';
                     submitText.textContent = 'กำลังอัปเดต...';
                     loadingOverlay.style.display = 'flex';
+
+                    if (hasNewFile) {
+                        uploadStatus.textContent = `กำลังอัปโหลด${fileType}ใหม่...`;
+                        uploadMessage.textContent = 'กรุณาอย่าปิดหน้าต่างนี้ การอัปโหลดอาจใช้เวลาสักครู่';
+                        progressContainer.classList.remove('hidden');
+
+                        // จำลอง progress
+                        let progress = 0;
+                        const interval = setInterval(() => {
+                            if (progress < 90) {
+                                progress += Math.random() * 10;
+                                if (progress > 90) progress = 90;
+                                progressBar.style.width = progress + '%';
+                                progressText.textContent = Math.round(progress) + '%';
+                            }
+                        }, 500);
+                    } else {
+                        uploadStatus.textContent = 'กำลังอัปเดตบทเรียน...';
+                        uploadMessage.textContent = 'กรุณารอสักครู่';
+                    }
                 }, {
                     once: true
                 });
             }
 
-            // Initialize TinyMCE with Enhanced Word-like Features
-            function initTinyMCE() {
-                if (typeof tinymce === 'undefined') {
-                    console.error('TinyMCE not loaded');
+            // Initialize Quill Rich Text Editor
+            function initQuillEditor() {
+                if (typeof Quill === 'undefined') {
+                    console.error('Quill not loaded');
                     return;
                 }
 
                 if (editorInstance) {
-                    tinymce.remove('#content_text');
-                    editorInstance = null;
+                    // Remove existing editor
+                    const editorContainer = document.querySelector('#content_text').parentNode;
+                    const currentValue = document.getElementById('content_text').value;
+                    editorContainer.innerHTML =
+                        '<textarea id="content_text" name="content_text" style="display:none;">' + currentValue +
+                        '</textarea><div id="quill-editor"></div>';
                 }
 
-                // Use global configuration with overrides
-                const config = Object.assign({}, window.tinymceConfig || {}, {
-                    selector: '#content_text',
-                    skin: document.documentElement.classList.contains('dark') ? 'oxide-dark' : 'oxide',
-                    content_css: document.documentElement.classList.contains('dark') ? 'dark' : 'default',
-                    setup: function(editor) {
-                        editorInstance = editor;
+                // Create Quill editor
+                const textarea = document.getElementById('content_text');
 
-                        // Add custom Word import handler
-                        editor.on('paste', function(e) {
-                            const clipboardData = e.clipboardData || window.clipboardData;
-                            const items = clipboardData.items;
+                editorInstance = new Quill('#quill-editor', window.quillConfig);
 
-                            // ตรวจจับการ paste จาก Word
-                            for (let i = 0; i < items.length; i++) {
-                                if (items[i].type === 'text/html') {
-                                    e.preventDefault();
-                                    items[i].getAsString(function(html) {
-                                        // Clean Word HTML but keep formatting
-                                        const cleanHtml = cleanWordHtml(html);
-                                        editor.insertContent(cleanHtml);
-                                    });
-                                    break;
-                                }
-                            }
-                        });
-                    }
+                // Set initial content if exists
+                if (textarea.value) {
+                    editorInstance.root.innerHTML = textarea.value;
+                }
+
+                // Update textarea on content change
+                editorInstance.on('text-change', function() {
+                    textarea.value = editorInstance.root.innerHTML;
                 });
 
-                tinymce.init(config);
-            }
-
-            // Function to clean Word HTML while preserving formatting
-            function cleanWordHtml(html) {
-                // Remove Microsoft Word specific tags and attributes
-                let cleaned = html
-                    .replace(/<o:p>.*?<\/o:p>/gi, '')
-                    .replace(/<\/?\w+:[^>]*>/gi, '')
-                    .replace(/class="?Mso[^"]*"?/gi, '')
-                    .replace(/style="[^"]*mso-[^"]*"/gi, '')
-                    .replace(/<!--\[if[^\]]*\]>[\s\S]*?<!\[endif\]-->/gi, '');
-
-                return cleaned;
+                // Handle Word paste - Quill handles it automatically
+                editorInstance.clipboard.addMatcher(Node.ELEMENT_NODE, function(node, delta) {
+                    // Clean Word formatting but keep basic styles
+                    return delta;
+                });
             }
 
             function toggleFields() {
@@ -405,23 +438,25 @@
                         @if (!$lesson->content_url || !$lesson->isFileContent())
                             document.getElementById('file').setAttribute('required', '');
                         @endif
-                        if (editorInstance && typeof tinymce !== 'undefined') {
-                            tinymce.remove('#content_text');
+                        if (editorInstance) {
+                            const quillEditor = document.getElementById('quill-editor');
+                            if (quillEditor) quillEditor.innerHTML = '';
                             editorInstance = null;
                         }
                         break;
                     case 'VIDEO':
                         videoField.classList.remove('hidden');
                         document.getElementById('content_url').setAttribute('required', '');
-                        if (editorInstance && typeof tinymce !== 'undefined') {
-                            tinymce.remove('#content_text');
+                        if (editorInstance) {
+                            const quillEditor = document.getElementById('quill-editor');
+                            if (quillEditor) quillEditor.innerHTML = '';
                             editorInstance = null;
                         }
                         break;
                     case 'TEXT':
                         textField.classList.remove('hidden');
                         document.getElementById('content_text').setAttribute('required', '');
-                        setTimeout(initTinyMCE, 100);
+                        setTimeout(initQuillEditor, 100);
                         break;
                 }
             }
