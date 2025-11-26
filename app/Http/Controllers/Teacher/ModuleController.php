@@ -82,6 +82,7 @@ class ModuleController extends Controller
         }
 
         $lessons = $module->lessons()->ordered()->get();
+        $module->load('quizzes.questions');
 
         return view('teacher.modules.show', compact('course', 'module', 'lessons'));
     }

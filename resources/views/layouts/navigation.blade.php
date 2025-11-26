@@ -43,6 +43,9 @@
                         <x-nav-link :href="route('student.courses.index')" :active="request()->routeIs('student.courses.*')">
                             {{ __('คอร์สเรียน') }}
                         </x-nav-link>
+                        <x-nav-link :href="route('student.certificates.index')" :active="request()->routeIs('student.certificates.*')">
+                            {{ __('ใบประกาศนียบัตร') }}
+                        </x-nav-link>
                     @endif
                 </div>
             </div>

@@ -101,10 +101,11 @@ Route::middleware(['auth', 'student'])->prefix('student')->name('student.')->gro
     Route::post('/courses/{course}/lessons/{lesson}/complete', [StudentCourseController::class, 'completeLesson'])->name('courses.complete-lesson');
     
     // Quiz routes for students
-    Route::get('/quizzes/{quiz}', [App\Http\Controllers\Student\QuizController::class, 'show'])->name('quizzes.show');
-    Route::get('/quizzes/{quiz}/start', [App\Http\Controllers\Student\QuizController::class, 'start'])->name('quizzes.start');
-    Route::post('/quizzes/{quiz}/submit', [App\Http\Controllers\Student\QuizController::class, 'submit'])->name('quizzes.submit');
-    Route::get('/quiz-attempts/{attempt}/result', [App\Http\Controllers\Student\QuizController::class, 'result'])->name('quizzes.result');
+    Route::get('/courses/{course}/modules/{module}/quizzes/{quiz}', [App\Http\Controllers\Student\QuizController::class, 'show'])->name('courses.modules.quizzes.show');
+    Route::post('/quizzes/{quiz}/start', [App\Http\Controllers\Student\QuizController::class, 'start'])->name('quizzes.start');
+    Route::get('/attempts/{attempt}/take', [App\Http\Controllers\Student\QuizController::class, 'take'])->name('attempts.take');
+    Route::post('/attempts/{attempt}/submit', [App\Http\Controllers\Student\QuizController::class, 'submit'])->name('attempts.submit');
+    Route::get('/attempts/{attempt}/result', [App\Http\Controllers\Student\QuizController::class, 'result'])->name('attempts.result');
     
     // Certificate routes for students
     Route::get('/certificates', [App\Http\Controllers\Student\CertificateController::class, 'index'])->name('certificates.index');
@@ -152,13 +153,10 @@ Route::middleware(['auth', 'teacher'])->prefix('teacher')->name('teacher.')->gro
             Route::delete('/{quiz}', [App\Http\Controllers\Teacher\QuizController::class, 'destroy'])->name('destroy');
             
             // Routes สำหรับ Questions ภายใน Quiz
-            Route::prefix('/{quiz}/questions')->name('questions.')->group(function () {
-                Route::get('/create', [App\Http\Controllers\Teacher\QuestionController::class, 'create'])->name('create');
-                Route::post('/', [App\Http\Controllers\Teacher\QuestionController::class, 'store'])->name('store');
-                Route::get('/{question}/edit', [App\Http\Controllers\Teacher\QuestionController::class, 'edit'])->name('edit');
-                Route::put('/{question}', [App\Http\Controllers\Teacher\QuestionController::class, 'update'])->name('update');
-                Route::delete('/{question}', [App\Http\Controllers\Teacher\QuestionController::class, 'destroy'])->name('destroy');
-            });
+            Route::post('/{quiz}/questions', [App\Http\Controllers\Teacher\QuizController::class, 'storeQuestion'])->name('questions.store');
+            Route::put('/{quiz}/questions/{question}', [App\Http\Controllers\Teacher\QuizController::class, 'updateQuestion'])->name('questions.update');
+            Route::delete('/{quiz}/questions/{question}', [App\Http\Controllers\Teacher\QuizController::class, 'destroyQuestion'])->name('questions.destroy');
+            Route::post('/{quiz}/questions/reorder', [App\Http\Controllers\Teacher\QuizController::class, 'reorderQuestions'])->name('questions.reorder');
         });
     });
 });

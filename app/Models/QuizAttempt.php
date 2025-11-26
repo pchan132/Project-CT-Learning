@@ -48,10 +48,17 @@ class QuizAttempt extends Model
     public function getDurationAttribute()
     {
         if (!$this->started_at || !$this->completed_at) {
-            return null;
+            return 'ไม่ระบุ';
         }
 
-        return $this->started_at->diffInMinutes($this->completed_at);
+        $minutes = $this->started_at->diffInMinutes($this->completed_at);
+        $seconds = $this->started_at->diffInSeconds($this->completed_at) % 60;
+        
+        if ($minutes > 0) {
+            return $minutes . ' นาที ' . $seconds . ' วินาที';
+        }
+        
+        return $seconds . ' วินาที';
     }
 
     /**

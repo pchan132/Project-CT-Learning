@@ -82,6 +82,111 @@
                             style="width: {{ $progress }}%"></div>
                     </div>
                 </div>
+
+                <!-- Certificate Section -->
+                @php
+                    $existingCertificate = App\Models\Certificate::where('student_id', auth()->id())
+                        ->where('course_id', $course->id)
+                        ->first();
+
+                    // Check if can get certificate
+                    $canGetCertificate = $progress >= 100;
+                    if ($canGetCertificate) {
+                        foreach ($course->modules as $module) {
+                            foreach ($module->quizzes as $quiz) {
+                                if (!$quiz->hasPassedByStudent(auth()->id())) {
+                                    $canGetCertificate = false;
+                                    break 2;
+                                }
+                            }
+                        }
+                    }
+                @endphp
+
+                @if ($existingCertificate)
+                    <div
+                        class="mt-6 bg-gradient-to-r from-yellow-50 to-yellow-100 border-2 border-yellow-400 rounded-lg p-6">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <svg class="w-12 h-12 text-yellow-500 mr-4" fill="currentColor" viewBox="0 0 20 20">
+                                    <path
+                                        d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg>
+                                <div>
+                                    <h3 class="text-lg font-bold text-gray-900">คุณได้รับใบประกาศนียบัตรแล้ว!</h3>
+                                    <p class="text-sm text-gray-600">เลขที่:
+                                        {{ $existingCertificate->certificate_number }}</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-2">
+                                <a href="{{ route('student.certificates.show', $existingCertificate->id) }}"
+                                    class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                                    <svg class="w-5 h-5 inline mr-1" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg>
+                                    ดูใบประกาศนียบัตร
+                                </a>
+                                <a href="{{ route('student.certificates.download', $existingCertificate->id) }}"
+                                    class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                                    <svg class="w-5 h-5 inline mr-1" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                    </svg>
+                                    ดาวน์โหลด
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                @elseif ($canGetCertificate)
+                    <div
+                        class="mt-6 bg-gradient-to-r from-green-50 to-emerald-100 border-2 border-green-400 rounded-lg p-6">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <svg class="w-12 h-12 text-green-500 mr-4" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd"
+                                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                                <div>
+                                    <h3 class="text-lg font-bold text-gray-900">ยินดีด้วย!
+                                        คุณสามารถขอใบประกาศนียบัตรได้แล้ว</h3>
+                                    <p class="text-sm text-gray-600">คุณเรียนจบคอร์สนี้เรียบร้อยแล้ว</p>
+                                </div>
+                            </div>
+                            <form action="{{ route('student.certificates.generate', $course) }}" method="POST">
+                                @csrf
+                                <button type="submit"
+                                    class="px-6 py-3 bg-gradient-to-r from-yellow-400 to-yellow-500 text-white rounded-lg hover:from-yellow-500 hover:to-yellow-600 font-bold shadow-lg">
+                                    <svg class="w-5 h-5 inline mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                        <path
+                                            d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                    </svg>
+                                    ขอใบประกาศนียบัตร
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                @elseif ($progress >= 100)
+                    <div class="mt-6 bg-blue-50 border-2 border-blue-200 rounded-lg p-6">
+                        <div class="flex items-center">
+                            <svg class="w-10 h-10 text-blue-500 mr-4" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <div>
+                                <h3 class="text-lg font-bold text-gray-900">เกือบจะได้ใบประกาศนียบัตรแล้ว!</h3>
+                                <p class="text-sm text-gray-600">คุณยังต้องผ่านแบบทดสอบทุกบทก่อนจะขอใบประกาศนียบัตรได้
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                @endif
             </div>
         </div>
 
@@ -128,8 +233,9 @@
                                                                 class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
                                                                 <svg class="w-5 h-5 text-green-600" fill="none"
                                                                     stroke="currentColor" viewBox="0 0 24 24">
-                                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                                        stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                                                    <path stroke-linecap="round"
+                                                                        stroke-linejoin="round" stroke-width="2"
+                                                                        d="M5 13l4 4L19 7"></path>
                                                                 </svg>
                                                             </div>
                                                         </div>
@@ -139,8 +245,9 @@
                                                                 class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
                                                                 <svg class="w-5 h-5 text-gray-400" fill="none"
                                                                     stroke="currentColor" viewBox="0 0 24 24">
-                                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                                        stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6">
+                                                                    <path stroke-linecap="round"
+                                                                        stroke-linejoin="round" stroke-width="2"
+                                                                        d="M12 6v6m0 0v6m0-6h6m-6 0H6">
                                                                     </path>
                                                                 </svg>
                                                             </div>
@@ -149,7 +256,8 @@
 
                                                     <!-- Lesson Info -->
                                                     <div class="flex-1">
-                                                        <h4 class="text-gray-900 font-medium mb-1">{{ $lesson->title }}
+                                                        <h4 class="text-gray-900 font-medium mb-1">
+                                                            {{ $lesson->title }}
                                                         </h4>
                                                         <div class="flex items-center text-sm text-gray-500 space-x-3">
                                                             <span class="flex items-center">
@@ -180,6 +288,100 @@
                                         </div>
                                     @endforeach
                                 </div>
+
+                                <!-- Quizzes in Module -->
+                                @if ($module->quizzes->count() > 0)
+                                    <div class="bg-orange-50 border-t-2 border-orange-200">
+                                        <div class="px-6 py-3">
+                                            <h4 class="text-sm font-semibold text-orange-800 flex items-center">
+                                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                </svg>
+                                                แบบทดสอบใน Module นี้
+                                            </h4>
+                                        </div>
+                                        <div class="divide-y divide-orange-200">
+                                            @foreach ($module->quizzes as $quiz)
+                                                @php
+                                                    $hasPassed = $quiz->hasPassedByStudent(auth()->id());
+                                                    $bestAttempt = $quiz->getBestAttemptForStudent(auth()->id());
+                                                @endphp
+                                                <div
+                                                    class="px-6 py-4 hover:bg-orange-100 transition-colors duration-200">
+                                                    <div class="flex items-center justify-between">
+                                                        <div class="flex items-center flex-1">
+                                                            <!-- Quiz Status Icon -->
+                                                            @if ($hasPassed)
+                                                                <div class="mr-3">
+                                                                    <div
+                                                                        class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                                                                        <svg class="w-5 h-5 text-green-600"
+                                                                            fill="none" stroke="currentColor"
+                                                                            viewBox="0 0 24 24">
+                                                                            <path stroke-linecap="round"
+                                                                                stroke-linejoin="round"
+                                                                                stroke-width="2" d="M5 13l4 4L19 7" />
+                                                                        </svg>
+                                                                    </div>
+                                                                </div>
+                                                            @else
+                                                                <div class="mr-3">
+                                                                    <div
+                                                                        class="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center">
+                                                                        <svg class="w-5 h-5 text-orange-600"
+                                                                            fill="none" stroke="currentColor"
+                                                                            viewBox="0 0 24 24">
+                                                                            <path stroke-linecap="round"
+                                                                                stroke-linejoin="round"
+                                                                                stroke-width="2"
+                                                                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                                                        </svg>
+                                                                    </div>
+                                                                </div>
+                                                            @endif
+
+                                                            <!-- Quiz Info -->
+                                                            <div class="flex-1">
+                                                                <div class="flex items-center gap-2">
+                                                                    <h4 class="text-gray-900 font-medium">
+                                                                        {{ $quiz->title }}</h4>
+                                                                    @if ($hasPassed)
+                                                                        <span
+                                                                            class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                                            ผ่านแล้ว
+                                                                        </span>
+                                                                    @endif
+                                                                </div>
+                                                                <div
+                                                                    class="flex items-center text-sm text-gray-600 space-x-3 mt-1">
+                                                                    <span>{{ $quiz->questions->count() }} ข้อ</span>
+                                                                    <span>• ผ่าน {{ $quiz->passing_score }}%</span>
+                                                                    @if ($bestAttempt)
+                                                                        <span>• คะแนนสูงสุด: <strong
+                                                                                class="{{ $bestAttempt->passed ? 'text-green-600' : 'text-red-600' }}">{{ $bestAttempt->score }}%</strong></span>
+                                                                    @endif
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- Action Button -->
+                                                        <a href="{{ route('student.courses.modules.quizzes.show', [$course, $module, $quiz]) }}"
+                                                            class="ml-4 {{ $hasPassed ? 'bg-green-100 text-green-700 hover:bg-green-200' : 'bg-orange-600 text-white hover:bg-orange-700' }} px-4 py-2 rounded-lg transition-colors duration-200 text-sm font-medium">
+                                                            @if ($hasPassed)
+                                                                ดูผลลัพธ์
+                                                            @else
+                                                                ทำแบบทดสอบ
+                                                            @endif
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                @endif
                             </div>
                         @endforeach
                     </div>
