@@ -30,10 +30,7 @@
                     </div>
                 </div>
                 <div class="flex space-x-2">
-                    <a href="{{ route('teacher.courses.modules.lessons.create', [$course, $module]) }}"
-                        class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg shadow-lg flex items-center">
-                        <i class="fas fa-plus mr-2"></i>เพิ่มบทเรียน
-                    </a>
+
                     <a href="{{ route('teacher.courses.modules.edit', [$course, $module]) }}"
                         class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-lg flex items-center">
                         <i class="fas fa-edit mr-2"></i>แก้ไข Module
@@ -186,13 +183,22 @@
 
         <!-- Lessons List -->
         <div class="bg-white dark:bg-gray-800 shadow-lg rounded-xl overflow-hidden">
-            <div class="px-6 py-5 border-b border-gray-200 dark:border-gray-700">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-                    <i class="fas fa-book-open text-green-500 mr-2"></i>รายการบทเรียนใน Module
-                </h3>
-                <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                    จัดการบทเรียนทั้งหมดใน "{{ $module->title }}"
-                </p>
+            <div class="px-6 py-5 border-b border-gray-200 dark:border-gray-700 justify-between items-center flex">
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                        <i class="fas fa-book-open text-green-500 "></i>รายการบทเรียนใน Module
+                    </h3>
+                    <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                        จัดการบทเรียนทั้งหมดใน "{{ $module->title }}"
+                    </p>
+                </div>
+
+                <div class="flex">
+                    <a href="{{ route('teacher.courses.modules.lessons.create', [$course, $module]) }}"
+                        class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg shadow-lg flex items-center">
+                        <i class="fas fa-plus mr-2"></i>เพิ่มบทเรียน
+                    </a>
+                </div>
             </div>
 
             @if ($lessons->count() > 0)
