@@ -20,6 +20,9 @@
                         <x-nav-link :href="route('admin.users')" :active="request()->routeIs('admin.users*')">
                             {{ __('จัดการผู้ใช้') }}
                         </x-nav-link>
+                        <x-nav-link :href="route('admin.courses')" :active="request()->routeIs('admin.courses*')">
+                            {{ __('จัดการคอร์ส') }}
+                        </x-nav-link>
                         <x-nav-link :href="route('admin.statistics')" :active="request()->routeIs('admin.statistics')">
                             {{ __('สถิติระบบ') }}
                         </x-nav-link>
@@ -135,6 +138,9 @@
                 </x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('admin.users')" :active="request()->routeIs('admin.users*')">
                     {{ __('จัดการผู้ใช้') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.courses')" :active="request()->routeIs('admin.courses*')">
+                    {{ __('จัดการคอร์ส') }}
                 </x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('admin.statistics')" :active="request()->routeIs('admin.statistics')">
                     {{ __('สถิติระบบ') }}
