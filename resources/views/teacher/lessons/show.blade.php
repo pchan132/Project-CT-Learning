@@ -397,6 +397,39 @@
                             </div>
                         </div>
                     </div>
+                @elseif($lesson->isGoogleDriveContent())
+                    <!-- Google Drive Content -->
+                    <div class="text-center">
+                        <div class="mb-4">
+                            <i class="fab fa-google-drive text-6xl text-yellow-500"></i>
+                        </div>
+                        <h4 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Google Drive</h4>
+                        @if ($lesson->content_url)
+                            <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                                <a href="{{ $lesson->content_url }}" target="_blank"
+                                    class="text-blue-600 hover:underline">
+                                    {{ $lesson->content_url }}
+                                </a>
+                            </p>
+
+                            <div class="flex justify-center gap-4 mb-6">
+                                <a href="{{ $lesson->content_url }}" target="_blank"
+                                    class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-yellow-600 hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500">
+                                    <i class="fab fa-google-drive mr-2"></i>เปิดใน Google Drive
+                                </a>
+                            </div>
+
+                            <!-- Google Drive Embed Preview -->
+                            <div class="mt-6">
+                                <iframe src="{{ $lesson->content_display_url }}"
+                                    class="w-full min-h-[600px] border border-gray-300 dark:border-gray-600 rounded-lg"
+                                    title="{{ $lesson->title }}" allow="autoplay" allowfullscreen>
+                                </iframe>
+                            </div>
+                        @else
+                            <p class="text-red-600 dark:text-red-400">ไม่พบลิงก์ Google Drive</p>
+                        @endif
+                    </div>
                 @else
                     <div class="text-center">
                         <p class="text-gray-500">ไม่มีเนื้อหาสำหรับบทเรียนนี้</p>

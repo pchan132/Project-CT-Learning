@@ -26,6 +26,7 @@
 ### การจัดการคอร์สเรียน (Course Management)
 - [Teacher Course CRUD Documentation](teacher-course-crud.md) - เอกสารการทำ CRUD คอร์สเรียนสำหรับครูผู้สอน
 - [Student Learning System Documentation](STUDENT-LEARNING-SYSTEM.md) - เอกสารระบบการเรียนออนไลน์สำหรับนักเรียน
+- [Google Drive Lesson Support](google-drive-lesson-support.md) - เอกสารระบบรองรับ Google Drive ในบทเรียน
 
 ### การออกแบบและ UI/UX
 - [Dark Mode Toggle Documentation](dark-mode-toggle.md) - เอกสารการทำปุ่มสลับโหมดมืด/สว่าง

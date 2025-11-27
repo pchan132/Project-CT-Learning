@@ -54,12 +54,13 @@ class LessonController extends Controller
 
         $data = $request->validate([
             'title' => 'required|string|max:255',
-            'content_type' => 'required|in:PDF,VIDEO,TEXT',
+            'content_type' => 'required|in:PDF,VIDEO,TEXT,GDRIVE',
             'content_url' => 'nullable|string|max:500',
             'content_text' => 'nullable|required_if:content_type,TEXT|string',
             'file' => 'nullable|required_if:content_type,PDF,PPT|file|mimes:pdf,ppt,pptx|max:10240', // 10MB max
             'video_file' => 'nullable|file|mimes:mp4,webm,ogg,mov|max:102400', // 100MB max
             'video_type' => 'nullable|in:url,upload',
+            'gdrive_url' => 'nullable|required_if:content_type,GDRIVE|url|max:500',
             'order' => 'required|integer|min:1',
         ]);
 
@@ -82,6 +83,11 @@ class LessonController extends Controller
             
             $path = $videoFile->storeAs('lessons/videos', $filename, 'public');
             $data['content_url'] = $path;
+        }
+
+        // จัดการ Google Drive URL
+        if ($request->input('content_type') === 'GDRIVE' && $request->input('gdrive_url')) {
+            $data['content_url'] = $request->input('gdrive_url');
         }
 
         // ตรวจสอบว่า order ซ้ำหรือไม่
@@ -144,12 +150,13 @@ class LessonController extends Controller
 
         $data = $request->validate([
             'title' => 'required|string|max:255',
-            'content_type' => 'required|in:PDF,VIDEO,TEXT',
+            'content_type' => 'required|in:PDF,VIDEO,TEXT,GDRIVE',
             'content_url' => 'nullable|string|max:500',
             'content_text' => 'nullable|string',
             'file' => 'nullable|file|mimes:pdf,ppt,pptx|max:10240', // 10MB max
             'video_file' => 'nullable|file|mimes:mp4,webm,ogg,mov|max:102400', // 100MB max
             'video_type' => 'nullable|in:url,upload',
+            'gdrive_url' => 'nullable|required_if:content_type,GDRIVE|url|max:500',
             'order' => 'required|integer|min:1',
         ]);
 
@@ -182,6 +189,11 @@ class LessonController extends Controller
             
             $path = $videoFile->storeAs('lessons/videos', $filename, 'public');
             $data['content_url'] = $path;
+        }
+
+        // จัดการ Google Drive URL
+        if ($request->input('content_type') === 'GDRIVE' && $request->input('gdrive_url')) {
+            $data['content_url'] = $request->input('gdrive_url');
         }
         
         // ถ้าเปลี่ยน content type แต่ไม่อัปโหลดไฟล์ใหม่

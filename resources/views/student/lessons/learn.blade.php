@@ -64,6 +64,10 @@
                                         </svg>
                                     @break
 
+                                    @case('GDRIVE')
+                                        <i class="fab fa-google-drive text-yellow-500 mr-1"></i>
+                                    @break
+
                                     @default
                                         <svg class="w-4 h-4 mr-1 text-blue-500" fill="none" stroke="currentColor"
                                             viewBox="0 0 24 24">
@@ -265,6 +269,32 @@ if (
                                             </path>
                                         </svg>
                                         <p class="text-gray-600 dark:text-gray-400">ไม่พบไฟล์ PowerPoint</p>
+                                    </div>
+                                @endif
+                            @break
+
+                            @case('GDRIVE')
+                                @if ($lesson->content_url)
+                                    <div class="text-center">
+                                        <!-- Google Drive Preview Frame -->
+                                        <div class="bg-gray-100 dark:bg-gray-700 rounded-xl p-4 mb-6">
+                                            <iframe src="{{ $lesson->content_display_url }}"
+                                                class="w-full h-96 md:h-[600px] rounded-lg border-0" allow="autoplay"
+                                                allowfullscreen></iframe>
+                                        </div>
+
+                                        <div class="flex justify-center gap-4">
+                                            <a href="{{ $lesson->content_url }}" target="_blank"
+                                                class="inline-flex items-center bg-yellow-600 text-white px-6 py-3 rounded-lg hover:bg-yellow-700 transition-colors font-medium shadow-md">
+                                                <i class="fab fa-google-drive mr-2"></i>
+                                                เปิดใน Google Drive
+                                            </a>
+                                        </div>
+                                    </div>
+                                @else
+                                    <div class="text-center py-16 bg-gray-50 dark:bg-gray-700 rounded-xl">
+                                        <i class="fab fa-google-drive text-6xl text-gray-400 mb-4"></i>
+                                        <p class="text-gray-600 dark:text-gray-400">ไม่พบลิงก์ Google Drive</p>
                                     </div>
                                 @endif
                             @break
