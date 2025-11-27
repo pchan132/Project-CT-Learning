@@ -41,9 +41,14 @@ class Course extends Model
     // คือ คอร์ส 1 คอร์ส มีหลาย lessons (ทุก lessons ในทุก modules)
     public function lessons()
     {
-        return $this->hasManyThrough(Lesson::class, Module::class)
-            ->orderBy('modules.order')
-            ->orderBy('lessons.order');
+        return $this->hasManyThrough(
+            Lesson::class,
+            Module::class,
+            'course_id', // Foreign key on modules table
+            'module_id', // Foreign key on lessons table
+            'id',        // Local key on courses table
+            'id'         // Local key on modules table
+        )->orderBy('modules.order')->orderBy('lessons.order');
     }
 
     /**
@@ -67,10 +72,9 @@ class Course extends Model
      */
     public function getCompletedLessonsCount($studentId)
     {
-        return $this->lessons()
-            ->whereHas('completions', function ($query) use ($studentId) {
-                $query->where('student_id', $studentId);
-            })
+        $lessonIds = $this->lessons()->pluck('lessons.id');
+        return LessonCompletion::where('student_id', $studentId)
+            ->whereIn('lesson_id', $lessonIds)
             ->count();
     }
 
@@ -96,6 +100,86 @@ class Course extends Model
         return $this->enrollments()
             ->where('student_id', $studentId)
             ->exists();
+    }
+
+    /**
+     * Get enrolled students
+     */
+    public function students()
+    {
+        return $this->belongsToMany(User::class, 'enrollments', 'course_id', 'student_id')
+            ->withTimestamps();
+    }
+
+    /**
+     * Get quizzes through modules
+     */
+    public function quizzes()
+    {
+        return $this->hasManyThrough(Quiz::class, Module::class);
+    }
+
+    /**
+     * Get certificates for this course
+     */
+    public function certificates()
+    {
+        return $this->hasMany(Certificate::class);
+    }
+
+    /**
+     * Check if student has passed all quizzes
+     */
+    public function hasPassedAllQuizzes($studentId)
+    {
+        foreach ($this->modules as $module) {
+            foreach ($module->quizzes as $quiz) {
+                if (!$quiz->hasPassedByStudent($studentId)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Check if student can get certificate
+     */
+    public function canGetCertificate($studentId)
+    {
+        // ตรวจสอบว่าเรียนครบทุก lesson
+        $totalLessons = $this->getTotalLessonsAttribute();
+        if ($totalLessons === 0) {
+            return false;
+        }
+        
+        $completedLessons = $this->getCompletedLessonsCount($studentId);
+        if ($completedLessons < $totalLessons) {
+            return false;
+        }
+        
+        // ตรวจสอบว่าผ่านทุก quiz
+        return $this->hasPassedAllQuizzes($studentId);
+    }
+
+    /**
+     * Check if student already has certificate
+     */
+    public function hasCertificate($studentId)
+    {
+        return $this->certificates()
+            ->where('student_id', $studentId)
+            ->exists();
+    }
+
+    /**
+     * Get student's certificate
+     */
+    public function getCertificateForStudent($studentId)
+    {
+        return $this->certificates()
+            ->where('student_id', $studentId)
+            ->first();
     }
 
 }

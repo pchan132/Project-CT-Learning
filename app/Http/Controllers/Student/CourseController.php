@@ -18,6 +18,26 @@ class CourseController extends Controller
     }
 
     /**
+     * แสดงหน้าดูรายละเอียดคอร์สก่อนลงทะเบียน (Preview)
+     */
+    public function preview(Course $course)
+    {
+        // ถ้าลงทะเบียนแล้ว redirect ไปหน้า show
+        if ($course->isEnrolledByStudent(auth()->id())) {
+            return redirect()->route('student.courses.show', $course);
+        }
+
+        // โหลดข้อมูลคอร์สพร้อม modules และ teacher
+        $course->load(['modules.lessons', 'teacher']);
+        $course->loadCount('enrollments');
+        
+        // นับจำนวน Quiz
+        $course->quizCount = \App\Models\Quiz::whereIn('module_id', $course->modules->pluck('id'))->count();
+
+        return view('student.courses.preview', compact('course'));
+    }
+
+    /**
      * แสดงรายการคอร์สทั้งหมดที่เปิดให้ลงทะเบียน
      */
     public function index()

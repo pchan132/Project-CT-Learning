@@ -90,6 +90,7 @@ Route::middleware(['auth', 'student'])->prefix('student')->name('student.')->gro
     // Course routes
     Route::get('/courses', [StudentCourseController::class, 'index'])->name('courses.index');
     Route::get('/courses/my-courses', [StudentCourseController::class, 'myCourses'])->name('courses.my-courses');
+    Route::get('/courses/{course}/preview', [StudentCourseController::class, 'preview'])->name('courses.preview');
     Route::get('/courses/{course}', [StudentCourseController::class, 'show'])->name('courses.show');
     
     // Enrollment routes

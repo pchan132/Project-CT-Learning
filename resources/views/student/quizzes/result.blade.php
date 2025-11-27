@@ -101,7 +101,12 @@
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
             <div class="p-6 border-b border-gray-200 dark:border-gray-700">
                 <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
-                    <i class="fas fa-list-check text-blue-500 mr-2"></i>รายละเอียดคำตอบ
+                    <svg class="w-5 h-5 inline mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01">
+                        </path>
+                    </svg>
+                    รายละเอียดคำตอบ
                 </h3>
             </div>
             <div class="p-6 space-y-6">
@@ -109,8 +114,8 @@
                     @php
                         $userAnswerId = $attempt->answers[$question->id] ?? null;
                         $userAnswer = $question->answers->firstWhere('id', $userAnswerId);
-                        $correctAnswer = $question->correctAnswer;
-                        $isCorrect = $userAnswerId == $correctAnswer->id;
+                        $correctAnswer = $question->answers->firstWhere('is_correct', true);
+                        $isCorrect = $correctAnswer && $userAnswerId == $correctAnswer->id;
                     @endphp
 
                     <div
@@ -143,19 +148,23 @@
                         <!-- Answers -->
                         <div class="space-y-3 ml-14">
                             @foreach ($question->answers as $answer)
+                                @php
+                                    $isUserAnswer = $answer->id == $userAnswerId;
+                                    $isCorrectAnswer = $correctAnswer && $answer->id == $correctAnswer->id;
+                                @endphp
                                 <div
                                     class="flex items-start p-3 rounded-lg
-                                {{ $answer->id == $userAnswerId && $isCorrect ? 'bg-green-200 dark:bg-green-800 border-2 border-green-500' : '' }}
-                                {{ $answer->id == $userAnswerId && !$isCorrect ? 'bg-red-200 dark:bg-red-800 border-2 border-red-500' : '' }}
-                                {{ $answer->id == $correctAnswer->id && !$isCorrect ? 'bg-green-100 dark:bg-green-900 border-2 border-green-400 border-dashed' : '' }}
-                                {{ $answer->id != $userAnswerId && $answer->id != $correctAnswer->id ? 'bg-gray-100 dark:bg-gray-700' : '' }}">
+                                {{ $isUserAnswer && $isCorrect ? 'bg-green-200 dark:bg-green-800 border-2 border-green-500' : '' }}
+                                {{ $isUserAnswer && !$isCorrect ? 'bg-red-200 dark:bg-red-800 border-2 border-red-500' : '' }}
+                                {{ $isCorrectAnswer && !$isCorrect ? 'bg-green-100 dark:bg-green-900 border-2 border-green-400 border-dashed' : '' }}
+                                {{ !$isUserAnswer && !$isCorrectAnswer ? 'bg-gray-100 dark:bg-gray-700' : '' }}">
 
                                     <div class="flex-shrink-0 mt-1">
-                                        @if ($answer->id == $userAnswerId && $isCorrect)
+                                        @if ($isUserAnswer && $isCorrect)
                                             <i class="fas fa-check-circle text-green-600 text-xl"></i>
-                                        @elseif ($answer->id == $userAnswerId && !$isCorrect)
+                                        @elseif ($isUserAnswer && !$isCorrect)
                                             <i class="fas fa-times-circle text-red-600 text-xl"></i>
-                                        @elseif ($answer->id == $correctAnswer->id)
+                                        @elseif ($isCorrectAnswer)
                                             <i class="fas fa-check-circle text-green-600 text-xl"></i>
                                         @else
                                             <i class="far fa-circle text-gray-400 text-xl"></i>
@@ -164,13 +173,13 @@
 
                                     <div class="ml-3 flex-1">
                                         <p class="text-gray-900 dark:text-white font-medium">{{ $answer->answer_text }}</p>
-                                        @if ($answer->id == $userAnswerId)
+                                        @if ($isUserAnswer)
                                             <span
                                                 class="text-xs {{ $isCorrect ? 'text-green-700 dark:text-green-300' : 'text-red-700 dark:text-red-300' }} font-semibold">
                                                 คำตอบของคุณ
                                             </span>
                                         @endif
-                                        @if ($answer->id == $correctAnswer->id && !$isCorrect)
+                                        @if ($isCorrectAnswer && !$isCorrect)
                                             <span class="text-xs text-green-700 dark:text-green-300 font-semibold">
                                                 คำตอบที่ถูกต้อง
                                             </span>

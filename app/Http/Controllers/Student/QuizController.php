@@ -19,7 +19,7 @@ class QuizController extends Controller
         $module = \App\Models\Module::findOrFail($module);
         
         // Check if student enrolled
-        if (!$course->students()->where('user_id', auth()->id())->exists()) {
+        if (!$course->isEnrolledByStudent(auth()->id())) {
             abort(403, 'คุณต้องลงทะเบียนคอร์สก่อน');
         }
         
@@ -51,7 +51,7 @@ class QuizController extends Controller
         $course = $module->course;
         
         // Check if student enrolled
-        if (!$course->students()->where('user_id', auth()->id())->exists()) {
+        if (!$course->isEnrolledByStudent(auth()->id())) {
             return redirect()->back()->with('error', 'คุณต้องลงทะเบียนคอร์สก่อน');
         }
         

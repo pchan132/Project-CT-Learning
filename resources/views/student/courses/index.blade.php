@@ -1,5 +1,13 @@
-<x-app-layout>
-    <div class="container mx-auto px-4 py-8">
+@extends('layouts.app')
+
+@section('header')
+    <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+        คอร์สเรียน
+    </h2>
+@endsection
+
+@section('content')
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <!-- Header -->
         <div class="mb-8">
             <h1 class="text-3xl font-bold text-gray-900 mb-2">คอร์สเรียน</h1>
@@ -45,8 +53,8 @@
                             @if ($course->cover_image_url)
                                 <div
                                     class="h-48 bg-gradient-to-br from-blue-500 to-purple-600 rounded-t-lg overflow-hidden">
-                                    <img src="{{ asset('storage/' . $course->cover_image_url) }}"
-                                        alt="{{ $course->title }}" class="w-full h-full object-cover">
+                                    <img src="{{ asset('storage/' . $course->cover_image_url) }}" alt="{{ $course->title }}"
+                                        class="w-full h-full object-cover">
                                 </div>
                             @else
                                 <div
@@ -78,8 +86,7 @@
                                 <!-- Course Stats -->
                                 <div class="flex items-center justify-between text-sm text-gray-600 mb-4">
                                     <div class="flex items-center">
-                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor"
-                                            viewBox="0 0 24 24">
+                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2">
                                             </path>
@@ -87,8 +94,7 @@
                                         {{ $course->total_modules }} โมดูล
                                     </div>
                                     <div class="flex items-center">
-                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor"
-                                            viewBox="0 0 24 24">
+                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
                                             </path>
@@ -122,8 +128,7 @@
                                         <button type="submit"
                                             onclick="return confirm('คุณแน่ใจหรือไม่ที่จะถอนการลงทะเบียนคอร์สนี้?')"
                                             class="bg-red-100 text-red-600 px-3 py-2 rounded-lg hover:bg-red-200 transition-colors duration-200">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor"
-                                                viewBox="0 0 24 24">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
                                                 </path>
@@ -153,8 +158,7 @@
         <div>
             <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
                 <svg class="w-6 h-6 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 6v6m0 0v6m0-6h6m-6 0H6">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6">
                     </path>
                 </svg>
                 คอร์สที่สามารถลงทะเบียนได้
@@ -167,8 +171,7 @@
                             class="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 border border-gray-200">
                             <!-- Course Cover Image -->
                             @if ($course->cover_image_url)
-                                <div
-                                    class="h-48 bg-gradient-to-br from-green-500 to-blue-600 rounded-t-lg overflow-hidden">
+                                <div class="h-48 bg-gradient-to-br from-green-500 to-blue-600 rounded-t-lg overflow-hidden">
                                     <img src="{{ asset('storage/' . $course->cover_image_url) }}"
                                         alt="{{ $course->title }}" class="w-full h-full object-cover">
                                 </div>
@@ -194,8 +197,7 @@
 
                                 <!-- Teacher Info -->
                                 <div class="flex items-center text-sm text-gray-600 mb-3">
-                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor"
-                                        viewBox="0 0 24 24">
+                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z">
                                         </path>
@@ -225,19 +227,15 @@
                                     </div>
                                 </div>
 
-                                <!-- Enroll Button -->
-                                <form action="{{ route('student.courses.enroll', $course) }}" method="POST">
-                                    @csrf
-                                    <button type="submit"
-                                        class="w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors duration-200 flex items-center justify-center">
-                                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor"
-                                            viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                                        </svg>
-                                        ลงทะเบียนเรียน
-                                    </button>
-                                </form>
+                                <!-- View Details & Enroll Button -->
+                                <a href="{{ route('student.courses.preview', $course) }}"
+                                    class="w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors duration-200 flex items-center justify-center">
+                                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                    </svg>
+                                    ดูรายละเอียด & ลงทะเบียน
+                                </a>
                             </div>
                         </div>
                     @endforeach
@@ -256,4 +254,4 @@
             @endif
         </div>
     </div>
-</x-app-layout>
+@endsection
