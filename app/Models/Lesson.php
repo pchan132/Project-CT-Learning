@@ -67,6 +67,8 @@ class Lesson extends Model
                 return $this->content_url;
             case 'GDRIVE':
                 return $this->getGoogleDriveEmbedUrl();
+            case 'CANVA':
+                return $this->getCanvaEmbedUrl();
             case 'TEXT':
                 return null;
             default:
@@ -114,6 +116,47 @@ class Lesson extends Model
     }
 
     /**
+     * แปลง Canva URL เป็น embed URL
+     */
+    public function getCanvaEmbedUrl()
+    {
+        if (!$this->content_url) {
+            return null;
+        }
+
+        $url = $this->content_url;
+
+        // ถ้ามี ?embed อยู่แล้วให้ return เลย
+        if (str_contains($url, '?embed')) {
+            return $url;
+        }
+
+        // รูปแบบ: https://www.canva.com/design/DAxxxxx/view
+        // หรือ: https://www.canva.com/design/DAxxxxx/yyyyy/view
+        // แปลงเป็น: https://www.canva.com/design/DAxxxxx/view?embed
+        if (preg_match('/canva\.com\/design\/([a-zA-Z0-9_-]+)(?:\/[a-zA-Z0-9_-]+)?\/view/', $url, $matches)) {
+            $designId = $matches[1];
+            return "https://www.canva.com/design/{$designId}/view?embed";
+        }
+
+        // รูปแบบอื่นๆ ให้เพิ่ม ?embed ต่อท้าย
+        if (str_contains($url, '/view')) {
+            return $url . '?embed';
+        }
+
+        // ถ้าเป็นรูปแบบอื่นให้ return URL เดิม
+        return $url;
+    }
+
+    /**
+     * ตรวจสอบว่าเป็น Canva content หรือไม่
+     */
+    public function isCanvaContent()
+    {
+        return $this->content_type === 'CANVA';
+    }
+
+    /**
      * ตรวจสอบว่าเป็น content ประเภทไฟล์หรือไม่
      */
     public function isFileContent()
@@ -148,6 +191,7 @@ class Lesson extends Model
             'VIDEO' => 'Video',
             'TEXT' => 'Text Content',
             'GDRIVE' => 'Google Drive',
+            'CANVA' => 'Canva',
             default => 'Unknown',
         };
     }

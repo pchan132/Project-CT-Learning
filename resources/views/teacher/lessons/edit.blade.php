@@ -112,6 +112,14 @@
                                 <span class="ml-3 text-sm text-gray-700 dark:text-gray-300"><i
                                         class="fab fa-google-drive mr-2 text-yellow-500"></i>Google Drive</span>
                             </label>
+                            <label
+                                class="flex items-center p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <input type="radio" name="content_type" value="CANVA"
+                                    class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 dark:border-gray-600"
+                                    @if (old('content_type', $lesson->content_type) == 'CANVA') checked @endif>
+                                <span class="ml-3 text-sm text-gray-700 dark:text-gray-300"><i
+                                        class="fas fa-palette mr-2 text-cyan-500"></i>Canva</span>
+                            </label>
                         </div>
                         @error('content_type')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -154,7 +162,8 @@
                                         <div class="flex items-center space-x-3">
                                             <i class="fas fa-file-pdf text-red-500 text-2xl"></i>
                                             <div>
-                                                <p id="file-name" class="text-sm font-medium text-gray-900 dark:text-white">
+                                                <p id="file-name"
+                                                    class="text-sm font-medium text-gray-900 dark:text-white">
                                                 </p>
                                                 <p id="file-size" class="text-xs text-gray-500 dark:text-gray-400"></p>
                                             </div>
@@ -212,6 +221,36 @@
                                 </ol>
                                 <p class="mt-2 text-xs text-yellow-600 dark:text-yellow-400">
                                     รองรับ: ไฟล์ PDF, เอกสาร, Slides, Sheets, รูปภาพ, วิดีโอ
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Canva Field -->
+                        <div id="canva-field" class="mb-6 hidden">
+                            <label for="canva_url"
+                                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                ลิงก์ Canva <span class="text-red-500">*</span>
+                            </label>
+                            <input type="url" id="canva_url" name="canva_url"
+                                value="{{ old('canva_url', $lesson->content_type == 'CANVA' ? $lesson->content_url : '') }}"
+                                class="mt-1 block w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 @error('canva_url') border-red-500 @enderror"
+                                placeholder="https://www.canva.com/design/DAF.../view">
+                            @error('canva_url')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                            <div
+                                class="mt-3 p-4 bg-cyan-50 dark:bg-cyan-900/20 rounded-lg border border-cyan-200 dark:border-cyan-800">
+                                <h4 class="text-sm font-medium text-cyan-800 dark:text-cyan-200 mb-2">
+                                    <i class="fas fa-info-circle mr-1"></i> วิธีการแชร์จาก Canva
+                                </h4>
+                                <ol class="text-sm text-cyan-700 dark:text-cyan-300 list-decimal list-inside space-y-1">
+                                    <li>เปิดการออกแบบใน Canva</li>
+                                    <li>คลิกปุ่ม "แชร์" มุมขวาบน</li>
+                                    <li>เลือก "เพิ่มเติม..." → "ฝัง"</li>
+                                    <li>คัดลอกลิงก์และวางที่นี่</li>
+                                </ol>
+                                <p class="mt-2 text-xs text-cyan-600 dark:text-cyan-400">
+                                    รองรับ: Presentations, Documents, Infographics, Posters และอื่นๆ
                                 </p>
                             </div>
                         </div>
@@ -332,6 +371,7 @@
             const videoField = document.getElementById('video-field');
             const textField = document.getElementById('text-field');
             const gdriveField = document.getElementById('gdrive-field');
+            const canvaField = document.getElementById('canva-field');
             const fileInput = document.getElementById('file');
             let editorInstance = null;
 
@@ -465,12 +505,14 @@
                 videoField.classList.add('hidden');
                 textField.classList.add('hidden');
                 gdriveField.classList.add('hidden');
+                canvaField.classList.add('hidden');
 
                 // Clear required attributes
                 document.getElementById('file').removeAttribute('required');
                 document.getElementById('content_url').removeAttribute('required');
                 document.getElementById('content_text').removeAttribute('required');
                 document.getElementById('gdrive_url').removeAttribute('required');
+                document.getElementById('canva_url').removeAttribute('required');
 
                 switch (value) {
                     case 'PDF':
@@ -502,6 +544,15 @@
                     case 'GDRIVE':
                         gdriveField.classList.remove('hidden');
                         document.getElementById('gdrive_url').setAttribute('required', '');
+                        if (editorInstance) {
+                            const quillEditor = document.getElementById('quill-editor');
+                            if (quillEditor) quillEditor.innerHTML = '';
+                            editorInstance = null;
+                        }
+                        break;
+                    case 'CANVA':
+                        canvaField.classList.remove('hidden');
+                        document.getElementById('canva_url').setAttribute('required', '');
                         if (editorInstance) {
                             const quillEditor = document.getElementById('quill-editor');
                             if (quillEditor) quillEditor.innerHTML = '';

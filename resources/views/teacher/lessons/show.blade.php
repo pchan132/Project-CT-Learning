@@ -430,6 +430,42 @@
                             <p class="text-red-600 dark:text-red-400">ไม่พบลิงก์ Google Drive</p>
                         @endif
                     </div>
+                @elseif($lesson->isCanvaContent())
+                    <!-- Canva Content -->
+                    <div class="text-center">
+                        <div class="mb-4">
+                            <i class="fas fa-palette text-6xl text-cyan-500"></i>
+                        </div>
+                        <h4 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Canva Design</h4>
+                        @if ($lesson->content_url)
+                            <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                                <a href="{{ $lesson->content_url }}" target="_blank"
+                                    class="text-blue-600 hover:underline">
+                                    {{ $lesson->content_url }}
+                                </a>
+                            </p>
+
+                            <div class="flex justify-center gap-4 mb-6">
+                                <a href="{{ $lesson->content_url }}" target="_blank"
+                                    class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-cyan-600 hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500">
+                                    <i class="fas fa-palette mr-2"></i>เปิดใน Canva
+                                </a>
+                            </div>
+
+                            <!-- Canva Embed Preview -->
+                            <div class="mt-6">
+                                <div
+                                    style="position: relative; width: 100%; height: 0; padding-top: 75%; overflow: hidden; border-radius: 8px; border: 1px solid #e5e7eb;">
+                                    <iframe loading="lazy" src="{{ $lesson->getCanvaEmbedUrl() }}"
+                                        style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; border: none;"
+                                        allowfullscreen="allowfullscreen" allow="fullscreen">
+                                    </iframe>
+                                </div>
+                            </div>
+                        @else
+                            <p class="text-red-600 dark:text-red-400">ไม่พบลิงก์ Canva</p>
+                        @endif
+                    </div>
                 @else
                     <div class="text-center">
                         <p class="text-gray-500">ไม่มีเนื้อหาสำหรับบทเรียนนี้</p>

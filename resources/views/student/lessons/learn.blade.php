@@ -68,6 +68,10 @@
                                         <i class="fab fa-google-drive text-yellow-500 mr-1"></i>
                                     @break
 
+                                    @case('CANVA')
+                                        <i class="fas fa-palette text-cyan-500 mr-1"></i>
+                                    @break
+
                                     @default
                                         <svg class="w-4 h-4 mr-1 text-blue-500" fill="none" stroke="currentColor"
                                             viewBox="0 0 24 24">
@@ -295,6 +299,35 @@ if (
                                     <div class="text-center py-16 bg-gray-50 dark:bg-gray-700 rounded-xl">
                                         <i class="fab fa-google-drive text-6xl text-gray-400 mb-4"></i>
                                         <p class="text-gray-600 dark:text-gray-400">ไม่พบลิงก์ Google Drive</p>
+                                    </div>
+                                @endif
+                            @break
+
+                            @case('CANVA')
+                                @if ($lesson->content_url)
+                                    <div class="text-center">
+                                        <!-- Canva Preview Frame -->
+                                        <div class="bg-gray-100 dark:bg-gray-700 rounded-xl p-4 mb-6">
+                                            <div
+                                                style="position: relative; width: 100%; height: 0; padding-top: 75%; overflow: hidden; border-radius: 8px;">
+                                                <iframe loading="lazy" src="{{ $lesson->getCanvaEmbedUrl() }}"
+                                                    style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; border: none;"
+                                                    allowfullscreen="allowfullscreen" allow="fullscreen"></iframe>
+                                            </div>
+                                        </div>
+
+                                        <div class="flex justify-center gap-4">
+                                            <a href="{{ $lesson->content_url }}" target="_blank"
+                                                class="inline-flex items-center bg-cyan-600 text-white px-6 py-3 rounded-lg hover:bg-cyan-700 transition-colors font-medium shadow-md">
+                                                <i class="fas fa-palette mr-2"></i>
+                                                เปิดใน Canva
+                                            </a>
+                                        </div>
+                                    </div>
+                                @else
+                                    <div class="text-center py-16 bg-gray-50 dark:bg-gray-700 rounded-xl">
+                                        <i class="fas fa-palette text-6xl text-gray-400 mb-4"></i>
+                                        <p class="text-gray-600 dark:text-gray-400">ไม่พบลิงก์ Canva</p>
                                     </div>
                                 @endif
                             @break
