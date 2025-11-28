@@ -120,6 +120,9 @@ Route::middleware(['auth', 'teacher'])->prefix('teacher')->name('teacher.')->gro
     // ส่ง corse ไปที่ TeacherCourseController
     Route::resource('courses', TeacherCourseController::class);
     
+    // Route สำหรับดูนักเรียนในคอร์ส
+    Route::get('courses/{course}/students', [TeacherCourseController::class, 'students'])->name('courses.students');
+    
     // Routes สำหรับ Modules
     Route::prefix('courses/{course}/modules')->name('courses.modules.')->group(function () {
         Route::get('/', [App\Http\Controllers\Teacher\ModuleController::class, 'index'])->name('index');

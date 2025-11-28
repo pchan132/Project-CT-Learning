@@ -23,6 +23,14 @@
                     </h1>
                 </div>
                 <div class="flex flex-wrap gap-2">
+                    <a href="{{ route('teacher.courses.students', $course) }}"
+                        class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg font-semibold inline-flex items-center">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                        </svg>
+                        นักเรียน
+                    </a>
                     <a href="{{ route('teacher.courses.edit', $course) }}"
                         class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg font-semibold inline-flex items-center">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -78,11 +86,17 @@
                                     {{ $course->total_lessons }}</div>
                                 <div class="text-sm text-gray-500 dark:text-gray-400 mt-1">Lessons</div>
                             </div>
-                            <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
-                                <div class="text-3xl font-bold text-purple-600 dark:text-purple-400">
+                            <a href="{{ route('teacher.courses.students', $course) }}" 
+                               class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 hover:bg-purple-50 dark:hover:bg-purple-900/30 transition group">
+                                <div class="text-3xl font-bold text-purple-600 dark:text-purple-400 group-hover:text-purple-700 dark:group-hover:text-purple-300">
                                     {{ $course->enrollments->count() }}</div>
-                                <div class="text-sm text-gray-500 dark:text-gray-400 mt-1">Students</div>
-                            </div>
+                                <div class="text-sm text-gray-500 dark:text-gray-400 mt-1 flex items-center">
+                                    Students
+                                    <svg class="w-4 h-4 ml-1 opacity-0 group-hover:opacity-100 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </div>
+                            </a>
                             <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
                                 <div class="text-lg font-bold text-gray-600 dark:text-gray-400">
                                     {{ $course->created_at->format('d/m/Y') }}</div>
