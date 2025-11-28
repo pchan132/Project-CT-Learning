@@ -86,14 +86,17 @@
                                     {{ $course->total_lessons }}</div>
                                 <div class="text-sm text-gray-500 dark:text-gray-400 mt-1">Lessons</div>
                             </div>
-                            <a href="{{ route('teacher.courses.students', $course) }}" 
-                               class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 hover:bg-purple-50 dark:hover:bg-purple-900/30 transition group">
-                                <div class="text-3xl font-bold text-purple-600 dark:text-purple-400 group-hover:text-purple-700 dark:group-hover:text-purple-300">
+                            <a href="{{ route('teacher.courses.students', $course) }}"
+                                class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 hover:bg-purple-50 dark:hover:bg-purple-900/30 transition group">
+                                <div
+                                    class="text-3xl font-bold text-purple-600 dark:text-purple-400 group-hover:text-purple-700 dark:group-hover:text-purple-300">
                                     {{ $course->enrollments->count() }}</div>
                                 <div class="text-sm text-gray-500 dark:text-gray-400 mt-1 flex items-center">
                                     Students
-                                    <svg class="w-4 h-4 ml-1 opacity-0 group-hover:opacity-100 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                    <svg class="w-4 h-4 ml-1 opacity-0 group-hover:opacity-100 transition" fill="none"
+                                        stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 5l7 7-7 7" />
                                     </svg>
                                 </div>
                             </a>

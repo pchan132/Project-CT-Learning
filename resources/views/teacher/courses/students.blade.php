@@ -110,42 +110,50 @@
                 </div>
             </div>
 
-            @if($studentsProgress->count() > 0)
+            @if ($studentsProgress->count() > 0)
                 <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                         <thead class="bg-gray-50 dark:bg-gray-700/50">
                             <tr>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                <th scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                     นักเรียน
                                 </th>
-                                <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                <th scope="col"
+                                    class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                     ความคืบหน้า
                                 </th>
-                                <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                <th scope="col"
+                                    class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                     บทเรียน
                                 </th>
-                                <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                <th scope="col"
+                                    class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                     แบบทดสอบ
                                 </th>
-                                <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                <th scope="col"
+                                    class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                     คะแนนเฉลี่ย
                                 </th>
-                                <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                <th scope="col"
+                                    class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                     สถานะ
                                 </th>
-                                <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                <th scope="col"
+                                    class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                     กิจกรรมล่าสุด
                                 </th>
                             </tr>
                         </thead>
                         <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                            @foreach($studentsProgress as $data)
+                            @foreach ($studentsProgress as $data)
                                 <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
                                     <!-- Student Info -->
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center">
                                             <div class="flex-shrink-0 h-10 w-10">
-                                                <div class="h-10 w-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold">
+                                                <div
+                                                    class="h-10 w-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold">
                                                     {{ strtoupper(substr($data['student']->name, 0, 1)) }}
                                                 </div>
                                             </div>
@@ -164,20 +172,19 @@
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="w-32 mx-auto">
                                             <div class="flex items-center justify-between mb-1">
-                                                <span class="text-sm font-semibold 
-                                                    @if($data['progress'] == 100) text-green-600 dark:text-green-400
+                                                <span
+                                                    class="text-sm font-semibold 
+                                                    @if ($data['progress'] == 100) text-green-600 dark:text-green-400
                                                     @elseif($data['progress'] >= 50) text-blue-600 dark:text-blue-400
-                                                    @else text-gray-600 dark:text-gray-400
-                                                    @endif">
+                                                    @else text-gray-600 dark:text-gray-400 @endif">
                                                     {{ $data['progress'] }}%
                                                 </span>
                                             </div>
                                             <div class="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2">
                                                 <div class="h-2 rounded-full transition-all duration-300
-                                                    @if($data['progress'] == 100) bg-green-500
+                                                    @if ($data['progress'] == 100) bg-green-500
                                                     @elseif($data['progress'] >= 50) bg-blue-500
-                                                    @else bg-gray-400
-                                                    @endif" 
+                                                    @else bg-gray-400 @endif"
                                                     style="width: {{ $data['progress'] }}%">
                                                 </div>
                                             </div>
@@ -186,7 +193,8 @@
 
                                     <!-- Lessons -->
                                     <td class="px-6 py-4 whitespace-nowrap text-center">
-                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-300">
+                                        <span
+                                            class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-300">
                                             <i class="fas fa-book-open mr-1"></i>
                                             {{ $data['completed_lessons'] }}/{{ $data['total_lessons'] }}
                                         </span>
@@ -194,13 +202,12 @@
 
                                     <!-- Quizzes -->
                                     <td class="px-6 py-4 whitespace-nowrap text-center">
-                                        @if($data['total_quizzes'] > 0)
-                                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium 
-                                                @if($data['passed_quizzes'] == $data['total_quizzes']) 
-                                                    bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-300
+                                        @if ($data['total_quizzes'] > 0)
+                                            <span
+                                                class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium 
+                                                @if ($data['passed_quizzes'] == $data['total_quizzes']) bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-300
                                                 @else 
-                                                    bg-purple-100 dark:bg-purple-900/50 text-purple-800 dark:text-purple-300
-                                                @endif">
+                                                    bg-purple-100 dark:bg-purple-900/50 text-purple-800 dark:text-purple-300 @endif">
                                                 <i class="fas fa-clipboard-check mr-1"></i>
                                                 {{ $data['passed_quizzes'] }}/{{ $data['total_quizzes'] }}
                                             </span>
@@ -211,15 +218,14 @@
 
                                     <!-- Average Score -->
                                     <td class="px-6 py-4 whitespace-nowrap text-center">
-                                        @if($data['avg_quiz_score'] !== null)
-                                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium
-                                                @if($data['avg_quiz_score'] >= 80) 
-                                                    bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-300
+                                        @if ($data['avg_quiz_score'] !== null)
+                                            <span
+                                                class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium
+                                                @if ($data['avg_quiz_score'] >= 80) bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-300
                                                 @elseif($data['avg_quiz_score'] >= 60) 
                                                     bg-yellow-100 dark:bg-yellow-900/50 text-yellow-800 dark:text-yellow-300
                                                 @else 
-                                                    bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-300
-                                                @endif">
+                                                    bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-300 @endif">
                                                 <i class="fas fa-star mr-1"></i>
                                                 {{ $data['avg_quiz_score'] }}%
                                             </span>
@@ -230,23 +236,27 @@
 
                                     <!-- Status -->
                                     <td class="px-6 py-4 whitespace-nowrap text-center">
-                                        @if($data['has_certificate'])
-                                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-100 dark:bg-yellow-900/50 text-yellow-800 dark:text-yellow-300">
+                                        @if ($data['has_certificate'])
+                                            <span
+                                                class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-100 dark:bg-yellow-900/50 text-yellow-800 dark:text-yellow-300">
                                                 <i class="fas fa-certificate mr-1"></i>
                                                 ได้ใบประกาศ
                                             </span>
                                         @elseif($data['progress'] == 100)
-                                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-300">
+                                            <span
+                                                class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-300">
                                                 <i class="fas fa-check-circle mr-1"></i>
                                                 เรียนจบแล้ว
                                             </span>
                                         @elseif($data['progress'] > 0)
-                                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-300">
+                                            <span
+                                                class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-300">
                                                 <i class="fas fa-spinner mr-1"></i>
                                                 กำลังเรียน
                                             </span>
                                         @else
-                                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400">
+                                            <span
+                                                class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400">
                                                 <i class="fas fa-clock mr-1"></i>
                                                 ยังไม่เริ่ม
                                             </span>
@@ -255,7 +265,7 @@
 
                                     <!-- Last Activity -->
                                     <td class="px-6 py-4 whitespace-nowrap text-center">
-                                        @if($data['last_activity'])
+                                        @if ($data['last_activity'])
                                             <div class="text-sm text-gray-600 dark:text-gray-400">
                                                 {{ \Carbon\Carbon::parse($data['last_activity'])->diffForHumans() }}
                                             </div>
@@ -301,7 +311,8 @@
             @else
                 <!-- Empty State -->
                 <div class="text-center py-16">
-                    <div class="inline-flex items-center justify-center w-20 h-20 bg-gray-100 dark:bg-gray-700 rounded-full mb-4">
+                    <div
+                        class="inline-flex items-center justify-center w-20 h-20 bg-gray-100 dark:bg-gray-700 rounded-full mb-4">
                         <i class="fas fa-users-slash text-gray-400 dark:text-gray-500 text-3xl"></i>
                     </div>
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">ยังไม่มีนักเรียนในคอร์สนี้</h3>
