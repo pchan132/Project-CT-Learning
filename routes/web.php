@@ -1,6 +1,7 @@
 <?php
 // -------------------------- ของ Controller ----------------------------
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TeacherProfileController;
 use App\Http\Controllers\Student\CourseController as StudentCourseController;
 use App\Http\Controllers\Teacher\CourseController as TeacherCourseController;
 use Illuminate\Support\Facades\Route;
@@ -43,6 +44,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+// ------ หน้าแสดง Teacher ทั้งหมด (ทุก role เข้าถึงได้) -----------**
+Route::middleware('auth')->group(function () {
+    Route::get('/teachers', [TeacherProfileController::class, 'index'])->name('teachers.index');
+    Route::get('/teachers/{teacher}', [TeacherProfileController::class, 'show'])->name('teachers.show');
 });
 
 // --------------------------------------------------------------
@@ -122,6 +129,11 @@ Route::middleware(['auth', 'teacher'])->prefix('teacher')->name('teacher.')->gro
     
     // Route สำหรับดูนักเรียนในคอร์ส
     Route::get('courses/{course}/students', [TeacherCourseController::class, 'students'])->name('courses.students');
+    
+    // Route สำหรับแก้ไขโปรไฟล์ Teacher
+    Route::get('profile', [TeacherProfileController::class, 'editProfile'])->name('profile.edit');
+    Route::put('profile', [TeacherProfileController::class, 'updateProfile'])->name('profile.update');
+    Route::delete('profile/image', [TeacherProfileController::class, 'deleteProfileImage'])->name('profile.delete-image');
     
     // Routes สำหรับ Modules
     Route::prefix('courses/{course}/modules')->name('courses.modules.')->group(function () {

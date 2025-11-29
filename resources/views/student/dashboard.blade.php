@@ -328,6 +328,18 @@
                             </div>
                             <i class="fas fa-chevron-right text-gray-400 ml-auto"></i>
                         </a>
+                        <a href="{{ route('teachers.index') }}"
+                            class="flex items-center p-3 bg-purple-50 dark:bg-purple-900/30 rounded-lg hover:bg-purple-100 dark:hover:bg-purple-900/50 transition-colors duration-200 group">
+                            <div
+                                class="w-10 h-10 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform duration-200">
+                                <i class="fas fa-chalkboard-teacher text-purple-600 dark:text-purple-400"></i>
+                            </div>
+                            <div>
+                                <p class="font-medium text-gray-900 dark:text-white text-sm">อาจารย์ผู้สอน</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">ดูอาจารย์ทั้งหมด</p>
+                            </div>
+                            <i class="fas fa-chevron-right text-gray-400 ml-auto"></i>
+                        </a>
                         <a href="{{ route('student.courses.my-courses') }}"
                             class="flex items-center p-3 bg-green-50 dark:bg-green-900/30 rounded-lg hover:bg-green-100 dark:hover:bg-green-900/50 transition-colors duration-200 group">
                             <div

@@ -257,6 +257,30 @@
                             </div>
                             <i class="fas fa-chevron-right text-gray-400 ml-auto"></i>
                         </a>
+                        <a href="{{ route('teacher.profile.edit') }}"
+                            class="flex items-center p-3 bg-cyan-50 dark:bg-cyan-900/30 rounded-lg hover:bg-cyan-100 dark:hover:bg-cyan-900/50 transition-colors duration-200 group">
+                            <div
+                                class="w-10 h-10 bg-cyan-100 dark:bg-cyan-900 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform duration-200">
+                                <i class="fas fa-user-edit text-cyan-600 dark:text-cyan-400"></i>
+                            </div>
+                            <div>
+                                <p class="font-medium text-gray-900 dark:text-white text-sm">แก้ไขโปรไฟล์</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">อัปเดตรูปและข้อมูล</p>
+                            </div>
+                            <i class="fas fa-chevron-right text-gray-400 ml-auto"></i>
+                        </a>
+                        <a href="{{ route('teachers.index') }}"
+                            class="flex items-center p-3 bg-green-50 dark:bg-green-900/30 rounded-lg hover:bg-green-100 dark:hover:bg-green-900/50 transition-colors duration-200 group">
+                            <div
+                                class="w-10 h-10 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform duration-200">
+                                <i class="fas fa-chalkboard-teacher text-green-600 dark:text-green-400"></i>
+                            </div>
+                            <div>
+                                <p class="font-medium text-gray-900 dark:text-white text-sm">อาจารย์ทั้งหมด</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">ดูอาจารย์ผู้สอนทั้งหมด</p>
+                            </div>
+                            <i class="fas fa-chevron-right text-gray-400 ml-auto"></i>
+                        </a>
                         <a href="{{ route('teacher.courses.index') }}"
                             class="flex items-center p-3 bg-purple-50 dark:bg-purple-900/30 rounded-lg hover:bg-purple-100 dark:hover:bg-purple-900/50 transition-colors duration-200 group">
                             <div
