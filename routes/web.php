@@ -50,6 +50,9 @@ Route::middleware('auth')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::get('/teachers', [TeacherProfileController::class, 'index'])->name('teachers.index');
     Route::get('/teachers/{teacher}', [TeacherProfileController::class, 'show'])->name('teachers.show');
+    
+    // Public Course Preview - ทุก role ที่ login แล้วสามารถดู preview คอร์สได้
+    Route::get('/courses/{course}/preview', [TeacherProfileController::class, 'coursePreview'])->name('courses.preview');
 });
 
 // --------------------------------------------------------------
@@ -126,6 +129,9 @@ Route::middleware(['auth', 'student'])->prefix('student')->name('student.')->gro
 Route::middleware(['auth', 'teacher'])->prefix('teacher')->name('teacher.')->group(function () {
     // ส่ง corse ไปที่ TeacherCourseController
     Route::resource('courses', TeacherCourseController::class);
+    
+    // Route สำหรับอัปโหลดรูปภาพจาก Quill Editor
+    Route::post('lessons/upload-image', [App\Http\Controllers\Teacher\LessonController::class, 'uploadImage'])->name('lessons.upload-image');
     
     // Route สำหรับดูนักเรียนในคอร์ส
     Route::get('courses/{course}/students', [TeacherCourseController::class, 'students'])->name('courses.students');

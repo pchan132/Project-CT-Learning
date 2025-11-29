@@ -547,14 +547,14 @@
                     // Remove existing editor
                     const editorContainer = document.querySelector('#content_text').parentNode;
                     editorContainer.innerHTML =
-                        '<textarea id="content_text" name="content_text" style="display:none;"></textarea><div id="quill-editor"></div>';
+                        '<textarea id="content_text" name="content_text" style="display:none;"></textarea><div id="quill-editor" style="height: 400px;"></div>';
                 }
 
-                // Create Quill editor
+                // Create Quill editor with image upload handler
                 const quillEditor = document.getElementById('quill-editor');
                 const textarea = document.getElementById('content_text');
 
-                editorInstance = new Quill('#quill-editor', window.quillConfig);
+                editorInstance = window.initQuillWithImageUpload('#quill-editor');
 
                 // Set initial content if exists
                 if (textarea.value) {

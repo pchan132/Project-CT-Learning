@@ -42,11 +42,12 @@
                         <div class="flex items-center">
                             @if ($course->teacher->profile_image)
                                 <img src="{{ asset('storage/' . $course->teacher->profile_image) }}"
-                                    class="w-8 h-8 rounded-full mr-2 border-2 border-white/50">
+                                    alt="{{ $course->teacher->name }}"
+                                    class="w-8 h-8 rounded-full mr-2 border-2 border-white/50 object-cover">
                             @else
                                 <div
                                     class="w-8 h-8 rounded-full mr-2 bg-white/20 flex items-center justify-center text-sm font-bold">
-                                    {{ strtoupper(substr($course->teacher->name, 0, 1)) }}
+                                    {{ mb_substr($course->teacher->name, 0, 1) }}
                                 </div>
                             @endif
                             <span>ผู้สอน: {{ $course->teacher->name }}</span>

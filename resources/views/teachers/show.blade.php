@@ -126,18 +126,13 @@
 
                                 <!-- Action Button -->
                                 @auth
-                                    @if (auth()->user()->isStudent())
-                                        <a href="{{ route('student.courses.preview', $course) }}"
-                                            class="block w-full text-center bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 rounded-lg transition-colors">
-                                            ดูรายละเอียดคอร์ส
-                                        </a>
-                                    @elseif(auth()->user()->isTeacher() && auth()->id() === $teacher->id)
+                                    @if (auth()->user()->isTeacher() && auth()->id() === $teacher->id)
                                         <a href="{{ route('teacher.courses.show', $course) }}"
                                             class="block w-full text-center bg-green-600 hover:bg-green-700 text-white font-medium py-2.5 rounded-lg transition-colors">
                                             จัดการคอร์ส
                                         </a>
                                     @else
-                                        <a href="{{ route('student.courses.preview', $course) }}"
+                                        <a href="{{ route('courses.preview', $course) }}"
                                             class="block w-full text-center bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 rounded-lg transition-colors">
                                             ดูรายละเอียดคอร์ส
                                         </a>

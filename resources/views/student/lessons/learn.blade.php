@@ -129,9 +129,9 @@
                     <div class="p-6 md:p-8">
                         @switch($lesson->content_type)
                             @case('TEXT')
-                                <div class="prose prose-lg dark:prose-invert max-w-none">
-                                    <div class="text-gray-800 dark:text-gray-200 leading-relaxed whitespace-pre-wrap">
-                                        {!! nl2br(e($lesson->content_text)) !!}
+                                <div class="ql-snow">
+                                    <div class="ql-editor lesson-content">
+                                        {!! $lesson->content_text !!}
                                     </div>
                                 </div>
                             @break

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Course;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -109,5 +110,32 @@ class TeacherProfileController extends Controller
 
         return redirect()->route('teacher.profile.edit')
             ->with('success', 'ลบรูปโปรไฟล์เรียบร้อยแล้ว');
+    }
+
+    /**
+     * แสดง Preview คอร์ส (สำหรับทุก role ที่ login)
+     */
+    public function coursePreview(Course $course)
+    {
+        $user = Auth::user();
+
+        // ถ้าเป็น student และลงทะเบียนแล้ว redirect ไปหน้า show
+        if ($user->isStudent() && $course->isEnrolledByStudent($user->id)) {
+            return redirect()->route('student.courses.show', $course);
+        }
+
+        // ถ้าเป็น teacher เจ้าของคอร์ส redirect ไปหน้าจัดการ
+        if ($user->isTeacher() && $course->teacher_id === $user->id) {
+            return redirect()->route('teacher.courses.show', $course);
+        }
+
+        // โหลดข้อมูลคอร์สพร้อม modules และ teacher
+        $course->load(['modules.lessons', 'teacher']);
+        $course->loadCount('enrollments');
+
+        // นับจำนวน Quiz
+        $course->quizCount = \App\Models\Quiz::whereIn('module_id', $course->modules->pluck('id'))->count();
+
+        return view('courses.preview', compact('course'));
     }
 }

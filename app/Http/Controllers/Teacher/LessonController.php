@@ -301,4 +301,36 @@ class LessonController extends Controller
 
         return response()->json(['success' => true]);
     }
+
+    /**
+     * Upload image for Quill Editor
+     */
+    public static function uploadImage(Request $request)
+    {
+        $request->validate([
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048', // 2MB max
+        ], [
+            'image.required' => 'กรุณาเลือกรูปภาพ',
+            'image.image' => 'ไฟล์ที่เลือกต้องเป็นรูปภาพ',
+            'image.mimes' => 'รูปภาพต้องเป็นไฟล์ประเภท: jpeg, png, jpg, gif, webp',
+            'image.max' => 'รูปภาพต้องมีขนาดไม่เกิน 2MB',
+        ]);
+
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $filename = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+            
+            $path = $image->storeAs('lessons/images', $filename, 'public');
+            
+            return response()->json([
+                'success' => true,
+                'url' => asset('storage/' . $path)
+            ]);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'ไม่พบรูปภาพ'
+        ], 400);
+    }
 }
