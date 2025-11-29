@@ -598,31 +598,465 @@ public function handleFileUpload(UploadedFile $file, string $type)
 - **Features**: Bold, italic, underline, lists, links
 - **Sanitization**: Strip dangerous HTML tags
 - **Storage**: Store as HTML in database
+- **Customization**: Thai font support, custom toolbar
+- **Auto-save**: Auto-save functionality every 30 seconds
+
+##### Rich Text Editor Features
+- **Text Formatting**: Bold, italic, underline, strikethrough
+- **Headers**: H1, H2, H3, H4, H5, H6
+- **Lists**: Ordered lists, unordered lists, nested lists
+- **Alignment**: Left, center, right, justify
+- **Links**: Internal and external links with validation
+- **Images**: Image upload and embedding (future)
+- **Tables**: Basic table creation and editing (future)
+- **Code Blocks**: Inline code and code blocks (future)
+- **Quotes**: Blockquotes and inline quotes
+- **Colors**: Text and background colors (limited palette)
+
+##### Rich Text Editor Implementation
 
 ```html
 <!-- Rich Text Editor Implementation -->
-<div x-data="richTextEditor">
-    <div id="editor" x-ref="editor"></div>
-    <input type="hidden" name="content_text" x-model="content">
+<div x-data="richTextEditor" class="text-editor-container">
+    <!-- Editor Toolbar -->
+    <div class="editor-toolbar bg-gray-100 dark:bg-gray-700 rounded-t-lg p-3 border border-gray-300 dark:border-gray-600">
+        <div class="flex flex-wrap gap-2">
+            <!-- Text Formatting -->
+            <div class="btn-group">
+                <button type="button" @click="formatText('bold')"
+                    class="toolbar-btn" title="ตัวหนา (Ctrl+B)">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M15.6 10.79c.97-.67 1.65-1.77 1.65-2.79 0-2.09-2.11-3.83-4.58-3.83H7v12h6.04c2.9 0 4.96-1.83 4.96-4.33 0-1.04-.39-1.85-1.4-2.05z"/>
+                        <path d="M7 3h4.83c2.27 0 3.83 1.46 3.83 3.17 0 1.71-1.56 3.17-3.83 3.17H7V3z"/>
+                    </svg>
+                </button>
+                <button type="button" @click="formatText('italic')"
+                    class="toolbar-btn" title="ตัวเอียง (Ctrl+I)">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M10 4v3h2.21c.45 0 .67.54.67.83 0 .29-.22.83-.67.83H10v5h3.17c.45 0 .67.54.67.83 0 .29-.22.83-.67.83H10v3h4.17c.45 0 .67.54.67.83 0 .29-.22.83-.67.83H10z"/>
+                    </svg>
+                </button>
+                <button type="button" @click="formatText('underline')"
+                    class="toolbar-btn" title="ขีดเส้นใต้ (Ctrl+U)">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 17c3.31 0 6-2.69 6-6V3h-2.5v8c0 1.93-1.57 3.5-3.5 3.5S8.5 12.93 8.5 11V3H6v8c0 3.31 2.69 6 6 6zm-7 2v2h14v-2H5z"/>
+                    </svg>
+                </button>
+                <button type="button" @click="formatText('strike')"
+                    class="toolbar-btn" title="ขีดขีดทับ">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.56l-1.45-1.45c-.3-.3-.77-.3-1.06 0L12 9.24 9.87 7.11c-.3-.3-.77-.3-1.06 0L7.36 8.56c-.3.3-.3.3-.77 0-1.06L8.43 6.43c.3-.3.77-.3 1.06 0L12 8.94l2.51-2.51c.3-.3.77-.3 1.06 0l1.45 1.45c.3.3.3.77 0 1.06l-1.07 1.07 1.07 1.07c.3.3.3.77 0 1.06z"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Headers -->
+            <div class="btn-group">
+                <select @change="formatText('header', $event.target.value)"
+                    class="toolbar-select" title="หัวข้อ">
+                    <option value="">ปกติว</option>
+                    <option value="1">หัวข้อ 1</option>
+                    <option value="2">หัวข้อ 2</option>
+                    <option value="3">หัวข้อ 3</option>
+                    <option value="4">หัวข้อ 4</option>
+                    <option value="5">หัวข้อ 5</option>
+                    <option value="6">หัวข้อ 6</option>
+                </select>
+            </div>
+
+            <!-- Lists -->
+            <div class="btn-group">
+                <button type="button" @click="formatText('list', 'ordered')"
+                    class="toolbar-btn" title="รายการลำดับ">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M2 17h2v.5H3v.5h1v.5H2v1h3v-1H4v-.5h1v-.5H4v-.5h1v-1H2zm0-4h2v.5H3v.5h1v.5H2v1h3v-1H4v-.5h1v-.5H4v-.5h1v-1H2zm0-4h2v.5H3v.5h1v.5H2v1h3v-1H4v-.5h1v-.5H4v-.5h1v-1H2zm11-1.5V14l-3.5-2L9 14v-1.5l2.5-1.5L11 7.5v1.5h7V7.5h-7zM2 6h2v.5H3v.5h1v.5H2v1h3V9H4v-.5h1V8H4V7.5h1V7H2v1z"/>
+                    </svg>
+                </button>
+                <button type="button" @click="formatText('list', 'bullet')"
+                    class="toolbar-btn" title="รายการไม่มีลำดับ">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M4 10.5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm0-6c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm6 6.5h12v-1H10v1zm0-6h12v-1H10v1z"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Alignment -->
+            <div class="btn-group">
+                <button type="button" @click="formatText('align', '')"
+                    class="toolbar-btn" title="จัดชิดซ้าย">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M15 15H3v2h12v-2zm0-8H3v2h12V7zM3 13h18v-2H3v2zm0 8h18v-2H3v2zM3 3v2h18V3H3z"/>
+                    </svg>
+                </button>
+                <button type="button" @click="formatText('align', 'center')"
+                    class="toolbar-btn" title="จัดกลาง">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M7 15v2h10v-2H7zm-4 6h18v-2H3v2zm0-8h18v-2H3v2zm4-6v2h10V7H7zM3 3v2h18V3H3z"/>
+                    </svg>
+                </button>
+                <button type="button" @click="formatText('align', 'right')"
+                    class="toolbar-btn" title="จัดชิดขวา">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M3 21h18v-2H3v2zm0-4h18v-2H3v2zm0-4h18v-2H3v2zm0-4h18V7H3v2zm0-6v2h18V3H3z"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Links -->
+            <div class="btn-group">
+                <button type="button" @click="insertLink()"
+                    class="toolbar-btn" title="แทรกลิงก์">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5c-.34 0-.66.03-.98.07l-4.73 2.01c-.39.15-.72.48-.87.63l-2.01-4.73z"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Clean -->
+            <div class="btn-group">
+                <button type="button" @click="formatText('clean')"
+                    class="toolbar-btn" title="ล้างการจัดรูปแบบ">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M19.43 12.98c.04-.32.07-.64.07-.98 0-3.87-3.13-7-7-7s-7 3.13-7 7h.01c0 .34.03.66.07.98l2.01 4.73c.15.37.48.63.87.63l4.73 2.01c.32.04.65.07.98.07 3.87 0 7-3.13 7-7s-3.13-7-7-7c-.34 0-.66.03-.98.07l-4.73 2.01c-.39.15-.72.48-.87.63l-2.01-4.73zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5zm7.43-2.53c.04-.32.07-.64.07-.98 0-3.87-3.13-7-7-7s-7 3.13-7 7h.01c0 .34.03.66.07.98l2.01 4.73c.15.37.48.63.87.63l4.73 2.01c.32.04.65.07.98.07 3.87 0 7-3.13 7-7s-3.13-7-7-7c-.34 0-.66.03-.98.07l-4.73 2.01c-.39.15-.72.48-.87.63l-2.01-4.73z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Editor Content Area -->
+    <div id="editor" x-ref="editor"
+        class="editor-content min-h-[300px] bg-white dark:bg-gray-800 rounded-b-lg p-4 border border-t-0 border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        contenteditable="true"
+        @input="updateContent()"
+        @keydown="handleKeydown($event)">
+    </div>
+
+    <!-- Hidden Input for Form Submission -->
+    <input type="hidden" name="content_text" x-model="content" id="content_text">
     
-    <script>
-        const quill = new Quill('#editor', {
-            theme: 'snow',
-            modules: {
-                toolbar: [
-                    ['bold', 'italic', 'underline'],
-                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                    ['link', 'clean']
-                ]
-            }
-        });
-        
-        quill.on('text-change', function() {
-            const content = quill.root.innerHTML;
-            Alpine.store.editor.content = content;
-        });
-    </script>
+    <!-- Character Count -->
+    <div class="flex justify-between items-center mt-2 text-sm text-gray-600 dark:text-gray-400">
+        <span>จำนวนตัวอักษร: <span x-text="characterCount">0</span></span>
+        <span>จำนวนคำ: <span x-text="wordCount">0</span></span>
+    </div>
 </div>
+
+<script>
+// Rich Text Editor Alpine.js Component
+document.addEventListener('alpine:init', () => {
+    Alpine.data('richTextEditor', () => ({
+        content: '',
+        autoSaveInterval: null,
+        
+        init() {
+            // Initialize Quill editor
+            this.quill = new Quill(this.$refs.editor, {
+                theme: 'snow',
+                placeholder: 'เริ่มพิมพ์เนื้อหาที่นี่...',
+                modules: {
+                    toolbar: false, // We use custom toolbar
+                    clipboard: {
+                        matchVisual: false
+                    }
+                },
+                formats: [
+                    'bold', 'italic', 'underline', 'strike',
+                    'header', 'list', 'bullet',
+                    'align', 'link', 'clean'
+                ]
+            });
+
+            // Set initial content if exists
+            if (this.content) {
+                this.quill.root.innerHTML = this.content;
+            }
+
+            // Set up content change listener
+            this.quill.on('text-change', () => {
+                this.updateContent();
+            });
+
+            // Set up auto-save
+            this.startAutoSave();
+
+            // Set up keyboard shortcuts
+            this.setupKeyboardShortcuts();
+        },
+
+        updateContent() {
+            this.content = this.quill.root.innerHTML;
+            this.updateCounts();
+        },
+
+        updateCounts() {
+            const text = this.quill.getText();
+            this.characterCount = text.length;
+            this.wordCount = text.trim().split(/\s+/).filter(word => word.length > 0).length;
+        },
+
+        formatText(format, value = null) {
+            const range = this.quill.getSelection();
+            if (range) {
+                this.quill.format(format, value, 'user');
+            }
+        },
+
+        insertLink() {
+            const range = this.quill.getSelection();
+            if (range) {
+                const url = prompt('กรุณาใส่ URL:');
+                if (url) {
+                    const text = this.quill.getText(range);
+                    const link = text || url;
+                    this.quill.formatText(range, 'link', url, 'user');
+                }
+            }
+        },
+
+        handleKeydown(event) {
+            // Handle common keyboard shortcuts
+            if (event.ctrlKey || event.metaKey) {
+                switch (event.key) {
+                    case 'b':
+                        event.preventDefault();
+                        this.formatText('bold');
+                        break;
+                    case 'i':
+                        event.preventDefault();
+                        this.formatText('italic');
+                        break;
+                    case 'u':
+                        event.preventDefault();
+                        this.formatText('underline');
+                        break;
+                    case 's':
+                        event.preventDefault();
+                        this.formatText('strike');
+                        break;
+                }
+            }
+        },
+
+        setupKeyboardShortcuts() {
+            // Additional keyboard shortcuts can be set up here
+        },
+
+        startAutoSave() {
+            this.autoSaveInterval = setInterval(() => {
+                this.autoSave();
+            }, 30000); // Auto-save every 30 seconds
+        },
+
+        autoSave() {
+            if (this.content.trim()) {
+                // Send auto-save request to server
+                fetch('/lessons/auto-save', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    },
+                    body: JSON.stringify({
+                        content: this.content,
+                        lesson_id: '{{ $lesson->id }}'
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        console.log('Auto-saved at:', new Date());
+                    }
+                })
+                .catch(error => {
+                    console.error('Auto-save failed:', error);
+                });
+            }
+        },
+
+        destroy() {
+            if (this.autoSaveInterval) {
+                clearInterval(this.autoSaveInterval);
+            }
+        }
+    }));
+});
+</script>
+
+<style>
+/* Rich Text Editor Styles */
+.text-editor-container {
+    @apply w-full;
+}
+
+.editor-toolbar {
+    @apply flex items-center justify-between;
+}
+
+.btn-group {
+    @apply flex items-center gap-1;
+}
+
+.toolbar-btn {
+    @apply p-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-gray-600 rounded transition-colors;
+}
+
+.toolbar-btn:hover {
+    @apply bg-blue-100 dark:bg-blue-800 text-blue-600 dark:text-blue-300;
+}
+
+.toolbar-select {
+    @apply px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500;
+}
+
+.editor-content {
+    font-family: 'Sarabun', 'TH Sarabun New', sans-serif;
+    line-height: 1.6;
+}
+
+.editor-content h1 { @apply text-2xl font-bold mb-4 mt-6; }
+.editor-content h2 { @apply text-xl font-bold mb-3 mt-5; }
+.editor-content h3 { @apply text-lg font-bold mb-2 mt-4; }
+.editor-content h4 { @apply text-base font-bold mb-2 mt-3; }
+.editor-content h5 { @apply text-sm font-bold mb-1 mt-2; }
+.editor-content h6 { @apply text-xs font-bold mb-1 mt-2; }
+
+.editor-content ul { @apply list-disc list-inside mb-4; }
+.editor-content ol { @apply list-decimal list-inside mb-4; }
+.editor-content li { @apply mb-1; }
+
+.editor-content a {
+    @apply text-blue-600 dark:text-blue-400 underline hover:text-blue-800 dark:hover:text-blue-300;
+}
+
+.editor-content blockquote {
+    @apply border-l-4 border-gray-300 dark:border-gray-600 pl-4 italic text-gray-600 dark:text-gray-400 my-4;
+}
+
+.editor-content code {
+    @apply bg-gray-100 dark:bg-gray-800 px-1 py-0.5 text-sm font-mono text-gray-800 dark:text-gray-200 rounded;
+}
+
+.editor-content pre {
+    @apply bg-gray-100 dark:bg-gray-800 p-4 rounded-lg overflow-x-auto my-4;
+}
+
+.editor-content pre code {
+    @apply bg-transparent p-0;
+}
+
+/* Quill Editor Customization */
+.ql-toolbar {
+    @apply border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700;
+}
+
+.ql-toolbar .ql-stroke {
+    @apply stroke-gray-600 dark:stroke-gray-300;
+}
+
+.ql-toolbar .ql-fill {
+    @apply fill-gray-600 dark:fill-gray-300;
+}
+
+.ql-toolbar .ql-picker {
+    @apply text-gray-600 dark:text-gray-300;
+}
+
+.ql-container {
+    @apply font-sarabun text-gray-900 dark:text-white;
+}
+
+.ql-editor {
+    @apply min-h-[300px] p-4;
+}
+</style>
+```
+
+##### Rich Text Editor Security Features
+
+```php
+// Content Sanitization Service
+class RichTextSanitizer
+{
+    public function sanitize(string $content): string
+    {
+        // Allowed HTML tags
+        $allowedTags = [
+            'p', 'br', 'strong', 'b', 'em', 'i', 'u', 'strike',
+            'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+            'ul', 'ol', 'li',
+            'blockquote', 'code', 'pre',
+            'a'
+        ];
+
+        // Allowed attributes
+        $allowedAttributes = [
+            'href' => ['a'],
+            'title' => ['a'],
+            'target' => ['a'],
+            'class' => ['pre', 'code']
+        ];
+
+        // Sanitize content
+        $config = HTMLPurifier_Config::createDefault();
+        $config->set('HTML.Allowed', implode(',', $allowedTags));
+        $config->set('HTML.AllowedAttributes', $allowedAttributes);
+        $config->set('URI.AllowedSchemes', ['http', 'https', 'mailto']);
+        $config->set('AutoFormat.RemoveEmpty', true);
+        $config->set('AutoFormat.RemoveSpansWithoutAttributes', true);
+
+        $purifier = new HTMLPurifier($config);
+        return $purifier->purify($content);
+    }
+
+    public function validateLink(string $url): bool
+    {
+        // Validate URL format
+        if (!filter_var($url, FILTER_VALIDATE_URL)) {
+            return false;
+        }
+
+        // Check for malicious protocols
+        $allowedSchemes = ['http', 'https', 'mailto'];
+        $scheme = parse_url($url, PHP_URL_SCHEME);
+        
+        return in_array($scheme, $allowedSchemes);
+    }
+}
+```
+
+##### Rich Text Editor Auto-save Implementation
+
+```php
+// Auto-save Controller
+class LessonController extends Controller
+{
+    public function autoSave(Request $request)
+    {
+        $request->validate([
+            'content' => 'required|string|max:10000',
+            'lesson_id' => 'required|exists:lessons,id'
+        ]);
+
+        $lesson = Lesson::findOrFail($request->lesson_id);
+        
+        // Check authorization
+        if (!auth()->user()->can('update', $lesson)) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
+        }
+
+        // Save content to temporary storage or database
+        $lesson->temp_content = $request->content;
+        $lesson->temp_updated_at = now();
+        $lesson->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Content auto-saved',
+            'timestamp' => now()->toISOString()
+        ]);
+    }
+}
 ```
 
 #### 3. Video Integration
