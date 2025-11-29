@@ -40,25 +40,41 @@ class CourseController extends Controller
     /**
      * แสดงรายการคอร์สทั้งหมดที่เปิดให้ลงทะเบียน
      */
-    public function index()
+    public function index(Request $request)
     {
+        $search = $request->input('search');
+
         // คอร์สที่นักเรียนลงทะเบียนแล้ว
-        $enrolledCourses = Course::with(['teacher', 'enrollments' => function($query) {
+        $enrolledQuery = Course::with(['teacher', 'enrollments' => function($query) {
             $query->where('student_id', auth()->id());
         }])
         ->whereHas('enrollments', function($query) {
             $query->where('student_id', auth()->id());
-        })
-        ->get();
+        });
 
         // คอร์สที่ยังไม่ได้ลงทะเบียน
-        $availableCourses = Course::with('teacher')
+        $availableQuery = Course::with('teacher')
             ->whereDoesntHave('enrollments', function($query) {
                 $query->where('student_id', auth()->id());
-            })
-            ->get();
+            });
 
-        return view('student.courses.index', compact('enrolledCourses', 'availableCourses'));
+        // ถ้ามีคำค้นหา
+        if ($search) {
+            $enrolledQuery->where(function($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%");
+            });
+
+            $availableQuery->where(function($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
+        $enrolledCourses = $enrolledQuery->paginate(9, ['*'], 'enrolled_page');
+        $availableCourses = $availableQuery->paginate(9, ['*'], 'available_page');
+
+        return view('student.courses.index', compact('enrolledCourses', 'availableCourses', 'search'));
     }
 
     /**

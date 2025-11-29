@@ -15,13 +15,35 @@ class CourseController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        // คอร์สทั้งหมดที่ครูผู้สอนคนนี้เป็นเจ้าของ
-        // เก็บไว้ในตัวแปร $courses
-        $courses = Course::where('teacher_id', auth()->id())->get();
-        // ส่ง $courses ไปที่มุมมอง teacher.dashboard
-        return view('teacher.dashboard', compact('courses'));
+        // ค้นหาคอร์ส
+        $search = $request->input('search');
+        
+        $query = Course::where('teacher_id', auth()->id())
+            ->withCount(['modules', 'enrollments'])
+            ->with(['modules.lessons']);
+        
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+        
+        // Paginate 6 items per page
+        $courses = $query->orderBy('created_at', 'desc')->paginate(6);
+        
+        // ถ้าเป็น dashboard route ให้แสดง dashboard view
+        if ($request->routeIs('teacher.dashboard')) {
+            $allCourses = Course::where('teacher_id', auth()->id())
+                ->with(['modules.lessons', 'enrollments'])
+                ->get();
+            return view('teacher.dashboard', ['courses' => $allCourses]);
+        }
+        
+        // ส่ง $courses ไปที่มุมมอง teacher.courses.index
+        return view('teacher.courses.index', compact('courses', 'search'));
     }
 
     /**
