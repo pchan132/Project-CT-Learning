@@ -36,10 +36,11 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
+        // บังคับ role เป็น student เสมอ (Teacher ต้องให้ Admin สร้างให้)
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'role' => $request->role, // เพิ่มบรรทัดนี้: บันทึก Role ลงฐานข้อมูล
+            'role' => 'student',
             'password' => Hash::make($request->password),
         ]);
 
@@ -47,13 +48,7 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        // เช็ค Role เพื่อพาไปหน้า Dashboard ที่ถูกต้อง 
-        if ($user->role === 'student') {
-            return redirect()->route('student.dashboard'); // สมมติว่ามีเส้นทางนี้สำหรับนักเรียน
-        } elseif ($user->role === 'teacher') {
-            return redirect()->route('teacher.dashboard'); // สมมติว่ามีเส้นทางนี้สำหรับครู
-        }
-        return redirect(RouteServiceProvider::HOME);
+        return redirect()->route('student.dashboard');
     }
 
     /**
@@ -90,33 +85,19 @@ class RegisteredUserController extends Controller
 
     /**
      * Display the teacher registration view.
+     * ปิดการลงทะเบียน Teacher - ให้ Admin สร้างให้เท่านั้น
      */
-    public function createTeacher(): View
+    public function createTeacher(): RedirectResponse
     {
-        return view('auth.register', ['role' => 'teacher']);
+        return redirect()->route('register')->with('warning', 'การลงทะเบียนเป็นอาจารย์ต้องติดต่อผู้ดูแลระบบ');
     }
 
     /**
      * Handle an incoming teacher registration request.
+     * ปิดการลงทะเบียน Teacher - ให้ Admin สร้างให้เท่านั้น
      */
     public function storeTeacher(Request $request): RedirectResponse
     {
-        $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-        ]);
-
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'role' => 'teacher',
-            'password' => Hash::make($request->password),
-        ]);
-
-        event(new Registered($user));
-        Auth::login($user);
-
-        return redirect()->route('teacher.dashboard');
+        return redirect()->route('register')->with('warning', 'การลงทะเบียนเป็นอาจารย์ต้องติดต่อผู้ดูแลระบบ');
     }
 }
