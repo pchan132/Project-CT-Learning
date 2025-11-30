@@ -72,6 +72,7 @@ class TeacherProfileController extends Controller
             'position' => 'nullable|string|max:255',
             'bio' => 'nullable|string|max:1000',
             'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'signature_image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
         // อัปโหลดรูปโปรไฟล์
@@ -83,6 +84,17 @@ class TeacherProfileController extends Controller
 
             $path = $request->file('profile_image')->store('profile-images', 'public');
             $validated['profile_image'] = $path;
+        }
+
+        // อัปโหลดลายเซ็น
+        if ($request->hasFile('signature_image')) {
+            // ลบลายเซ็นเก่า
+            if ($teacher->signature_image) {
+                Storage::disk('public')->delete($teacher->signature_image);
+            }
+
+            $path = $request->file('signature_image')->store('signatures', 'public');
+            $validated['signature_image'] = $path;
         }
 
         $teacher->update($validated);

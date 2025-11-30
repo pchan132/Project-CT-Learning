@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Student;
 use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\Certificate;
+use App\Models\CertificateTemplate;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Storage;
@@ -62,20 +63,34 @@ class CertificateController extends Controller
             return redirect()->route('student.certificates.show', $existingCert->id);
         }
         
+        // ดึง Template ที่ใช้งานอยู่
+        $template = CertificateTemplate::getActiveTemplate();
+        
         // สร้าง certificate
         $certificate = Certificate::create([
             'student_id' => $studentId,
             'course_id' => $course->id,
             'certificate_number' => Certificate::generateCertificateNumber(),
             'issued_date' => now(),
+            'template_id' => $template?->id,
         ]);
         
-        // สร้าง PDF
-        $pdf = Pdf::loadView('certificates.template', [
-            'certificate' => $certificate,
-            'student' => auth()->user(),
-            'course' => $course,
-        ]);
+        // สร้าง PDF - ใช้ dynamic template ถ้ามี template หรือ fallback เป็น template เดิม
+        if ($template) {
+            $pdf = Pdf::loadView('certificates.template-dynamic', [
+                'template' => $template,
+                'certificate' => $certificate,
+                'student' => auth()->user(),
+                'course' => $course,
+                'teacherSignature' => $course->teacher->signature_image,
+            ])->setPaper('a4', 'landscape');
+        } else {
+            $pdf = Pdf::loadView('certificates.template', [
+                'certificate' => $certificate,
+                'student' => auth()->user(),
+                'course' => $course,
+            ]);
+        }
         
         // บันทึก PDF
         $filename = 'certificates/cert-' . $certificate->id . '.pdf';
@@ -99,7 +114,7 @@ class CertificateController extends Controller
             abort(403, 'คุณไม่มีสิทธิ์เข้าถึงใบประกาศนียบัตรนี้');
         }
         
-        $certificate->load('course', 'student');
+        $certificate->load(['course.teacher', 'student', 'template']);
         
         return view('student.certificates.show', compact('certificate'));
     }
@@ -114,11 +129,63 @@ class CertificateController extends Controller
             abort(403, 'คุณไม่มีสิทธิ์ดาวน์โหลดใบประกาศนียบัตรนี้');
         }
         
-        if (!$certificate->pdf_path || !Storage::exists('public/' . $certificate->pdf_path)) {
-            return back()->with('error', 'ไม่พบไฟล์ใบประกาศนียบัตร');
+        // สร้าง PDF ใหม่ทุกครั้งเพื่อให้ตรงกับ template ล่าสุด
+        $certificate->load(['course.teacher', 'student']);
+        $template = $certificate->template ?? CertificateTemplate::getActiveTemplate();
+        
+        if ($template) {
+            $pdf = Pdf::loadView('certificates.template-dynamic', [
+                'template' => $template,
+                'certificate' => $certificate,
+                'student' => $certificate->student,
+                'course' => $certificate->course,
+            ])->setPaper('a4', 'landscape');
+        } else {
+            $pdf = Pdf::loadView('certificates.template', [
+                'certificate' => $certificate,
+                'student' => $certificate->student,
+                'course' => $certificate->course,
+            ])->setPaper('a4', 'landscape');
         }
         
-        return Storage::download('public/' . $certificate->pdf_path, 'certificate-' . $certificate->certificate_number . '.pdf');
+        // บันทึก PDF ใหม่
+        $filename = 'certificates/cert-' . $certificate->id . '.pdf';
+        Storage::put('public/' . $filename, $pdf->output());
+        $certificate->update(['pdf_path' => $filename, 'template_id' => $template?->id]);
+        
+        return $pdf->download('certificate-' . $certificate->certificate_number . '.pdf');
+    }
+
+    /**
+     * Regenerate certificate PDF with latest template
+     */
+    public function regenerate(Certificate $certificate)
+    {
+        // Make sure this is student's certificate
+        if ($certificate->student_id !== auth()->id()) {
+            abort(403, 'คุณไม่มีสิทธิ์เข้าถึงใบประกาศนียบัตรนี้');
+        }
+        
+        $certificate->load(['course.teacher', 'student']);
+        $template = CertificateTemplate::getActiveTemplate();
+        
+        if ($template) {
+            $pdf = Pdf::loadView('certificates.template-dynamic', [
+                'template' => $template,
+                'certificate' => $certificate,
+                'student' => $certificate->student,
+                'course' => $certificate->course,
+            ])->setPaper('a4', 'landscape');
+            
+            // บันทึก PDF ใหม่
+            $filename = 'certificates/cert-' . $certificate->id . '.pdf';
+            Storage::put('public/' . $filename, $pdf->output());
+            $certificate->update(['pdf_path' => $filename, 'template_id' => $template->id]);
+            
+            return back()->with('success', 'สร้างใบประกาศนียบัตรใหม่ตาม Template ล่าสุดเรียบร้อย!');
+        }
+        
+        return back()->with('error', 'ไม่พบ Template ที่ใช้งาน');
     }
 
     /**

@@ -123,6 +123,7 @@ Route::middleware(['auth', 'student'])->prefix('student')->name('student.')->gro
     Route::post('/courses/{course}/certificates/generate', [App\Http\Controllers\Student\CertificateController::class, 'generate'])->name('certificates.generate');
     Route::get('/certificates/{certificate}', [App\Http\Controllers\Student\CertificateController::class, 'show'])->name('certificates.show');
     Route::get('/certificates/{certificate}/download', [App\Http\Controllers\Student\CertificateController::class, 'download'])->name('certificates.download');
+    Route::post('/certificates/{certificate}/regenerate', [App\Http\Controllers\Student\CertificateController::class, 'regenerate'])->name('certificates.regenerate');
 });
 
 // ของครู 
@@ -203,6 +204,11 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/courses/{course}/edit', [App\Http\Controllers\Admin\AdminController::class, 'editCourse'])->name('courses.edit');
     Route::put('/courses/{course}', [App\Http\Controllers\Admin\AdminController::class, 'updateCourse'])->name('courses.update');
     Route::delete('/courses/{course}', [App\Http\Controllers\Admin\AdminController::class, 'destroyCourse'])->name('courses.destroy');
+    
+    // Certificate Template Management
+    Route::resource('certificate-templates', App\Http\Controllers\Admin\CertificateTemplateController::class);
+    Route::post('/certificate-templates/{certificate_template}/set-active', [App\Http\Controllers\Admin\CertificateTemplateController::class, 'setActive'])->name('certificate-templates.set-active');
+    Route::get('/certificate-templates/{certificate_template}/preview', [App\Http\Controllers\Admin\CertificateTemplateController::class, 'preview'])->name('certificate-templates.preview');
     
     // Statistics
     Route::get('/statistics', [App\Http\Controllers\Admin\AdminController::class, 'statistics'])->name('statistics');
