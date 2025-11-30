@@ -15,6 +15,7 @@ class Certificate extends Model
         'certificate_number',
         'pdf_path',
         'issued_date',
+        'template_id',
     ];
 
     protected $casts = [
@@ -35,6 +36,14 @@ class Certificate extends Model
     public function course()
     {
         return $this->belongsTo(Course::class);
+    }
+
+    /**
+     * Certificate uses Template
+     */
+    public function template()
+    {
+        return $this->belongsTo(CertificateTemplate::class, 'template_id');
     }
 
     /**

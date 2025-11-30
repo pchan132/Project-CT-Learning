@@ -25,6 +25,7 @@ class User extends Authenticatable
         'profile_image',
         'position',
         'bio',
+        'signature_image',
     ];
 
     /**
@@ -140,6 +141,17 @@ class User extends Authenticatable
         }
         
         // Default avatar with initials
+        return null;
+    }
+
+    /**
+     * ดึง URL ลายเซ็น
+     */
+    public function getSignatureImageUrlAttribute()
+    {
+        if ($this->signature_image) {
+            return asset('storage/' . $this->signature_image);
+        }
         return null;
     }
 
