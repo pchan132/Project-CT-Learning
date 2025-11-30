@@ -157,7 +157,8 @@
                                         </span>
                                     @endif
                                     <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">
-                                        {{ $bestAttempt->completed_at->diffForHumans() }}</p>
+                                        {{ $bestAttempt->completed_at ? $bestAttempt->completed_at->diffForHumans() : '-' }}
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -170,7 +171,7 @@
                                 <div class="flex items-center justify-between">
                                     <div>
                                         <p class="text-sm text-gray-600 dark:text-gray-400">
-                                            {{ $attempt->completed_at->format('d/m/Y H:i') }}
+                                            {{ $attempt->completed_at ? $attempt->completed_at->format('d/m/Y H:i') : 'กำลังทำ...' }}
                                         </p>
                                         <p class="text-xs text-gray-500 dark:text-gray-500">
                                             เวลาที่ใช้: {{ $attempt->duration }}

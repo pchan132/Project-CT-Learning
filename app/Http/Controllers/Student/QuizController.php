@@ -103,7 +103,10 @@ class QuizController extends Controller
             }
         }
 
-        return view('student.quizzes.take', compact('course', 'module', 'quiz', 'attempt', 'timeRemaining'));
+        // Load course with modules for sidebar
+        $course->load(['modules.lessons', 'modules.quizzes']);
+
+        return view('student.quizzes.take-fullscreen', compact('course', 'module', 'quiz', 'attempt', 'timeRemaining'));
     }
 
     /**
