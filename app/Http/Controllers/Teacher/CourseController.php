@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Teacher;
 
 use App\Http\Controllers\Controller;
 use App\Models\Course;
+use App\Models\Enrollment;
 use Illuminate\Http\Request;
 
 // ควบคุมการทำงานเกี่ยวกับคอร์สเรียนของครูผู้สอน
@@ -14,13 +15,35 @@ class CourseController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        // คอร์สทั้งหมดที่ครูผู้สอนคนนี้เป็นเจ้าของ
-        // เก็บไว้ในตัวแปร $courses
-        $courses = Course::where('teacher_id', auth()->id())->get();
-        // ส่ง $courses ไปที่มุมมอง teacher.dashboard
-        return view('teacher.dashboard', compact('courses'));
+        // ค้นหาคอร์ส
+        $search = $request->input('search');
+        
+        $query = Course::where('teacher_id', auth()->id())
+            ->withCount(['modules', 'enrollments'])
+            ->with(['modules.lessons']);
+        
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+        
+        // Paginate 6 items per page
+        $courses = $query->orderBy('created_at', 'desc')->paginate(6);
+        
+        // ถ้าเป็น dashboard route ให้แสดง dashboard view
+        if ($request->routeIs('teacher.dashboard')) {
+            $allCourses = Course::where('teacher_id', auth()->id())
+                ->with(['modules.lessons', 'enrollments'])
+                ->get();
+            return view('teacher.dashboard', ['courses' => $allCourses]);
+        }
+        
+        // ส่ง $courses ไปที่มุมมอง teacher.courses.index
+        return view('teacher.courses.index', compact('courses', 'search'));
     }
 
     /**
@@ -124,5 +147,95 @@ class CourseController extends Controller
         
         return redirect()->route('teacher.courses.index')
             ->with('success', 'ลบคอร์สสำเร็จ!');
+    }
+
+    /**
+     * Display students enrolled in the course with their progress.
+     */
+    public function students(Course $course)
+    {
+        // ตรวจสอบว่าเป็นเจ้าของคอร์สหรือไม่
+        if ($course->teacher_id !== auth()->id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        // ดึงข้อมูลนักเรียนที่ลงทะเบียนพร้อมข้อมูลความคืบหน้า
+        $enrollments = Enrollment::with(['student', 'course'])
+            ->where('course_id', $course->id)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        // คำนวณข้อมูลความคืบหน้าสำหรับแต่ละนักเรียน
+        $studentsProgress = $enrollments->map(function ($enrollment) use ($course) {
+            $student = $enrollment->student;
+            
+            // นับบทเรียนทั้งหมดและที่เรียนเสร็จ
+            $totalLessons = $course->getTotalLessonsAttribute();
+            $completedLessons = $course->getCompletedLessonsCount($student->id);
+            $progress = $course->getProgressForStudent($student->id);
+            
+            // ดึงข้อมูล Quiz attempts
+            $quizAttempts = \App\Models\QuizAttempt::whereHas('quiz.module', function($query) use ($course) {
+                $query->where('course_id', $course->id);
+            })->where('student_id', $student->id)->get();
+            
+            $totalQuizzes = $course->modules->sum(fn($m) => $m->quizzes->count());
+            $passedQuizzes = $quizAttempts->where('passed', true)->unique('quiz_id')->count();
+            $avgQuizScore = $quizAttempts->count() > 0 
+                ? round($quizAttempts->avg('score'), 1) 
+                : null;
+            
+            // ตรวจสอบใบประกาศ
+            $certificate = \App\Models\Certificate::where('course_id', $course->id)
+                ->where('student_id', $student->id)
+                ->first();
+            
+            // หา last activity
+            $lastLessonCompletion = \App\Models\LessonCompletion::whereHas('lesson.module', function($query) use ($course) {
+                $query->where('course_id', $course->id);
+            })->where('student_id', $student->id)
+              ->orderBy('created_at', 'desc')
+              ->first();
+            
+            $lastQuizAttempt = $quizAttempts->sortByDesc('created_at')->first();
+            
+            $lastActivity = null;
+            if ($lastLessonCompletion && $lastQuizAttempt) {
+                $lastActivity = $lastLessonCompletion->created_at > $lastQuizAttempt->created_at 
+                    ? $lastLessonCompletion->created_at 
+                    : $lastQuizAttempt->created_at;
+            } elseif ($lastLessonCompletion) {
+                $lastActivity = $lastLessonCompletion->created_at;
+            } elseif ($lastQuizAttempt) {
+                $lastActivity = $lastQuizAttempt->created_at;
+            }
+            
+            return [
+                'student' => $student,
+                'enrollment' => $enrollment,
+                'total_lessons' => $totalLessons,
+                'completed_lessons' => $completedLessons,
+                'progress' => $progress,
+                'total_quizzes' => $totalQuizzes,
+                'passed_quizzes' => $passedQuizzes,
+                'avg_quiz_score' => $avgQuizScore,
+                'has_certificate' => $certificate !== null,
+                'certificate' => $certificate,
+                'last_activity' => $lastActivity,
+                'enrolled_at' => $enrollment->created_at,
+            ];
+        });
+
+        // สถิติรวม
+        $stats = [
+            'total_students' => $enrollments->count(),
+            'avg_progress' => $studentsProgress->count() > 0 
+                ? round($studentsProgress->avg('progress'), 1) 
+                : 0,
+            'completed_students' => $studentsProgress->where('progress', 100)->count(),
+            'certificates_issued' => $studentsProgress->where('has_certificate', true)->count(),
+        ];
+
+        return view('teacher.courses.students', compact('course', 'studentsProgress', 'stats'));
     }
 }

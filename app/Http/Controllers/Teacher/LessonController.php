@@ -54,12 +54,14 @@ class LessonController extends Controller
 
         $data = $request->validate([
             'title' => 'required|string|max:255',
-            'content_type' => 'required|in:PDF,VIDEO,TEXT',
+            'content_type' => 'required|in:PDF,VIDEO,TEXT,GDRIVE,CANVA',
             'content_url' => 'nullable|string|max:500',
             'content_text' => 'nullable|required_if:content_type,TEXT|string',
             'file' => 'nullable|required_if:content_type,PDF,PPT|file|mimes:pdf,ppt,pptx|max:10240', // 10MB max
             'video_file' => 'nullable|file|mimes:mp4,webm,ogg,mov|max:102400', // 100MB max
             'video_type' => 'nullable|in:url,upload',
+            'gdrive_url' => 'nullable|required_if:content_type,GDRIVE|url|max:500',
+            'canva_url' => 'nullable|required_if:content_type,CANVA|url|max:500',
             'order' => 'required|integer|min:1',
         ]);
 
@@ -82,6 +84,16 @@ class LessonController extends Controller
             
             $path = $videoFile->storeAs('lessons/videos', $filename, 'public');
             $data['content_url'] = $path;
+        }
+
+        // จัดการ Google Drive URL
+        if ($request->input('content_type') === 'GDRIVE' && $request->input('gdrive_url')) {
+            $data['content_url'] = $request->input('gdrive_url');
+        }
+
+        // จัดการ Canva URL
+        if ($request->input('content_type') === 'CANVA' && $request->input('canva_url')) {
+            $data['content_url'] = $request->input('canva_url');
         }
 
         // ตรวจสอบว่า order ซ้ำหรือไม่
@@ -144,12 +156,14 @@ class LessonController extends Controller
 
         $data = $request->validate([
             'title' => 'required|string|max:255',
-            'content_type' => 'required|in:PDF,VIDEO,TEXT',
+            'content_type' => 'required|in:PDF,VIDEO,TEXT,GDRIVE,CANVA',
             'content_url' => 'nullable|string|max:500',
             'content_text' => 'nullable|string',
             'file' => 'nullable|file|mimes:pdf,ppt,pptx|max:10240', // 10MB max
             'video_file' => 'nullable|file|mimes:mp4,webm,ogg,mov|max:102400', // 100MB max
             'video_type' => 'nullable|in:url,upload',
+            'gdrive_url' => 'nullable|required_if:content_type,GDRIVE|url|max:500',
+            'canva_url' => 'nullable|required_if:content_type,CANVA|url|max:500',
             'order' => 'required|integer|min:1',
         ]);
 
@@ -182,6 +196,16 @@ class LessonController extends Controller
             
             $path = $videoFile->storeAs('lessons/videos', $filename, 'public');
             $data['content_url'] = $path;
+        }
+
+        // จัดการ Google Drive URL
+        if ($request->input('content_type') === 'GDRIVE' && $request->input('gdrive_url')) {
+            $data['content_url'] = $request->input('gdrive_url');
+        }
+
+        // จัดการ Canva URL
+        if ($request->input('content_type') === 'CANVA' && $request->input('canva_url')) {
+            $data['content_url'] = $request->input('canva_url');
         }
         
         // ถ้าเปลี่ยน content type แต่ไม่อัปโหลดไฟล์ใหม่
@@ -276,5 +300,37 @@ class LessonController extends Controller
         }
 
         return response()->json(['success' => true]);
+    }
+
+    /**
+     * Upload image for Quill Editor
+     */
+    public static function uploadImage(Request $request)
+    {
+        $request->validate([
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048', // 2MB max
+        ], [
+            'image.required' => 'กรุณาเลือกรูปภาพ',
+            'image.image' => 'ไฟล์ที่เลือกต้องเป็นรูปภาพ',
+            'image.mimes' => 'รูปภาพต้องเป็นไฟล์ประเภท: jpeg, png, jpg, gif, webp',
+            'image.max' => 'รูปภาพต้องมีขนาดไม่เกิน 2MB',
+        ]);
+
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $filename = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+            
+            $path = $image->storeAs('lessons/images', $filename, 'public');
+            
+            return response()->json([
+                'success' => true,
+                'url' => asset('storage/' . $path)
+            ]);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'ไม่พบรูปภาพ'
+        ], 400);
     }
 }

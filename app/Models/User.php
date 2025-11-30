@@ -22,6 +22,9 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'profile_image',
+        'position',
+        'bio',
     ];
 
     /**
@@ -126,5 +129,47 @@ class User extends Authenticatable
 
         return round(($completedLessons / $totalLessons) * 100, 2);
     }
-}
 
+    /**
+     * ดึง URL รูปโปรไฟล์
+     */
+    public function getProfileImageUrlAttribute()
+    {
+        if ($this->profile_image) {
+            return asset('storage/' . $this->profile_image);
+        }
+        
+        // Default avatar with initials
+        return null;
+    }
+
+    /**
+     * ดึงตัวอักษรย่อของชื่อ
+     */
+    public function getInitialsAttribute()
+    {
+        $words = explode(' ', $this->name);
+        $initials = '';
+        
+        foreach (array_slice($words, 0, 2) as $word) {
+            $initials .= mb_substr($word, 0, 1);
+        }
+        
+        return mb_strtoupper($initials);
+    }
+
+    /**
+     * นับจำนวนนักเรียนทั้งหมดในคอร์สของครู
+     */
+    public function getTotalStudentsAttribute()
+    {
+        if (!$this->isTeacher()) {
+            return 0;
+        }
+
+        return $this->teachingCourses()
+            ->withCount('enrollments')
+            ->get()
+            ->sum('enrollments_count');
+    }
+}

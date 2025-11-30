@@ -7,22 +7,8 @@
         action="{{ isset($role) ? ($role === 'student' ? route('register.student.store') : route('register.teacher.store')) : route('register') }}">
         @csrf
 
-        {{-- role --}}
-        <div class="tech-card-form p-6 md:p-8 w-full max-w-md ">
-            <x-input-label for="role" :value="__('ลงทะเบียนในฐานะ')" />
-            <select id="role" name="role"
-                class="form-input-neon rounded-md shadow-sm block mt-1 w-full py-2 px-3 text-gray-300 bg-gray-900 border-gray-700 focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-600 dark:focus:border-indigo-500 dark:focus:ring-indigo-500 appearance-none"
-                @isset($role) disabled @endisset>
-                <option value="student"
-                    @isset($role) @if ($role === 'student') selected @endif @endif>นักศึกษา (Student)</option>
-                <option value="teacher" @isset($role) @if ($role === 'teacher') selected @endif @endif>อาจารย์ (Teacher)</option>
-            </select>
-            @isset($role)
-                <input type="hidden" name="role" value="{{ $role }}">
-            @endisset
-                    <x-input-error :messages="$errors->get('role')" class="mt-2" />
-        </div>
-        {{-- --------------------------------------------------------------------- --}}
+        {{-- role - ซ่อน Teacher ให้เฉพาะ Admin สร้างได้ --}}
+        <input type="hidden" name="role" value="student">
 
         <!-- Name -->
         <div class="mt-4">

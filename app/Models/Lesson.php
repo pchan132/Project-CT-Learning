@@ -65,11 +65,95 @@ class Lesson extends Model
                 return $this->content_url ? asset('storage/' . $this->content_url) : null;
             case 'VIDEO':
                 return $this->content_url;
+            case 'GDRIVE':
+                return $this->getGoogleDriveEmbedUrl();
+            case 'CANVA':
+                return $this->getCanvaEmbedUrl();
             case 'TEXT':
                 return null;
             default:
                 return null;
         }
+    }
+
+    /**
+     * แปลง Google Drive share link เป็น embed URL
+     */
+    public function getGoogleDriveEmbedUrl()
+    {
+        if (!$this->content_url) {
+            return null;
+        }
+
+        $url = $this->content_url;
+
+        // รูปแบบ: https://drive.google.com/file/d/FILE_ID/view?usp=sharing
+        // หรือ: https://drive.google.com/file/d/FILE_ID/view
+        // แปลงเป็น: https://drive.google.com/file/d/FILE_ID/preview
+        if (preg_match('/\/file\/d\/([a-zA-Z0-9_-]+)/', $url, $matches)) {
+            return "https://drive.google.com/file/d/{$matches[1]}/preview";
+        }
+
+        // รูปแบบ: https://docs.google.com/document/d/FILE_ID/...
+        // รูปแบบ: https://docs.google.com/presentation/d/FILE_ID/...
+        // รูปแบบ: https://docs.google.com/spreadsheets/d/FILE_ID/...
+        if (preg_match('/docs\.google\.com\/(document|presentation|spreadsheets)\/d\/([a-zA-Z0-9_-]+)/', $url, $matches)) {
+            $type = $matches[1];
+            $fileId = $matches[2];
+            return "https://docs.google.com/{$type}/d/{$fileId}/preview";
+        }
+
+        // ถ้าเป็นรูปแบบอื่นให้ return URL เดิม
+        return $url;
+    }
+
+    /**
+     * ตรวจสอบว่าเป็น Google Drive content หรือไม่
+     */
+    public function isGoogleDriveContent()
+    {
+        return $this->content_type === 'GDRIVE';
+    }
+
+    /**
+     * แปลง Canva URL เป็น embed URL
+     */
+    public function getCanvaEmbedUrl()
+    {
+        if (!$this->content_url) {
+            return null;
+        }
+
+        $url = $this->content_url;
+
+        // ถ้ามี ?embed อยู่แล้วให้ return เลย
+        if (str_contains($url, '?embed')) {
+            return $url;
+        }
+
+        // รูปแบบ: https://www.canva.com/design/DAxxxxx/view
+        // หรือ: https://www.canva.com/design/DAxxxxx/yyyyy/view
+        // แปลงเป็น: https://www.canva.com/design/DAxxxxx/view?embed
+        if (preg_match('/canva\.com\/design\/([a-zA-Z0-9_-]+)(?:\/[a-zA-Z0-9_-]+)?\/view/', $url, $matches)) {
+            $designId = $matches[1];
+            return "https://www.canva.com/design/{$designId}/view?embed";
+        }
+
+        // รูปแบบอื่นๆ ให้เพิ่ม ?embed ต่อท้าย
+        if (str_contains($url, '/view')) {
+            return $url . '?embed';
+        }
+
+        // ถ้าเป็นรูปแบบอื่นให้ return URL เดิม
+        return $url;
+    }
+
+    /**
+     * ตรวจสอบว่าเป็น Canva content หรือไม่
+     */
+    public function isCanvaContent()
+    {
+        return $this->content_type === 'CANVA';
     }
 
     /**
@@ -106,6 +190,8 @@ class Lesson extends Model
             'PPT' => 'PowerPoint',
             'VIDEO' => 'Video',
             'TEXT' => 'Text Content',
+            'GDRIVE' => 'Google Drive',
+            'CANVA' => 'Canva',
             default => 'Unknown',
         };
     }

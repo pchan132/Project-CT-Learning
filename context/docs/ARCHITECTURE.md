@@ -1,26 +1,43 @@
 # 🏗️ CT Learning - System Architecture
 
-## สารบัญ
+## 📋 สารบัญ
 1. [Overview](#overview)
 2. [System Architecture](#system-architecture)
 3. [Database Design](#database-design)
 4. [Application Flow](#application-flow)
 5. [Security & Authorization](#security--authorization)
 6. [File Storage](#file-storage)
+7. [Performance & Optimization](#performance--optimization)
+8. [Development Guidelines](#development-guidelines)
 
 ---
 
-## Overview
+## 🎯 Overview
 
-CT Learning เป็น Learning Management System (LMS) ที่ออกแบบตาม MVC Pattern ด้วย Laravel Framework รองรับการทำงานแบบ Multi-role (Teacher/Student) พร้อม nested resource structure
+CT Learning เป็น Learning Management System (LMS) ที่พัฒนาด้วย Laravel 10.x ตามสถาปัตยกรรม MVC Pattern รองรับการทำงานแบบ Multi-role และมีโครงสร้างแบบ Nested Resources
 
-### Key Characteristics
-- **Framework**: Laravel 10.x
-- **Pattern**: MVC (Model-View-Controller)
+### 🏗️ Core Architecture Principles
+- **Separation of Concerns**: แยกส่วนตามหน้าที่การทำงาน (MVC)
+- **Scalability**: ออกแบบให้รองรับการขยายตัว
+- **Maintainability**: โค้ดที่เป็นระเบียบและบำรุงรักษาง่าย
+- **Security**: ความปลอดภัยเป็นสำคัญทุกระดับ
+- **Performance**: ปรับให้ทำงานได้อย่างมีประสิทธิภาพ
+
+### 🛠️ Technology Stack
+- **Backend Framework**: Laravel 10.x (PHP 8.1+)
+- **Frontend**: Blade Templates + Tailwind CSS + Alpine.js
+- **Database**: MySQL 8.0 / PostgreSQL
 - **Authentication**: Laravel Breeze
-- **Authorization**: Manual ownership checks
-- **Frontend**: Blade Components + Tailwind CSS
-- **Database**: Relational (MySQL/PostgreSQL)
+- **File Storage**: Laravel Storage System
+- **PDF Generation**: DomPDF
+- **Build Tools**: Vite + NPM
+
+### 🎨 Design Patterns ที่ใช้
+- **MVC Pattern**: Model-View-Controller
+- **Repository Pattern**: สำหรับ Data Access Layer
+- **Service Layer**: สำหรับ Business Logic
+- **Middleware Pattern**: สำหรับ Request Processing
+- **Observer Pattern**: สำหรับ Event Handling
 
 ---
 

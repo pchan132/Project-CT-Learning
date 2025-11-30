@@ -1,922 +1,924 @@
-# 🛣️ CT Learning - Complete Routes Reference
+# 🛣️ CT Learning - Routes Reference
 
-## สารบัญ
-1. [Overview](#overview)
-2. [Authentication Routes](#authentication-routes)
-3. [Teacher Routes](#teacher-routes)
-4. [Student Routes](#student-routes)
-5. [AJAX Routes](#ajax-routes)
-6. [Route Parameters](#route-parameters)
-7. [Usage Examples](#usage-examples)
+## 📋 คู่มืออ้างอิง Routes ทั้งหมด
+
+เอกสารนี้คือรายการ Routes ทั้งหมดในระบบ CT Learning พร้อมรายละเอียดการใช้งาน และข้อมูลสำคัญสำหรับนักพัฒนา
 
 ---
 
-## Overview
+## 📋 สารบัญ
 
-ระบบใช้ **Nested Resource Routes** สำหรับ Teacher และ **Named Routes** สำหรับ Student
-
-### Route Structure
-
-```
-/teacher/courses/{course}/modules/{module}/lessons/{lesson}
-    ↑         ↑          ↑          ↑          ↑
-    │         │          │          │          └─ Lesson ID
-    │         │          │          └─ Module ID
-    │         │          └─ Course ID
-    │         └─ Resource type
-    └─ Role prefix
-```
-
-### Middleware Applied
-
-| Route Group | Middleware | Description |
-|------------|-----------|-------------|
-| `/teacher/*` | `auth`, `teacher` | ต้อง login และเป็น teacher |
-| `/student/*` | `auth`, `student` | ต้อง login และเป็น student |
-| `/lessons/*/complete` | `auth` | ต้อง login (any role) |
+1. [Authentication Routes](#authentication-routes)
+2. [Dashboard Routes](#dashboard-routes)
+3. [Student Routes](#student-routes)
+4. [Teacher Routes](#teacher-routes)
+5. [Admin Routes](#admin-routes)
+6. [API Routes](#api-routes)
+7. [Middleware Reference](#middleware-reference)
+8. [Route Parameters](#route-parameters)
 
 ---
 
-## Authentication Routes
+## 🔐 Authentication Routes
 
-จัดการโดย Laravel Breeze ใน `routes/auth.php`
-
-### Registration
-
-| Method | URL | Route Name | Description |
-|--------|-----|------------|-------------|
-| GET | `/register` | `register` | แสดงฟอร์มลงทะเบียน |
-| POST | `/register` | - | บันทึกข้อมูลผู้ใช้ใหม่ |
-
-**Example:**
+### Registration Routes
 ```php
-// View
-<a href="{{ route('register') }}">Register</a>
+// Register as Student
+Route::get('/register/student', [RegisteredUserController::class, 'createStudent'])
+    ->middleware('guest')
+    ->name('register.student');
 
-// Redirect after registration
-return redirect()->route('dashboard');
+Route::post('/register/student', [RegisteredUserController::class, 'storeStudent'])
+    ->middleware('guest')
+    ->name('register.student.store');
+
+// Register as Teacher
+Route::get('/register/teacher', [RegisteredUserController::class, 'createTeacher'])
+    ->middleware('guest')
+    ->name('register.teacher');
+
+Route::post('/register/teacher', [RegisteredUserController::class, 'storeTeacher'])
+    ->middleware('guest')
+    ->name('register.teacher.store');
 ```
 
-### Login
-
-| Method | URL | Route Name | Description |
-|--------|-----|------------|-------------|
-| GET | `/login` | `login` | แสดงฟอร์ม login |
-| POST | `/login` | - | ตรวจสอบ credentials |
-
-**Example:**
+### Login/Logout Routes
 ```php
-// View
-<a href="{{ route('login') }}">Login</a>
+// Login
+Route::post('/login', [AuthenticatedSessionController::class, 'store'])
+    ->middleware('guest')
+    ->name('login');
 
-// Redirect after login
-return redirect()->intended('dashboard');
+// Logout
+Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
+    ->middleware('auth')
+    ->name('logout');
+
+// Password Reset
+Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])
+    ->middleware('guest')
+    ->name('password.email');
+
+Route::get('/reset-password/{token}', [NewPasswordController::class, 'create'])
+    ->middleware('guest')
+    ->name('password.reset');
+
+Route::post('/reset-password', [NewPasswordController::class, 'store'])
+    ->middleware('guest')
+    ->name('password.update');
 ```
 
-### Logout
-
-| Method | URL | Route Name | Description |
-|--------|-----|------------|-------------|
-| POST | `/logout` | `logout` | ออกจากระบบ |
-
-**Example:**
-```blade
-<form method="POST" action="{{ route('logout') }}">
-    @csrf
-    <button type="submit">Logout</button>
-</form>
-```
-
-### Password Reset
-
-| Method | URL | Route Name | Description |
-|--------|-----|------------|-------------|
-| GET | `/forgot-password` | `password.request` | ฟอร์มขอรีเซ็ต |
-| POST | `/forgot-password` | `password.email` | ส่งอีเมลรีเซ็ต |
-| GET | `/reset-password/{token}` | `password.reset` | ฟอร์มรีเซ็ตรหัส |
-| POST | `/reset-password` | `password.update` | บันทึกรหัสใหม่ |
-
----
-
-## Teacher Routes
-
-Defined in `routes/web.php` with prefix `teacher` and middleware `['auth', 'teacher']`
-
-### Course Routes (Resource)
-
+### Email Verification Routes
 ```php
-Route::resource('courses', CourseController::class);
-```
+Route::get('/verify-email', [EmailVerificationPromptController::class, '__invoke'])
+    ->middleware('auth')
+    ->name('verification.notice');
 
-| Method | URL | Route Name | Controller Method | Description |
-|--------|-----|------------|------------------|-------------|
-| GET | `/teacher/courses` | `teacher.courses.index` | `index()` | รายการคอร์สทั้งหมด |
-| GET | `/teacher/courses/create` | `teacher.courses.create` | `create()` | ฟอร์มสร้างคอร์ส |
-| POST | `/teacher/courses` | `teacher.courses.store` | `store()` | บันทึกคอร์สใหม่ |
-| GET | `/teacher/courses/{course}` | `teacher.courses.show` | `show()` | รายละเอียดคอร์ส |
-| GET | `/teacher/courses/{course}/edit` | `teacher.courses.edit` | `edit()` | ฟอร์มแก้ไขคอร์ส |
-| PUT/PATCH | `/teacher/courses/{course}` | `teacher.courses.update` | `update()` | อัพเดทคอร์ส |
-| DELETE | `/teacher/courses/{course}` | `teacher.courses.destroy` | `destroy()` | ลบคอร์ส |
+Route::get('/verify-email/{id}/{hash}', [VerifyEmailController::class, '__invoke'])
+    ->middleware(['auth', 'signed', 'throttle:6,1'])
+    ->name('verification.verify');
 
-**Controller:** `App\Http\Controllers\Teacher\CourseController`
-
-**Example Usage:**
-```php
-// รายการคอร์ส
-<a href="{{ route('teacher.courses.index') }}">My Courses</a>
-
-// สร้างคอร์สใหม่
-<a href="{{ route('teacher.courses.create') }}">Create Course</a>
-
-// ดูรายละเอียด
-<a href="{{ route('teacher.courses.show', $course) }}">View Course</a>
-
-// แก้ไข
-<a href="{{ route('teacher.courses.edit', $course) }}">Edit Course</a>
-
-// ลบ
-<form action="{{ route('teacher.courses.destroy', $course) }}" method="POST">
-    @csrf
-    @method('DELETE')
-    <button type="submit">Delete</button>
-</form>
+Route::post('/email/verification-notification', [EmailVerificationNotificationController::class, 'store'])
+    ->middleware(['auth', 'throttle:6,1'])
+    ->name('verification.send');
 ```
 
 ---
 
-### Module Routes (Nested Resource)
+## 🏠 Dashboard Routes
 
+### Main Dashboard
 ```php
-Route::prefix('courses/{course}/modules')
-    ->name('courses.modules.')
-    ->group(function () {
-        Route::get('/', [ModuleController::class, 'index'])->name('index');
-        Route::get('/create', [ModuleController::class, 'create'])->name('create');
-        Route::post('/', [ModuleController::class, 'store'])->name('store');
-        Route::get('/{module}', [ModuleController::class, 'show'])->name('show');
-        Route::get('/{module}/edit', [ModuleController::class, 'edit'])->name('edit');
-        Route::put('/{module}', [ModuleController::class, 'update'])->name('update');
-        Route::delete('/{module}', [ModuleController::class, 'destroy'])->name('destroy');
-    });
-```
-
-| Method | URL | Route Name | Parameters | Description |
-|--------|-----|------------|-----------|-------------|
-| GET | `/teacher/courses/{course}/modules` | `teacher.courses.modules.index` | `$course` | รายการโมดูลในคอร์ส |
-| GET | `/teacher/courses/{course}/modules/create` | `teacher.courses.modules.create` | `$course` | ฟอร์มสร้างโมดูล |
-| POST | `/teacher/courses/{course}/modules` | `teacher.courses.modules.store` | `$course` | บันทึกโมดูลใหม่ |
-| GET | `/teacher/courses/{course}/modules/{module}` | `teacher.courses.modules.show` | `$course, $module` | รายละเอียดโมดูล |
-| GET | `/teacher/courses/{course}/modules/{module}/edit` | `teacher.courses.modules.edit` | `$course, $module` | ฟอร์มแก้ไขโมดูล |
-| PUT | `/teacher/courses/{course}/modules/{module}` | `teacher.courses.modules.update` | `$course, $module` | อัพเดทโมดูล |
-| DELETE | `/teacher/courses/{course}/modules/{module}` | `teacher.courses.modules.destroy` | `$course, $module` | ลบโมดูล |
-
-**Controller:** `App\Http\Controllers\Teacher\ModuleController`
-
-**Example Usage:**
-```php
-// รายการโมดูล
-<a href="{{ route('teacher.courses.modules.index', $course) }}">
-    📚 Modules
-</a>
-
-// สร้างโมดูลใหม่
-<a href="{{ route('teacher.courses.modules.create', $course) }}">
-    + Add Module
-</a>
-
-// ดูรายละเอียด
-<a href="{{ route('teacher.courses.modules.show', [$course, $module]) }}">
-    View Module
-</a>
-
-// แก้ไข
-<a href="{{ route('teacher.courses.modules.edit', [$course, $module]) }}">
-    Edit
-</a>
-
-// ฟอร์มบันทึก
-<form action="{{ route('teacher.courses.modules.store', $course) }}" method="POST">
-    @csrf
-    <input type="text" name="title" required>
-    <textarea name="description"></textarea>
-    <input type="number" name="order" required>
-    <button type="submit">Create Module</button>
-</form>
-
-// ฟอร์มอัพเดท
-<form action="{{ route('teacher.courses.modules.update', [$course, $module]) }}" method="POST">
-    @csrf
-    @method('PUT')
-    <input type="text" name="title" value="{{ $module->title }}" required>
-    <button type="submit">Update</button>
-</form>
-
-// ลบ
-<form action="{{ route('teacher.courses.modules.destroy', [$course, $module]) }}" method="POST">
-    @csrf
-    @method('DELETE')
-    <button type="submit">Delete</button>
-</form>
-```
-
----
-
-### Lesson Routes (Double Nested Resource)
-
-```php
-Route::prefix('/{module}/lessons')
-    ->name('lessons.')
-    ->group(function () {
-        Route::get('/', [LessonController::class, 'index'])->name('index');
-        Route::get('/create', [LessonController::class, 'create'])->name('create');
-        Route::post('/', [LessonController::class, 'store'])->name('store');
-        Route::get('/{lesson}', [LessonController::class, 'show'])->name('show');
-        Route::get('/{lesson}/edit', [LessonController::class, 'edit'])->name('edit');
-        Route::put('/{lesson}', [LessonController::class, 'update'])->name('update');
-        Route::delete('/{lesson}', [LessonController::class, 'destroy'])->name('destroy');
-    });
-```
-
-| Method | URL | Route Name | Parameters | Description |
-|--------|-----|------------|-----------|-------------|
-| GET | `/teacher/courses/{course}/modules/{module}/lessons` | `teacher.courses.modules.lessons.index` | `$course, $module` | รายการบทเรียน |
-| GET | `.../lessons/create` | `teacher.courses.modules.lessons.create` | `$course, $module` | ฟอร์มสร้างบทเรียน |
-| POST | `.../lessons` | `teacher.courses.modules.lessons.store` | `$course, $module` | บันทึกบทเรียนใหม่ |
-| GET | `.../lessons/{lesson}` | `teacher.courses.modules.lessons.show` | `$course, $module, $lesson` | รายละเอียดบทเรียน |
-| GET | `.../lessons/{lesson}/edit` | `teacher.courses.modules.lessons.edit` | `$course, $module, $lesson` | ฟอร์มแก้ไข |
-| PUT | `.../lessons/{lesson}` | `teacher.courses.modules.lessons.update` | `$course, $module, $lesson` | อัพเดทบทเรียน |
-| DELETE | `.../lessons/{lesson}` | `teacher.courses.modules.lessons.destroy` | `$course, $module, $lesson` | ลบบทเรียน |
-
-**Controller:** `App\Http\Controllers\Teacher\LessonController`
-
-**Example Usage:**
-```php
-// รายการบทเรียน
-<a href="{{ route('teacher.courses.modules.lessons.index', [$course, $module]) }}">
-    📝 Lessons
-</a>
-
-// สร้างบทเรียนใหม่
-<a href="{{ route('teacher.courses.modules.lessons.create', [$course, $module]) }}">
-    + Add Lesson
-</a>
-
-// ดูรายละเอียด
-<a href="{{ route('teacher.courses.modules.lessons.show', [$course, $module, $lesson]) }}">
-    View Lesson
-</a>
-
-// แก้ไข
-<a href="{{ route('teacher.courses.modules.lessons.edit', [$course, $module, $lesson]) }}">
-    Edit
-</a>
-
-// ฟอร์มบันทึก (PDF)
-<form action="{{ route('teacher.courses.modules.lessons.store', [$course, $module]) }}" 
-      method="POST" 
-      enctype="multipart/form-data">
-    @csrf
-    <input type="text" name="title" required>
-    <select name="content_type" required>
-        <option value="PDF">PDF Document</option>
-        <option value="VIDEO">YouTube Video</option>
-        <option value="TEXT">Article</option>
-    </select>
-    <input type="file" name="file" accept=".pdf,.doc,.docx,.ppt,.pptx">
-    <input type="number" name="order" required>
-    <button type="submit">Create Lesson</button>
-</form>
-
-// ฟอร์มอัพเดท
-<form action="{{ route('teacher.courses.modules.lessons.update', [$course, $module, $lesson]) }}" 
-      method="POST">
-    @csrf
-    @method('PUT')
-    <input type="text" name="title" value="{{ $lesson->title }}" required>
-    <button type="submit">Update</button>
-</form>
-
-// ลบ
-<form action="{{ route('teacher.courses.modules.lessons.destroy', [$course, $module, $lesson]) }}" 
-      method="POST">
-    @csrf
-    @method('DELETE')
-    <button type="submit">Delete</button>
-</form>
-```
-
----
-
-## Student Routes
-
-Defined in `routes/web.php` with prefix `student` and middleware `['auth', 'student']`
-
-### Course Dashboard
-
-| Method | URL | Route Name | Controller Method | Description |
-|--------|-----|------------|------------------|-------------|
-| GET | `/student/courses` | `student.courses.index` | `index()` | Dashboard (คอร์สที่เรียน) |
-
-**Controller:** `App\Http\Controllers\Student\CourseController`
-
-**Example:**
-```php
-// View
-<a href="{{ route('student.courses.index') }}">My Courses</a>
-
-// Controller
-public function index()
-{
-    $enrollments = auth()->user()->enrollments()
-        ->with('course.modules.lessons')
-        ->get();
+Route::get('/dashboard', function () {
+    $user = auth()->user();
     
-    $courses = $enrollments->map(function ($enrollment) {
-        $course = $enrollment->course;
-        $course->progress = $course->getProgressPercentage(auth()->id());
-        return $course;
-    });
-    
-    return view('student.courses.index', compact('courses'));
-}
+    if ($user->isAdmin()) {
+        return redirect()->route('admin.dashboard');
+    } elseif ($user->isTeacher()) {
+        return redirect()->route('teacher.dashboard');
+    } else {
+        return redirect()->route('student.dashboard');
+    }
+})->middleware(['auth', 'verified'])->name('dashboard');
+```
+
+### Role-specific Dashboards
+```php
+// Student Dashboard
+Route::get('/student/dashboard', function () {
+    return view('student.dashboard');
+})->name('student.dashboard')->middleware('student');
+
+// Teacher Dashboard
+Route::get('/teacher/dashboard', [TeacherCourseController::class, 'index'])
+    ->name('teacher.dashboard')
+    ->middleware('teacher');
+
+// Admin Dashboard
+Route::get('/admin/dashboard', [AdminController::class, 'index'])
+    ->name('admin.dashboard')
+    ->middleware('admin');
 ```
 
 ---
+
+## 👨‍🎓 Student Routes
+
+### Course Management
+```php
+Route::middleware(['auth', 'student'])->prefix('student')->name('student.')->group(function () {
+    // Course List
+    Route::get('/courses', [StudentCourseController::class, 'index'])
+        ->name('courses.index');
+    
+    // My Courses
+    Route::get('/courses/my-courses', [StudentCourseController::class, 'myCourses'])
+        ->name('courses.my-courses');
+    
+    // Course Preview
+    Route::get('/courses/{course}/preview', [StudentCourseController::class, 'preview'])
+        ->name('courses.preview');
+    
+    // Course Details
+    Route::get('/courses/{course}', [StudentCourseController::class, 'show'])
+        ->name('courses.show');
+    
+    // Enrollment
+    Route::post('/courses/{course}/enroll', [StudentCourseController::class, 'enroll'])
+        ->name('courses.enroll');
+    
+    Route::delete('/courses/{course}/unenroll', [StudentCourseController::class, 'unenroll'])
+        ->name('courses.unenroll');
+});
+```
 
 ### Learning Routes
-
-| Method | URL | Route Name | Parameters | Description |
-|--------|-----|------------|-----------|-------------|
-| GET | `/student/courses/{course}/learn` | `student.courses.learn` | `$course` | รายการโมดูล |
-| GET | `/student/courses/{course}/modules/{module}` | `student.modules.show` | `$course, $module` | รายการบทเรียน |
-| GET | `/student/courses/{course}/modules/{module}/lessons/{lesson}` | `student.lessons.show` | `$course, $module, $lesson` | เนื้อหาบทเรียน |
-
-**Controller:** `App\Http\Controllers\Student\LearningController`
-
-**Example Usage:**
 ```php
-// รายการโมดูล
-<a href="{{ route('student.courses.learn', $course) }}">
-    Continue Learning
-</a>
+// Lesson Learning
+Route::get('/courses/{course}/lessons/{lesson}', [StudentCourseController::class, 'learnLesson'])
+    ->name('student.courses.learn-lesson')
+    ->middleware(['auth', 'student']);
 
-// รายการบทเรียนในโมดูล
-<a href="{{ route('student.modules.show', [$course, $module]) }}">
-    View Lessons
-</a>
-
-// เนื้อหาบทเรียน
-<a href="{{ route('student.lessons.show', [$course, $module, $lesson]) }}">
-    Start Learning
-</a>
+// Mark Lesson Complete (AJAX)
+Route::post('/courses/{course}/lessons/{lesson}/complete', [StudentCourseController::class, 'completeLesson'])
+    ->name('student.courses.complete-lesson')
+    ->middleware(['auth', 'student']);
 ```
 
-**Controller Methods:**
+### Quiz Routes
 ```php
-// LearningController@showCourse
-public function showCourse(Course $course)
+// Quiz Details
+Route::get('/courses/{course}/modules/{module}/quizzes/{quiz}', [StudentQuizController::class, 'show'])
+    ->name('student.courses.modules.quizzes.show')
+    ->middleware(['auth', 'student']);
+
+// Start Quiz
+Route::post('/student/quizzes/{quiz}/start', [StudentQuizController::class, 'start'])
+    ->name('student.quizzes.start')
+    ->middleware(['auth', 'student']);
+
+// Take Quiz
+Route::get('/student/attempts/{attempt}/take', [StudentQuizController::class, 'take'])
+    ->name('student.attempts.take')
+    ->middleware(['auth', 'student']);
+
+// Submit Quiz
+Route::post('/student/attempts/{attempt}/submit', [StudentQuizController::class, 'submit'])
+    ->name('student.attempts.submit')
+    ->middleware(['auth', 'student']);
+
+// Quiz Results
+Route::get('/student/attempts/{attempt}/result', [StudentQuizController::class, 'result'])
+    ->name('student.attempts.result')
+    ->middleware(['auth', 'student']);
+```
+
+### Certificate Routes
+```php
+Route::middleware(['auth', 'student'])->prefix('student')->name('student.')->group(function () {
+    // Certificate List
+    Route::get('/certificates', [CertificateController::class, 'index'])
+        ->name('certificates.index');
+    
+    // Generate Certificate
+    Route::post('/courses/{course}/certificates/generate', [CertificateController::class, 'generate'])
+        ->name('certificates.generate');
+    
+    // View Certificate
+    Route::get('/certificates/{certificate}', [CertificateController::class, 'show'])
+        ->name('certificates.show');
+    
+    // Download Certificate
+    Route::get('/certificates/{certificate}/download', [CertificateController::class, 'download'])
+        ->name('certificates.download');
+});
+```
+
+---
+
+## 👨‍🏫 Teacher Routes
+
+### Course Management (Resource)
+```php
+Route::middleware(['auth', 'teacher'])->prefix('teacher')->name('teacher.')->group(function () {
+    Route::resource('courses', TeacherCourseController::class);
+    
+    // Course Students
+    Route::get('courses/{course}/students', [TeacherCourseController::class, 'students'])
+        ->name('courses.students');
+});
+```
+
+### Module Management (Nested Resource)
+```php
+Route::prefix('courses/{course}/modules')->name('courses.modules.')->group(function () {
+    // Module CRUD
+    Route::get('/', [ModuleController::class, 'index'])
+        ->name('index');
+    
+    Route::get('/create', [ModuleController::class, 'create'])
+        ->name('create');
+    
+    Route::post('/', [ModuleController::class, 'store'])
+        ->name('store');
+    
+    Route::post('/reorder', [ModuleController::class, 'reorder'])
+        ->name('reorder');
+    
+    Route::get('/{module}', [ModuleController::class, 'show'])
+        ->name('show');
+    
+    Route::get('/{module}/edit', [ModuleController::class, 'edit'])
+        ->name('edit');
+    
+    Route::put('/{module}', [ModuleController::class, 'update'])
+        ->name('update');
+    
+    Route::delete('/{module}', [ModuleController::class, 'destroy'])
+        ->name('destroy');
+});
+```
+
+### Lesson Management (Double Nested Resource)
+```php
+Route::prefix('/{module}/lessons')->name('lessons.')->group(function () {
+    // Lesson CRUD
+    Route::get('/', [LessonController::class, 'index'])
+        ->name('index');
+    
+    Route::get('/create', [LessonController::class, 'create'])
+        ->name('create');
+    
+    Route::post('/', [LessonController::class, 'store'])
+        ->name('store');
+    
+    Route::post('/reorder', [LessonController::class, 'reorder'])
+        ->name('reorder');
+    
+    Route::get('/{lesson}', [LessonController::class, 'show'])
+        ->name('show');
+    
+    Route::get('/{lesson}/edit', [LessonController::class, 'edit'])
+        ->name('edit');
+    
+    Route::put('/{lesson}', [LessonController::class, 'update'])
+        ->name('update');
+    
+    Route::delete('/{lesson}', [LessonController::class, 'destroy'])
+        ->name('destroy');
+});
+```
+
+### Quiz Management (Nested Resource)
+```php
+Route::prefix('/{module}/quizzes')->name('quizzes.')->group(function () {
+    // Quiz CRUD
+    Route::get('/', [QuizController::class, 'index'])
+        ->name('index');
+    
+    Route::get('/create', [QuizController::class, 'create'])
+        ->name('create');
+    
+    Route::post('/', [QuizController::class, 'store'])
+        ->name('store');
+    
+    Route::get('/{quiz}', [QuizController::class, 'show'])
+        ->name('show');
+    
+    Route::get('/{quiz}/edit', [QuizController::class, 'edit'])
+        ->name('edit');
+    
+    Route::put('/{quiz}', [QuizController::class, 'update'])
+        ->name('update');
+    
+    Route::delete('/{quiz}', [QuizController::class, 'destroy'])
+        ->name('destroy');
+    
+    // Question Management
+    Route::post('/{quiz}/questions', [QuizController::class, 'storeQuestion'])
+        ->name('questions.store');
+    
+    Route::put('/{quiz}/questions/{question}', [QuizController::class, 'updateQuestion'])
+        ->name('questions.update');
+    
+    Route::delete('/{quiz}/questions/{question}', [QuizController::class, 'destroyQuestion'])
+        ->name('questions.destroy');
+    
+    Route::post('/{quiz}/questions/reorder', [QuizController::class, 'reorderQuestions'])
+        ->name('questions.reorder');
+});
+```
+
+---
+
+## 🔧 Admin Routes
+
+### User Management
+```php
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    // User List
+    Route::get('/users', [AdminController::class, 'users'])
+        ->name('users');
+    
+    // Create User
+    Route::get('/users/create', [AdminController::class, 'createUser'])
+        ->name('users.create');
+    
+    // Store User
+    Route::post('/users', [AdminController::class, 'storeUser'])
+        ->name('users.store');
+    
+    // Edit User
+    Route::get('/users/{user}/edit', [AdminController::class, 'editUser'])
+        ->name('users.edit');
+    
+    // Update User
+    Route::put('/users/{user}', [AdminController::class, 'updateUser'])
+        ->name('users.update');
+    
+    // Delete User
+    Route::delete('/users/{user}', [AdminController::class, 'destroyUser'])
+        ->name('users.destroy');
+});
+```
+
+### Course Management
+```php
+// Course List
+Route::get('/courses', [AdminController::class, 'courses'])
+    ->name('courses');
+
+// Create Course
+Route::get('/courses/create', [AdminController::class, 'createCourse'])
+    ->name('courses.create');
+
+// Store Course
+Route::post('/courses', [AdminController::class, 'storeCourse'])
+    ->name('courses.store');
+
+// Show Course
+Route::get('/courses/{course}', [AdminController::class, 'showCourse'])
+    ->name('courses.show');
+
+// Edit Course
+Route::get('/courses/{course}/edit', [AdminController::class, 'editCourse'])
+    ->name('courses.edit');
+
+// Update Course
+Route::put('/courses/{course}', [AdminController::class, 'updateCourse'])
+    ->name('courses.update');
+
+// Delete Course
+Route::delete('/courses/{course}', [AdminController::class, 'destroyCourse'])
+    ->name('courses.destroy');
+```
+
+### Statistics
+```php
+// Statistics Dashboard
+Route::get('/statistics', [AdminController::class, 'statistics'])
+    ->name('statistics');
+```
+
+---
+
+## 🔌 API Routes
+
+### AJAX Routes (Frontend)
+```php
+// Mark Lesson Complete (AJAX)
+Route::post('/courses/{course}/lessons/{lesson}/complete', [StudentCourseController::class, 'completeLesson'])
+    ->middleware(['auth', 'student'])
+    ->name('courses.complete-lesson');
+
+// Reorder Modules (AJAX)
+Route::post('/teacher/courses/{course}/modules/reorder', [ModuleController::class, 'reorder'])
+    ->middleware(['auth', 'teacher'])
+    ->name('teacher.courses.modules.reorder');
+
+// Reorder Lessons (AJAX)
+Route::post('/teacher/courses/{course}/modules/{module}/lessons/reorder', [LessonController::class, 'reorder'])
+    ->middleware(['auth', 'teacher'])
+    ->name('teacher.courses.modules.lessons.reorder');
+
+// Reorder Quiz Questions (AJAX)
+Route::post('/teacher/courses/{course}/modules/{module}/quizzes/{quiz}/questions/reorder', [QuizController::class, 'reorderQuestions'])
+    ->middleware(['auth', 'teacher'])
+    ->name('teacher.courses.modules.quizzes.questions.reorder');
+```
+
+---
+
+## 🛡️ Middleware Reference
+
+### Authentication Middleware
+```php
+// Standard authentication
+->middleware('auth')
+
+// Guest only (not authenticated)
+->middleware('guest')
+
+// Email verification required
+->middleware(['auth', 'verified'])
+
+// Rate limiting
+->middleware('throttle:6,1') // 6 requests per minute
+```
+
+### Role-based Middleware
+```php
+// Student only
+->middleware('student')
+
+// Teacher only
+->middleware('teacher')
+
+// Admin only
+->middleware('admin')
+
+// Multiple roles
+->middleware(['teacher', 'admin'])
+```
+
+### Custom Middleware
+```php
+// Signed URL verification
+->middleware('signed')
+
+// CORS handling
+->middleware('cors')
+
+// API throttling
+->middleware('throttle:60,1') // 60 requests per minute
+```
+
+---
+
+## 📝 Route Parameters
+
+### Model Binding
+```php
+// Implicit Model Binding
+Route::get('/courses/{course}', [CourseController::class, 'show']);
+// $course parameter will be automatically resolved from database
+
+// Explicit Model Binding
+Route::get('/users/{user}', [UserController::class, 'show']);
+// $user parameter will be automatically resolved from database
+```
+
+### Parameter Constraints
+```php
+// Numeric constraint
+Route::get('/courses/{course}', [CourseController::class, 'show'])
+    ->where('course', '[0-9]+');
+
+// String constraint
+Route::get('/users/{user}', [UserController::class, 'show'])
+    ->where('user', '[a-zA-Z]+');
+
+// Multiple constraints
+Route::get('/courses/{course}/lessons/{lesson}', [LessonController::class, 'show'])
+    ->where(['course' => '[0-9]+', 'lesson' => '[0-9]+']);
+```
+
+### Optional Parameters
+```php
+// Optional parameter with default value
+Route::get('/courses/{course?}', [CourseController::class, 'index']);
+
+// Multiple optional parameters
+Route::get('/courses/{course}/modules/{module?}', [ModuleController::class, 'index']);
+```
+
+---
+
+## 🔍 Route List Commands
+
+### Show All Routes
+```bash
+# Show all routes
+php artisan route:list
+
+# Show routes in a table format
+php artisan route:list --columns=method,uri,name
+
+# Show routes with middleware
+php artisan route:list --middleware
+
+# Show routes by name
+php artisan route:list --name=student
+
+# Show routes by method
+php artisan route:list --method=GET
+
+# Show routes by domain
+php artisan route:list --domain=yourdomain.com
+
+# Show routes in JSON format
+php artisan route:list --json
+```
+
+### Filter Routes
+```bash
+# Filter by path
+php artisan route:list --path=/student
+
+# Filter by method
+php artisan route:list --method=POST
+
+# Filter by middleware
+php artisan route:list --middleware=auth
+
+# Filter by name pattern
+php artisan route:list --name=*courses*
+```
+
+---
+
+## 📊 Route Statistics
+
+### Route Count by Group
+```bash
+# Total routes count
+php artisan route:list | wc -l
+
+# Student routes
+php artisan route:list --name=student* | wc -l
+
+# Teacher routes
+php artisan route:list --name=teacher* | wc -l
+
+# Admin routes
+php artisan route:list --name=admin* | wc -l
+
+# AJAX routes (POST only)
+php artisan route:list --method=POST | wc -l
+```
+
+### Route Analysis
+```bash
+# Show routes with most middleware
+php artisan route:list | grep -o "middleware: [^,]*" | sort | uniq -c | sort -nr
+
+# Show longest routes
+php artisan route:list | awk '{print length($2), $2}' | sort -n | tail -10
+
+# Show routes without names
+php artisan route:list | grep "│" | grep -v "│\s*[a-zA-Z0-9._-]\+│"
+```
+
+---
+
+## 🎨 Route Naming Conventions
+
+### Naming Pattern
+```php
+// Pattern: group.resource.action
+student.courses.index      // List student's courses
+student.courses.show       // Show specific course
+student.courses.enroll     // Enroll in course
+student.courses.unenroll   // Unenroll from course
+
+teacher.courses.create     // Create new course
+teacher.courses.store      // Store new course
+teacher.courses.edit      // Edit existing course
+teacher.courses.update     // Update existing course
+teacher.courses.destroy   // Delete course
+
+admin.users.index         // List all users
+admin.users.create        // Create new user
+admin.users.store         // Store new user
+admin.users.edit          // Edit existing user
+admin.users.update        // Update existing user
+admin.users.destroy      // Delete existing user
+```
+
+### Nested Resource Naming
+```php
+// Pattern: group.parent.child.action
+teacher.courses.modules.index      // List modules in course
+teacher.courses.modules.create     // Create module in course
+teacher.courses.modules.store      // Store module in course
+
+teacher.courses.modules.lessons.index      // List lessons in module
+teacher.courses.modules.lessons.create     // Create lesson in module
+teacher.courses.modules.lessons.store      // Store lesson in module
+
+teacher.courses.modules.quizzes.questions.store  // Store question in quiz
+```
+
+---
+
+## 🔗 Route Helpers
+
+### Generating URLs
+```php
+// Basic route URL
+$url = route('student.courses.index');
+
+// Route with parameter
+$url = route('student.courses.show', ['course' => $course]);
+
+// Route with multiple parameters
+$url = route('student.courses.learn-lesson', [
+    'course' => $course,
+    'lesson' => $lesson
+]);
+
+// Route with query parameters
+$url = route('student.courses.index', ['page' => 1, 'search' => 'php']);
+// Result: /student/courses?page=1&search=php
+```
+
+### Generating Links
+```php
+// HTML link
+$link = link_to_route('student.courses.show', 'View Course', ['course' => $course]);
+
+// Link with attributes
+$link = link_to_route('student.courses.destroy', 'Delete', ['course' => $course], [
+    'method' => 'DELETE',
+    'class' => 'btn btn-danger',
+    'onclick' => 'return confirm("Are you sure?")'
+]);
+```
+
+### Redirecting to Routes
+```php
+// Basic redirect
+return redirect()->route('student.dashboard');
+
+// Redirect with parameter
+return redirect()->route('student.courses.show', ['course' => $course]);
+
+// Redirect with flash data
+return redirect()->route('student.courses.index')
+    ->with('success', 'Course enrolled successfully!');
+
+// Redirect back with input
+return redirect()->route('teacher.courses.create')
+    ->withInput()
+    ->withErrors($validator);
+```
+
+---
+
+## 🧪 Testing Routes
+
+### HTTP Tests
+```php
+// Test route accessibility
+public function test_student_can_access_dashboard()
 {
-    // Check enrollment
-    $enrollment = auth()->user()->enrollments()
-        ->where('course_id', $course->id)
-        ->first();
-        
-    if (!$enrollment) {
-        abort(403, 'You are not enrolled in this course.');
-    }
+    $student = User::factory()->create(['role' => 'student']);
     
-    $modules = $course->modules()->with('lessons')->orderBy('order')->get();
+    $response = $this->actingAs($student)
+        ->get('/student/dashboard');
     
-    return view('student.courses.show', compact('course', 'modules'));
+    $response->assertStatus(200);
 }
 
-// LearningController@showModule
-public function showModule(Course $course, Module $module)
+// Test route protection
+public function test_guest_cannot_access_student_dashboard()
 {
-    // Check enrollment
-    $enrollment = auth()->user()->enrollments()
-        ->where('course_id', $course->id)
-        ->first();
-        
-    if (!$enrollment) {
-        abort(403);
-    }
+    $response = $this->get('/student/dashboard');
     
-    if ($module->course_id !== $course->id) {
-        abort(404);
-    }
-    
-    $lessons = $module->lessons()->orderBy('order')->get();
-    
-    return view('student.modules.show', compact('course', 'module', 'lessons'));
+    $response->assertRedirect('/login');
 }
 
-// LearningController@showLesson
-public function showLesson(Course $course, Module $module, Lesson $lesson)
+// Test route with parameter
+public function test_student_can_view_course()
 {
-    // Validations...
+    $student = User::factory()->create(['role' => 'student']);
+    $course = Course::factory()->create();
     
-    $isCompleted = $lesson->isCompletedBy(auth()->id());
+    $response = $this->actingAs($student)
+        ->get("/student/courses/{$course->id}");
     
-    return view('student.lessons.show', compact('course', 'module', 'lesson', 'isCompleted'));
+    $response->assertStatus(200);
+    $response->assertSee($course->title);
+}
+```
+
+### Route Model Binding Tests
+```php
+// Test implicit model binding
+public function test_course_is_bound_correctly()
+{
+    $course = Course::factory()->create();
+    
+    $response = $this->get("/student/courses/{$course->id}");
+    
+    $response->assertStatus(200);
+    $this->assertEquals($course->id, $response->viewData('course')->id);
 }
 ```
 
 ---
 
-## AJAX Routes
+## 🚨 Common Route Issues
 
-### Lesson Completion
+### 404 Not Found
+```php
+// Problem: Route not found
+// Solution: Check route list
+php artisan route:list | grep "route-name"
 
-| Method | URL | Route Name | Controller Method | Description |
-|--------|-----|------------|------------------|-------------|
-| POST | `/lessons/{lesson}/complete` | `lessons.ajax-complete` | `complete()` | บันทึกการเรียนจบ (AJAX) |
+// Problem: Parameter constraint not matching
+// Solution: Check parameter constraints
+Route::get('/courses/{course}', [CourseController::class, 'show'])
+    ->where('course', '[0-9]+'); // Must be numeric
+```
 
-**Controller:** `App\Http\Controllers\Student\LearningController`
+### 403 Forbidden
+```php
+// Problem: Middleware blocking access
+// Solution: Check middleware order
+Route::get('/teacher/dashboard', [TeacherController::class, 'index'])
+    ->middleware(['auth', 'teacher']) // auth must come first
 
-**JavaScript Example:**
-```javascript
-// ใน student/lessons/show.blade.php
-const completeBtn = document.getElementById('complete-lesson-btn');
+// Problem: Role-based middleware not working
+// Solution: Check User role methods
+public function isTeacher()
+{
+    return $this->role === 'teacher';
+}
+```
 
-completeBtn.addEventListener('click', async function() {
-    try {
-        const response = await fetch('/lessons/{{ $lesson->id }}/complete', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-            }
-        });
-        
-        const data = await response.json();
-        
-        if (response.ok) {
-            // อัพเดท UI
-            completeBtn.textContent = '✅ Completed';
-            completeBtn.classList.remove('bg-blue-500', 'hover:bg-blue-600');
-            completeBtn.classList.add('bg-green-500', 'cursor-not-allowed');
-            completeBtn.disabled = true;
-            
-            alert(data.message);
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        alert('Failed to mark lesson as complete');
+### 419 Page Expired
+```php
+// Problem: CSRF token mismatch
+// Solution: Add CSRF token to forms
+<form method="POST" action="/route">
+    @csrf
+    <!-- form fields -->
+</form>
+
+// Solution: Add CSRF token to AJAX requests
+fetch('/route', {
+    method: 'POST',
+    headers: {
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
     }
 });
 ```
 
-**Controller Method:**
+---
+
+## 📱 Mobile Routes
+
+### Responsive Route Handling
 ```php
-public function complete(Lesson $lesson)
-{
-    // Check if already completed
-    $exists = LessonCompletion::where('lesson_id', $lesson->id)
-        ->where('user_id', auth()->id())
-        ->exists();
-    
-    if ($exists) {
-        return response()->json([
-            'message' => 'You have already completed this lesson'
-        ]);
+// Detect mobile and redirect accordingly
+Route::get('/courses/{course}', function (Course $course) {
+    if (request()->mobile()) {
+        return view('mobile.courses.show', compact('course'));
     }
     
-    // Create completion record
-    LessonCompletion::create([
-        'lesson_id' => $lesson->id,
-        'user_id' => auth()->id()
-    ]);
-    
-    return response()->json([
-        'message' => 'Lesson marked as complete',
-        'completed' => true
-    ]);
-}
+    return view('courses.show', compact('course'));
+})->middleware('auth');
+```
+
+### PWA Routes
+```php
+// Service worker registration
+Route::get('/sw.js', function () {
+    return response()->file(public_path('sw.js'))
+        ->header('Content-Type', 'application/javascript');
+});
+
+// Offline fallback
+Route::get('/offline', function () {
+    return view('offline');
+})->name('offline');
 ```
 
 ---
 
-## Route Parameters
+## 🔍 Debugging Routes
 
-### URL Pattern vs Route Parameters
+### Route Debugging Commands
+```bash
+# Show current route information
+php artisan route:current
 
-```php
-// URL Pattern
-/teacher/courses/{course}/modules/{module}/lessons/{lesson}
+# Show all routes with their middleware
+php artisan route:list --middleware=auth
 
-// Route Parameters (in Controller)
-public function edit(Course $course, Module $module, Lesson $lesson)
-{
-    // Laravel automatically binds models by ID
-    // $course = Course::findOrFail($courseId);
-    // $module = Module::findOrFail($moduleId);
-    // $lesson = Lesson::findOrFail($lessonId);
-}
+# Clear route cache
+php artisan route:clear
+
+# Cache routes for production
+php artisan route:cache
 ```
 
-### Route Model Binding
-
-Laravel ใช้ **Implicit Route Model Binding** โดยอัตโนมัติ:
-
+### Route Debugging in Code
 ```php
-// routes/web.php
-Route::get('/courses/{course}', [CourseController::class, 'show']);
-
-// CourseController
+// Debug route information
 public function show(Course $course)
 {
-    // $course ถูก bind จาก Course::findOrFail($id) โดยอัตโนมัติ
+    dump(request()->route());
+    dump(request()->route()->getName());
+    dump(request()->route()->parameters());
+    
+    // Continue with controller logic
+    return view('courses.show', compact('course'));
+}
+
+// Debug middleware stack
+public function show(Course $course)
+{
+    dump(request()->route()->middleware());
+    
     return view('courses.show', compact('course'));
 }
 ```
 
-### Custom Key for Binding
+---
 
-```php
-// ใช้ slug แทน id
-Route::get('/courses/{course:slug}', [CourseController::class, 'show']);
+## 📋 Route Checklist
 
-// CourseController
-public function show(Course $course)
-{
-    // $course = Course::where('slug', $slug)->firstOrFail();
-}
-```
+### ✅ Development Checklist
+- [ ] All routes have proper names
+- [ ] Routes follow naming conventions
+- [ ] Proper middleware is applied
+- [ ] Route parameters are validated
+- [ ] Model binding is working correctly
+- [ ] Routes are cached in production
+- [ ] Routes are tested
+
+### ✅ Security Checklist
+- [ ] Authentication middleware is applied
+- [ ] Authorization middleware is applied
+- [ ] CSRF protection is enabled
+- [ ] Rate limiting is applied where needed
+- [ ] Parameter constraints are set
+- [ ] Route model binding is secure
+
+### ✅ Performance Checklist
+- [ ] Route caching is enabled in production
+- [ ] Unnecessary routes are removed
+- [ ] Route groups are optimized
+- [ ] Middleware stack is minimal
+- [ ] Route parameters are efficient
 
 ---
 
-## Usage Examples
+## 📞 การขอความช่วยเหลือ
 
-### 1. Teacher Creates Module
+### หากพบปัญหาเกี่ยวกับ Routes
+1. **ตรวจสอบ Route List**: `php artisan route:list`
+2. **ตรวจสอบ Middleware**: ตรวจสอบว่า middleware ถูกต้องหรือไม่
+3. **ตรวจสอบ Parameters**: ตรวจสอบว่า parameters ถูกต้องหรือไม่
+4. **ตรวจสอบ Cache**: ล้าง route cache: `php artisan route:clear`
 
-```php
-// View: teacher/courses/index.blade.php
-@foreach($courses as $course)
-    <a href="{{ route('teacher.courses.modules.index', $course) }}" 
-       class="btn btn-primary">
-        📚 Modules
-    </a>
-@endforeach
-
-// View: teacher/modules/index.blade.php
-<a href="{{ route('teacher.courses.modules.create', $course) }}" 
-   class="btn btn-success">
-    + Add Module
-</a>
-
-// View: teacher/modules/create.blade.php
-<form action="{{ route('teacher.courses.modules.store', $course) }}" 
-      method="POST">
-    @csrf
-    <input type="text" name="title" required>
-    <textarea name="description"></textarea>
-    <input type="number" name="order" value="1" required>
-    <button type="submit">Create Module</button>
-</form>
-
-// Controller: ModuleController@store
-public function store(Request $request, Course $course)
-{
-    // Validate
-    $validated = $request->validate([
-        'title' => 'required|string|max:255',
-        'description' => 'nullable|string',
-        'order' => 'required|integer|min:1'
-    ]);
-    
-    // Check authorization
-    if (auth()->id() !== $course->teacher_id) {
-        abort(403);
-    }
-    
-    // Create module
-    $module = $course->modules()->create($validated);
-    
-    // Redirect
-    return redirect()
-        ->route('teacher.courses.modules.index', $course)
-        ->with('success', 'Module created successfully');
-}
-```
-
-### 2. Teacher Creates Lesson with PDF
-
-```php
-// View: teacher/lessons/create.blade.php
-<form action="{{ route('teacher.courses.modules.lessons.store', [$course, $module]) }}" 
-      method="POST" 
-      enctype="multipart/form-data">
-    @csrf
-    
-    <input type="text" name="title" placeholder="Lesson Title" required>
-    
-    <select name="content_type" id="content_type" required>
-        <option value="">Select Content Type</option>
-        <option value="PDF">PDF Document</option>
-        <option value="VIDEO">YouTube Video</option>
-        <option value="TEXT">Article</option>
-    </select>
-    
-    <!-- PDF Upload Field -->
-    <div id="pdf-field" style="display: none;">
-        <input type="file" 
-               name="file" 
-               accept=".pdf,.doc,.docx,.ppt,.pptx">
-        <small>Max 10MB</small>
-    </div>
-    
-    <!-- Video URL Field -->
-    <div id="video-field" style="display: none;">
-        <input type="url" 
-               name="content_url" 
-               placeholder="https://youtube.com/watch?v=...">
-    </div>
-    
-    <!-- Article Text Field -->
-    <div id="text-field" style="display: none;">
-        <textarea name="content_text" 
-                  rows="10" 
-                  placeholder="Write article content..."></textarea>
-    </div>
-    
-    <input type="number" name="order" value="1" required>
-    
-    <button type="submit">Create Lesson</button>
-</form>
-
-<script>
-document.getElementById('content_type').addEventListener('change', function() {
-    // Hide all fields
-    document.getElementById('pdf-field').style.display = 'none';
-    document.getElementById('video-field').style.display = 'none';
-    document.getElementById('text-field').style.display = 'none';
-    
-    // Show relevant field
-    const type = this.value;
-    if (type === 'PDF') {
-        document.getElementById('pdf-field').style.display = 'block';
-    } else if (type === 'VIDEO') {
-        document.getElementById('video-field').style.display = 'block';
-    } else if (type === 'TEXT') {
-        document.getElementById('text-field').style.display = 'block';
-    }
-});
-</script>
-
-// Controller: LessonController@store
-public function store(Request $request, Course $course, Module $module)
-{
-    // Validate
-    $validated = $request->validate([
-        'title' => 'required|string|max:255',
-        'content_type' => 'required|in:PDF,VIDEO,TEXT',
-        'content_url' => 'nullable|required_if:content_type,VIDEO|string|max:500',
-        'content_text' => 'nullable|required_if:content_type,TEXT|string',
-        'file' => 'nullable|required_if:content_type,PDF|file|mimes:pdf,doc,docx,ppt,pptx|max:10240',
-        'order' => 'required|integer|min:1'
-    ]);
-    
-    // Check authorization
-    if (auth()->id() !== $course->teacher_id || $module->course_id !== $course->id) {
-        abort(403);
-    }
-    
-    // Handle file upload
-    if ($request->hasFile('file')) {
-        $file = $request->file('file');
-        $filename = time() . '_' . $file->getClientOriginalName();
-        $path = $file->storeAs('lessons/pdf', $filename, 'public');
-        $validated['content_url'] = $path;
-    }
-    
-    // Create lesson
-    $lesson = $module->lessons()->create($validated);
-    
-    // Redirect
-    return redirect()
-        ->route('teacher.courses.modules.lessons.index', [$course, $module])
-        ->with('success', 'Lesson created successfully');
-}
-```
-
-### 3. Student Marks Lesson Complete
-
-```blade
-{{-- View: student/lessons/show.blade.php --}}
-<x-app-layout>
-    <div class="container mx-auto py-8">
-        {{-- Breadcrumb --}}
-        <nav class="mb-4">
-            <a href="{{ route('student.courses.index') }}">My Courses</a> /
-            <a href="{{ route('student.courses.learn', $course) }}">{{ $course->title }}</a> /
-            <a href="{{ route('student.modules.show', [$course, $module]) }}">{{ $module->title }}</a> /
-            <span>{{ $lesson->title }}</span>
-        </nav>
-        
-        {{-- Lesson Content --}}
-        <div class="bg-white rounded-lg shadow p-6">
-            <h1 class="text-2xl font-bold mb-4">{{ $lesson->title }}</h1>
-            
-            @if($lesson->content_type === 'PDF')
-                <embed src="{{ Storage::url($lesson->content_url) }}" 
-                       type="application/pdf" 
-                       width="100%" 
-                       height="600px">
-                       
-            @elseif($lesson->content_type === 'VIDEO')
-                @php
-                    $videoId = null;
-                    if (preg_match('/youtube\.com\/watch\?v=([^&]+)/', $lesson->content_url, $matches)) {
-                        $videoId = $matches[1];
-                    } elseif (preg_match('/youtu\.be\/([^?]+)/', $lesson->content_url, $matches)) {
-                        $videoId = $matches[1];
-                    }
-                @endphp
-                
-                @if($videoId)
-                    <iframe width="100%" 
-                            height="500" 
-                            src="https://www.youtube.com/embed/{{ $videoId }}" 
-                            frameborder="0" 
-                            allowfullscreen>
-                    </iframe>
-                @endif
-                
-            @elseif($lesson->content_type === 'TEXT')
-                <div class="prose max-w-none">
-                    {!! nl2br(e($lesson->content_text)) !!}
-                </div>
-            @endif
-            
-            {{-- Mark Complete Button --}}
-            <div class="mt-6">
-                @if($isCompleted)
-                    <button disabled 
-                            class="px-6 py-3 bg-green-500 text-white rounded cursor-not-allowed">
-                        ✅ Completed
-                    </button>
-                @else
-                    <button id="complete-lesson-btn" 
-                            class="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded">
-                        Mark as Complete
-                    </button>
-                @endif
-            </div>
-        </div>
-    </div>
-    
-    <script>
-    @if(!$isCompleted)
-    const completeBtn = document.getElementById('complete-lesson-btn');
-    
-    completeBtn.addEventListener('click', async function() {
-        try {
-            const response = await fetch('/lessons/{{ $lesson->id }}/complete', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                }
-            });
-            
-            const data = await response.json();
-            
-            if (response.ok) {
-                completeBtn.textContent = '✅ Completed';
-                completeBtn.classList.remove('bg-blue-500', 'hover:bg-blue-600');
-                completeBtn.classList.add('bg-green-500', 'cursor-not-allowed');
-                completeBtn.disabled = true;
-            }
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    });
-    @endif
-    </script>
-</x-app-layout>
-```
+### ช่องทางติดต่อ
+- **Email**: dev@ct.ac.th
+- **GitHub Issues**: https://github.com/yourusername/ct-learning/issues
+- **Documentation**: [Documentation Index](./INDEX.md)
 
 ---
 
-## Testing Routes
+## 📚 เอกสารอ้างอิง
 
-### Using Artisan Commands
-
-```bash
-# ดูรายการ routes ทั้งหมด
-php artisan route:list
-
-# กรอง routes ของ teacher
-php artisan route:list --name=teacher
-
-# กรอง routes ของ student
-php artisan route:list --name=student
-
-# ดูรายละเอียด route เฉพาะ
-php artisan route:list --path=courses
-
-# แสดงเฉพาะ POST methods
-php artisan route:list --method=POST
-```
-
-### Testing with Browser
-
-```
-# Teacher Routes
-http://localhost:8000/teacher/courses
-http://localhost:8000/teacher/courses/1/modules
-http://localhost:8000/teacher/courses/1/modules/1/lessons
-
-# Student Routes
-http://localhost:8000/student/courses
-http://localhost:8000/student/courses/1/learn
-http://localhost:8000/student/courses/1/modules/1
-http://localhost:8000/student/courses/1/modules/1/lessons/1
-```
+- [PROJECT-README.md](../PROJECT-README.md) - คู่มือหลัก
+- [LMS Complete Guide](./LMS-COMPLETE-GUIDE.md) - คู่มือระบบครบถ้วน
+- [Quick Reference](./QUICK-REFERENCE.md) - คู่มือใช้งานด่วน
+- [Architecture Documentation](./ARCHITECTURE.md) - สถาปัตยกรรมระบบ
+- [Documentation Index](./INDEX.md) - ดูเอกสารทั้งหมด
 
 ---
 
-## Common Issues & Solutions
-
-### Issue 1: Route not found
-
-```
-Error: Route [teacher.courses.modules.index] not defined
-```
-
-**Solution:**
-```php
-// ✅ Correct
-route('teacher.courses.modules.index', $course)
-
-// ❌ Wrong
-route('teacher.modules.index', $course)  // Missing 'courses.' prefix
-```
-
-### Issue 2: Missing required parameter
-
-```
-Error: Missing required parameter for [Route: teacher.courses.modules.lessons.create]
-```
-
-**Solution:**
-```php
-// ✅ Correct - ใส่ parameters ครบ
-route('teacher.courses.modules.lessons.create', [$course, $module])
-
-// ❌ Wrong - ขาด $module
-route('teacher.courses.modules.lessons.create', $course)
-```
-
-### Issue 3: Too few/many arguments
-
-```
-Error: Too few arguments to function, 1 passed and exactly 2 expected
-```
-
-**Solution:**
-```php
-// ✅ Correct - ใช้ array สำหรับหลาย parameters
-route('teacher.courses.modules.edit', [$course, $module])
-
-// ❌ Wrong - ส่ง parameters แยก
-route('teacher.courses.modules.edit', $course, $module)
-```
+**สร้างเมื่อ**: 28 พฤศจิกายน 2025  
+**เวอร์ชัน**: v1.0  
+**ผู้เขียน**: CT Learning Team  
+**สถานะ**: ✅ Complete & Updated  
 
 ---
 
-## Summary
-
-### Route Naming Convention
-
-```
-{role}.{resource}.{nested}.{action}
-
-Examples:
-- teacher.courses.index
-- teacher.courses.modules.store
-- teacher.courses.modules.lessons.edit
-- student.courses.learn
-- student.lessons.show
-```
-
-### Parameter Passing
-
-```php
-// Single parameter
-route('name', $model)
-
-// Multiple parameters
-route('name', [$model1, $model2, $model3])
-
-// Named parameters
-route('name', ['course' => $course, 'module' => $module])
-```
-
----
-
-สำหรับข้อมูลเพิ่มเติม:
-- [README.md](../../README.md)
-- [ARCHITECTURE.md](ARCHITECTURE.md)
-- [MODULE-LESSON-TROUBLESHOOTING.md](MODULE-LESSON-TROUBLESHOOTING.md)
+<p align="center">
+  <strong>🛣️ CT Learning - Routes Reference</strong><br>
+  <em>Complete routing documentation for developers</em>
+</p>

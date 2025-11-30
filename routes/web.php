@@ -1,6 +1,7 @@
 <?php
 // -------------------------- ของ Controller ----------------------------
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TeacherProfileController;
 use App\Http\Controllers\Student\CourseController as StudentCourseController;
 use App\Http\Controllers\Teacher\CourseController as TeacherCourseController;
 use Illuminate\Support\Facades\Route;
@@ -43,6 +44,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+// ------ หน้าแสดง Teacher ทั้งหมด (ทุก role เข้าถึงได้) -----------**
+Route::middleware('auth')->group(function () {
+    Route::get('/teachers', [TeacherProfileController::class, 'index'])->name('teachers.index');
+    Route::get('/teachers/{teacher}', [TeacherProfileController::class, 'show'])->name('teachers.show');
+    
+    // Public Course Preview - ทุก role ที่ login แล้วสามารถดู preview คอร์สได้
+    Route::get('/courses/{course}/preview', [TeacherProfileController::class, 'coursePreview'])->name('courses.preview');
 });
 
 // --------------------------------------------------------------
@@ -90,6 +100,7 @@ Route::middleware(['auth', 'student'])->prefix('student')->name('student.')->gro
     // Course routes
     Route::get('/courses', [StudentCourseController::class, 'index'])->name('courses.index');
     Route::get('/courses/my-courses', [StudentCourseController::class, 'myCourses'])->name('courses.my-courses');
+    Route::get('/courses/{course}/preview', [StudentCourseController::class, 'preview'])->name('courses.preview');
     Route::get('/courses/{course}', [StudentCourseController::class, 'show'])->name('courses.show');
     
     // Enrollment routes
@@ -101,10 +112,11 @@ Route::middleware(['auth', 'student'])->prefix('student')->name('student.')->gro
     Route::post('/courses/{course}/lessons/{lesson}/complete', [StudentCourseController::class, 'completeLesson'])->name('courses.complete-lesson');
     
     // Quiz routes for students
-    Route::get('/quizzes/{quiz}', [App\Http\Controllers\Student\QuizController::class, 'show'])->name('quizzes.show');
-    Route::get('/quizzes/{quiz}/start', [App\Http\Controllers\Student\QuizController::class, 'start'])->name('quizzes.start');
-    Route::post('/quizzes/{quiz}/submit', [App\Http\Controllers\Student\QuizController::class, 'submit'])->name('quizzes.submit');
-    Route::get('/quiz-attempts/{attempt}/result', [App\Http\Controllers\Student\QuizController::class, 'result'])->name('quizzes.result');
+    Route::get('/courses/{course}/modules/{module}/quizzes/{quiz}', [App\Http\Controllers\Student\QuizController::class, 'show'])->name('courses.modules.quizzes.show');
+    Route::post('/quizzes/{quiz}/start', [App\Http\Controllers\Student\QuizController::class, 'start'])->name('quizzes.start');
+    Route::get('/attempts/{attempt}/take', [App\Http\Controllers\Student\QuizController::class, 'take'])->name('attempts.take');
+    Route::post('/attempts/{attempt}/submit', [App\Http\Controllers\Student\QuizController::class, 'submit'])->name('attempts.submit');
+    Route::get('/attempts/{attempt}/result', [App\Http\Controllers\Student\QuizController::class, 'result'])->name('attempts.result');
     
     // Certificate routes for students
     Route::get('/certificates', [App\Http\Controllers\Student\CertificateController::class, 'index'])->name('certificates.index');
@@ -117,6 +129,17 @@ Route::middleware(['auth', 'student'])->prefix('student')->name('student.')->gro
 Route::middleware(['auth', 'teacher'])->prefix('teacher')->name('teacher.')->group(function () {
     // ส่ง corse ไปที่ TeacherCourseController
     Route::resource('courses', TeacherCourseController::class);
+    
+    // Route สำหรับอัปโหลดรูปภาพจาก Quill Editor
+    Route::post('lessons/upload-image', [App\Http\Controllers\Teacher\LessonController::class, 'uploadImage'])->name('lessons.upload-image');
+    
+    // Route สำหรับดูนักเรียนในคอร์ส
+    Route::get('courses/{course}/students', [TeacherCourseController::class, 'students'])->name('courses.students');
+    
+    // Route สำหรับแก้ไขโปรไฟล์ Teacher
+    Route::get('profile', [TeacherProfileController::class, 'editProfile'])->name('profile.edit');
+    Route::put('profile', [TeacherProfileController::class, 'updateProfile'])->name('profile.update');
+    Route::delete('profile/image', [TeacherProfileController::class, 'deleteProfileImage'])->name('profile.delete-image');
     
     // Routes สำหรับ Modules
     Route::prefix('courses/{course}/modules')->name('courses.modules.')->group(function () {
@@ -152,13 +175,10 @@ Route::middleware(['auth', 'teacher'])->prefix('teacher')->name('teacher.')->gro
             Route::delete('/{quiz}', [App\Http\Controllers\Teacher\QuizController::class, 'destroy'])->name('destroy');
             
             // Routes สำหรับ Questions ภายใน Quiz
-            Route::prefix('/{quiz}/questions')->name('questions.')->group(function () {
-                Route::get('/create', [App\Http\Controllers\Teacher\QuestionController::class, 'create'])->name('create');
-                Route::post('/', [App\Http\Controllers\Teacher\QuestionController::class, 'store'])->name('store');
-                Route::get('/{question}/edit', [App\Http\Controllers\Teacher\QuestionController::class, 'edit'])->name('edit');
-                Route::put('/{question}', [App\Http\Controllers\Teacher\QuestionController::class, 'update'])->name('update');
-                Route::delete('/{question}', [App\Http\Controllers\Teacher\QuestionController::class, 'destroy'])->name('destroy');
-            });
+            Route::post('/{quiz}/questions', [App\Http\Controllers\Teacher\QuizController::class, 'storeQuestion'])->name('questions.store');
+            Route::put('/{quiz}/questions/{question}', [App\Http\Controllers\Teacher\QuizController::class, 'updateQuestion'])->name('questions.update');
+            Route::delete('/{quiz}/questions/{question}', [App\Http\Controllers\Teacher\QuizController::class, 'destroyQuestion'])->name('questions.destroy');
+            Route::post('/{quiz}/questions/reorder', [App\Http\Controllers\Teacher\QuizController::class, 'reorderQuestions'])->name('questions.reorder');
         });
     });
 });
@@ -174,6 +194,15 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/users/{user}/edit', [App\Http\Controllers\Admin\AdminController::class, 'editUser'])->name('users.edit');
     Route::put('/users/{user}', [App\Http\Controllers\Admin\AdminController::class, 'updateUser'])->name('users.update');
     Route::delete('/users/{user}', [App\Http\Controllers\Admin\AdminController::class, 'destroyUser'])->name('users.destroy');
+    
+    // Course Management
+    Route::get('/courses', [App\Http\Controllers\Admin\AdminController::class, 'courses'])->name('courses');
+    Route::get('/courses/create', [App\Http\Controllers\Admin\AdminController::class, 'createCourse'])->name('courses.create');
+    Route::post('/courses', [App\Http\Controllers\Admin\AdminController::class, 'storeCourse'])->name('courses.store');
+    Route::get('/courses/{course}', [App\Http\Controllers\Admin\AdminController::class, 'showCourse'])->name('courses.show');
+    Route::get('/courses/{course}/edit', [App\Http\Controllers\Admin\AdminController::class, 'editCourse'])->name('courses.edit');
+    Route::put('/courses/{course}', [App\Http\Controllers\Admin\AdminController::class, 'updateCourse'])->name('courses.update');
+    Route::delete('/courses/{course}', [App\Http\Controllers\Admin\AdminController::class, 'destroyCourse'])->name('courses.destroy');
     
     // Statistics
     Route::get('/statistics', [App\Http\Controllers\Admin\AdminController::class, 'statistics'])->name('statistics');

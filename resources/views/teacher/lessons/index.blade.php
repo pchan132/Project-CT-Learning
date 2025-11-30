@@ -82,7 +82,8 @@
                                                     class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
                                                 {{ $lesson->content_type === 'PDF' ? 'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-300' : '' }}
                                                 {{ $lesson->content_type === 'VIDEO' ? 'bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-300' : '' }}
-                                                {{ $lesson->content_type === 'TEXT' ? 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300' : '' }}">
+                                                {{ $lesson->content_type === 'TEXT' ? 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300' : '' }}
+                                                {{ $lesson->content_type === 'GDRIVE' ? 'bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-300' : '' }}">
                                                     {{ $lesson->content_type_label ?? ucfirst($lesson->content_type) }}
                                                 </span>
                                             @endif
@@ -95,6 +96,8 @@
                                                     <span>• <i class="fas fa-file mr-1"></i>มีไฟล์แนบ</span>
                                                 @elseif($lesson->isVideoContent())
                                                     <span>• <i class="fas fa-video mr-1"></i>วิดีโอ</span>
+                                                @elseif($lesson->isGoogleDriveContent())
+                                                    <span>• <i class="fab fa-google-drive mr-1"></i>Google Drive</span>
                                                 @endif
                                             @endif
                                             @if ($lesson->content_text)
@@ -178,7 +181,7 @@
 
         <!-- Back Button -->
         <div class="mt-8">
-            <a href="{{ route('teacher.courses.show', [$course, $module]) }}"
+            <a href="{{ route('teacher.courses.modules.show', [$course->id, $module->id]) }}"
                 class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 font-medium transition">
                 <i class="fas fa-arrow-left mr-2"></i>กลับไปที่ Module
             </a>
