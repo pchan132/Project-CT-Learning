@@ -37,6 +37,23 @@ class Lesson extends Model
     }
 
     /**
+     * ความสัมพันธ์กับตาราง Quiz
+     * คือ Lesson 1 บทเรียน มีแบบทดสอบได้หลายข้อ
+     */
+    public function quizzes()
+    {
+        return $this->hasMany(Quiz::class);
+    }
+
+    /**
+     * Alias for isCompletedByStudent
+     */
+    public function isCompletedBy($studentId)
+    {
+        return $this->isCompletedByStudent($studentId);
+    }
+
+    /**
      * ตรวจสอบว่า student นั้นเรียน lesson นี้เสร็จแล้วหรือไม่
      */
     public function isCompletedByStudent($studentId)

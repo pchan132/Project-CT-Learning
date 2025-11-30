@@ -203,7 +203,10 @@ class CourseController extends Controller
         $previousLesson = $currentLessonIndex > 0 ? $allLessons[$currentLessonIndex - 1] : null;
         $nextLesson = $currentLessonIndex < $allLessons->count() - 1 ? $allLessons[$currentLessonIndex + 1] : null;
 
-        return view('student.lessons.learn', compact(
+        // Load course with modules and lessons for sidebar
+        $course->load(['modules.lessons', 'modules.quizzes']);
+
+        return view('student.lessons.learn-fullscreen', compact(
             'course', 'lesson', 'isCompleted', 'previousLesson', 'nextLesson'
         ));
     }

@@ -123,7 +123,7 @@
         <!-- Main Content Grid -->
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
             <!-- Lesson Content Area -->
-            <div class="lg:col-span-3">
+            <div class="lg:col-span-3 order-last lg:order-first">
                 <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
                     <!-- Content based on type -->
                     <div class="p-6 md:p-8">
@@ -373,8 +373,8 @@ if (
                 </div>
             </div>
 
-            <!-- Sidebar -->
-            <div class="lg:col-span-1 space-y-6">
+            <!-- Sidebar - Navigation on Right -->
+            <div class="lg:col-span-1 space-y-6 order-first lg:order-last">
                 <!-- Lesson Navigation Card -->
                 <div
                     class="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 p-5">
