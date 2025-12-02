@@ -17,11 +17,17 @@ class CertificateTemplate extends Model
         'primary_color',
         'text_color',
         'logo_image',
+        'logo_width',
+        'logo_height',
         'admin_signature',
+        'admin_signature_width',
+        'admin_signature_height',
         'admin_name',
         'admin_position',
         'show_teacher_signature',
         'teacher_signature_position',
+        'teacher_signature_width',
+        'teacher_signature_height',
         'admin_signature_position',
         'is_active',
         'is_default',
@@ -32,6 +38,12 @@ class CertificateTemplate extends Model
         'show_teacher_signature' => 'boolean',
         'is_active' => 'boolean',
         'is_default' => 'boolean',
+        'logo_width' => 'integer',
+        'logo_height' => 'integer',
+        'admin_signature_width' => 'integer',
+        'admin_signature_height' => 'integer',
+        'teacher_signature_width' => 'integer',
+        'teacher_signature_height' => 'integer',
     ];
 
     /**
@@ -79,8 +91,37 @@ class CertificateTemplate extends Model
      */
     public static function getActiveTemplate()
     {
-        return self::where('is_active', true)->first() 
+        $template = self::where('is_active', true)->first() 
             ?? self::where('is_default', true)->first();
+        
+        // ถ้าไม่มี template ให้สร้าง default
+        if (!$template) {
+            $template = self::createDefaultTemplate();
+        }
+        
+        return $template;
+    }
+
+    /**
+     * สร้าง Default Template
+     */
+    public static function createDefaultTemplate()
+    {
+        return self::create([
+            'name' => 'Default Template',
+            'description' => 'Template มาตรฐานสำหรับใบประกาศนียบัตร',
+            'primary_color' => '#6366f1',
+            'border_color' => '#d4af37',
+            'text_color' => '#1f2937',
+            'admin_name' => 'ผู้อำนวยการ',
+            'admin_position' => 'ผู้รับรอง',
+            'admin_signature_position' => 'right',
+            'show_teacher_signature' => true,
+            'teacher_signature_position' => 'left',
+            'is_active' => true,
+            'is_default' => true,
+            'created_by' => 1,
+        ]);
     }
 
     /**

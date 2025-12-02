@@ -7,11 +7,46 @@ use App\Models\Course;
 use App\Models\Certificate;
 use App\Models\CertificateTemplate;
 use Illuminate\Http\Request;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\View;
+use Mpdf\Mpdf;
 
 class CertificateController extends Controller
 {
+    /**
+     * Generate PDF using mPDF with Thai font support
+     */
+    private function generatePdf($template, $certificate, $student, $course)
+    {
+        // Create mPDF instance - A4 Landscape with Thai font
+        $tempDir = storage_path('app/mpdf-temp');
+        if (!file_exists($tempDir)) {
+            mkdir($tempDir, 0755, true);
+        }
+
+        $mpdf = new Mpdf([
+            'mode' => 'utf-8',
+            'format' => 'A4-L',
+            'margin_left' => 0,
+            'margin_right' => 0,
+            'margin_top' => 0,
+            'margin_bottom' => 0,
+            'tempDir' => $tempDir,
+        ]);
+
+        // Render the Blade template to HTML
+        $html = View::make('certificates.template-mpdf', [
+            'template' => $template,
+            'certificate' => $certificate,
+            'student' => $student,
+            'course' => $course,
+        ])->render();
+
+        $mpdf->WriteHTML($html);
+
+        return $mpdf;
+    }
+
     /**
      * Check if student can get certificate for a course
      */
@@ -63,7 +98,7 @@ class CertificateController extends Controller
             return redirect()->route('student.certificates.show', $existingCert->id);
         }
         
-        // ดึง Template ที่ใช้งานอยู่
+        // ดึง Template ที่ใช้งานอยู่ (จะสร้าง default ถ้าไม่มี)
         $template = CertificateTemplate::getActiveTemplate();
         
         // สร้าง certificate
@@ -72,33 +107,26 @@ class CertificateController extends Controller
             'course_id' => $course->id,
             'certificate_number' => Certificate::generateCertificateNumber(),
             'issued_date' => now(),
-            'template_id' => $template?->id,
+            'template_id' => $template->id,
         ]);
         
-        // สร้าง PDF - ใช้ dynamic template ถ้ามี template หรือ fallback เป็น template เดิม
-        if ($template) {
-            $pdf = Pdf::loadView('certificates.template-dynamic', [
-                'template' => $template,
-                'certificate' => $certificate,
-                'student' => auth()->user(),
-                'course' => $course,
-                'teacherSignature' => $course->teacher->signature_image,
-            ])->setPaper('a4', 'landscape');
-        } else {
-            $pdf = Pdf::loadView('certificates.template', [
-                'certificate' => $certificate,
-                'student' => auth()->user(),
-                'course' => $course,
-            ]);
-        }
+        // สร้าง PDF ด้วย mPDF
+        $mpdf = $this->generatePdf($template, $certificate, auth()->user(), $course);
         
         // บันทึก PDF
         $filename = 'certificates/cert-' . $certificate->id . '.pdf';
-        Storage::put('public/' . $filename, $pdf->output());
+        $fullPath = storage_path('app/public/' . $filename);
+        
+        // สร้าง directory ถ้ายังไม่มี
+        if (!file_exists(dirname($fullPath))) {
+            mkdir(dirname($fullPath), 0755, true);
+        }
+        
+        $mpdf->Output($fullPath, 'F');
         
         // อัพเดท path
         $certificate->update(['pdf_path' => $filename]);
-        
+
         return redirect()
             ->route('student.certificates.show', $certificate->id)
             ->with('success', 'สร้างใบประกาศนียบัตรสำเร็จ!');
@@ -133,27 +161,21 @@ class CertificateController extends Controller
         $certificate->load(['course.teacher', 'student']);
         $template = $certificate->template ?? CertificateTemplate::getActiveTemplate();
         
-        if ($template) {
-            $pdf = Pdf::loadView('certificates.template-dynamic', [
-                'template' => $template,
-                'certificate' => $certificate,
-                'student' => $certificate->student,
-                'course' => $certificate->course,
-            ])->setPaper('a4', 'landscape');
-        } else {
-            $pdf = Pdf::loadView('certificates.template', [
-                'certificate' => $certificate,
-                'student' => $certificate->student,
-                'course' => $certificate->course,
-            ])->setPaper('a4', 'landscape');
-        }
+        $mpdf = $this->generatePdf($template, $certificate, $certificate->student, $certificate->course);
         
         // บันทึก PDF ใหม่
         $filename = 'certificates/cert-' . $certificate->id . '.pdf';
-        Storage::put('public/' . $filename, $pdf->output());
-        $certificate->update(['pdf_path' => $filename, 'template_id' => $template?->id]);
+        $fullPath = storage_path('app/public/' . $filename);
         
-        return $pdf->download('certificate-' . $certificate->certificate_number . '.pdf');
+        if (!file_exists(dirname($fullPath))) {
+            mkdir(dirname($fullPath), 0755, true);
+        }
+        
+        $mpdf->Output($fullPath, 'F');
+        $certificate->update(['pdf_path' => $filename, 'template_id' => $template->id]);
+        
+        // Download
+        return response()->download($fullPath, 'certificate-' . $certificate->certificate_number . '.pdf');
     }
 
     /**
@@ -170,16 +192,17 @@ class CertificateController extends Controller
         $template = CertificateTemplate::getActiveTemplate();
         
         if ($template) {
-            $pdf = Pdf::loadView('certificates.template-dynamic', [
-                'template' => $template,
-                'certificate' => $certificate,
-                'student' => $certificate->student,
-                'course' => $certificate->course,
-            ])->setPaper('a4', 'landscape');
+            $mpdf = $this->generatePdf($template, $certificate, $certificate->student, $certificate->course);
             
             // บันทึก PDF ใหม่
             $filename = 'certificates/cert-' . $certificate->id . '.pdf';
-            Storage::put('public/' . $filename, $pdf->output());
+            $fullPath = storage_path('app/public/' . $filename);
+            
+            if (!file_exists(dirname($fullPath))) {
+                mkdir(dirname($fullPath), 0755, true);
+            }
+            
+            $mpdf->Output($fullPath, 'F');
             $certificate->update(['pdf_path' => $filename, 'template_id' => $template->id]);
             
             return back()->with('success', 'สร้างใบประกาศนียบัตรใหม่ตาม Template ล่าสุดเรียบร้อย!');
