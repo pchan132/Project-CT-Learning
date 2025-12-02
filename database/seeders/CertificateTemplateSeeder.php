@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\CertificateTemplate;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class CertificateTemplateSeeder extends Seeder
@@ -14,6 +15,15 @@ class CertificateTemplateSeeder extends Seeder
     {
         // สร้าง Default Template ถ้ายังไม่มี
         if (CertificateTemplate::count() === 0) {
+            // หา Admin user คนแรก หรือ user คนแรกในระบบ
+            $adminUser = User::where('role', 'admin')->first() 
+                ?? User::first();
+
+            if (!$adminUser) {
+                $this->command->error('❌ ไม่พบ User ในระบบ กรุณา seed users ก่อน!');
+                return;
+            }
+
             CertificateTemplate::create([
                 'name' => 'Default Template',
                 'description' => 'Template มาตรฐานสำหรับใบประกาศนียบัตร',
@@ -27,7 +37,7 @@ class CertificateTemplateSeeder extends Seeder
                 'teacher_signature_position' => 'left',
                 'is_active' => true,
                 'is_default' => true,
-                'created_by' => 1, // Admin user
+                'created_by' => $adminUser->id,
             ]);
 
             $this->command->info('✅ สร้าง Default Certificate Template สำเร็จ!');
