@@ -124,6 +124,7 @@ Route::middleware(['auth', 'student'])->prefix('student')->name('student.')->gro
     Route::get('/certificates/{certificate}', [App\Http\Controllers\Student\CertificateController::class, 'show'])->name('certificates.show');
     Route::get('/certificates/{certificate}/download', [App\Http\Controllers\Student\CertificateController::class, 'download'])->name('certificates.download');
     Route::post('/certificates/{certificate}/regenerate', [App\Http\Controllers\Student\CertificateController::class, 'regenerate'])->name('certificates.regenerate');
+    Route::get('/certificates/{certificate}/data', [App\Http\Controllers\Student\CertificateController::class, 'getData'])->name('certificates.data');
 });
 
 // ของครู 

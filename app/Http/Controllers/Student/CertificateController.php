@@ -18,33 +18,53 @@ class CertificateController extends Controller
      */
     private function generatePdf($template, $certificate, $student, $course)
     {
-        // Create mPDF instance - A4 Landscape with Thai font
-        $tempDir = storage_path('app/mpdf-temp');
-        if (!file_exists($tempDir)) {
-            mkdir($tempDir, 0755, true);
+        try {
+            \Illuminate\Support\Facades\Log::info('Starting PDF Generation', [
+                'certificate_id' => $certificate->id,
+                'student_id' => $student->id,
+                'course_id' => $course->id,
+                'template_id' => $template->id ?? 'default'
+            ]);
+
+            // Validate inputs
+            if (!$student || !$course) {
+                throw new \Exception('Missing student or course data');
+            }
+
+            // Create mPDF instance - A4 Landscape with Thai font
+            $tempDir = storage_path('app/mpdf-temp');
+            if (!file_exists($tempDir)) {
+                mkdir($tempDir, 0755, true);
+            }
+
+            $mpdf = new Mpdf([
+                'mode' => 'utf-8',
+                'format' => 'A4-L',
+                'margin_left' => 0,
+                'margin_right' => 0,
+                'margin_top' => 0,
+                'margin_bottom' => 0,
+                'tempDir' => $tempDir,
+            ]);
+
+            // Render the Blade template to HTML
+            $html = View::make('certificates.template-mpdf', [
+                'template' => $template,
+                'certificate' => $certificate,
+                'student' => $student,
+                'course' => $course,
+            ])->render();
+
+            $mpdf->WriteHTML($html);
+
+            return $mpdf;
+
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('PDF Generation Failed: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString()
+            ]);
+            throw $e;
         }
-
-        $mpdf = new Mpdf([
-            'mode' => 'utf-8',
-            'format' => 'A4-L',
-            'margin_left' => 0,
-            'margin_right' => 0,
-            'margin_top' => 0,
-            'margin_bottom' => 0,
-            'tempDir' => $tempDir,
-        ]);
-
-        // Render the Blade template to HTML
-        $html = View::make('certificates.template-mpdf', [
-            'template' => $template,
-            'certificate' => $certificate,
-            'student' => $student,
-            'course' => $course,
-        ])->render();
-
-        $mpdf->WriteHTML($html);
-
-        return $mpdf;
     }
 
     /**
@@ -109,6 +129,9 @@ class CertificateController extends Controller
             'issued_date' => now(),
             'template_id' => $template->id,
         ]);
+        
+        // Ensure relationships are loaded for the view
+        $course->load('teacher');
         
         // สร้าง PDF ด้วย mPDF
         $mpdf = $this->generatePdf($template, $certificate, auth()->user(), $course);
@@ -222,5 +245,69 @@ class CertificateController extends Controller
             ->get();
         
         return view('student.certificates.index', compact('certificates'));
+    }
+
+    /**
+     * Get certificate data for jsPDF generation
+     */
+    public function getData(Certificate $certificate)
+    {
+        // Make sure this is student's certificate
+        if ($certificate->student_id !== auth()->id()) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $certificate->load(['course.teacher', 'student', 'template']);
+        $template = $certificate->template ?? CertificateTemplate::getActiveTemplate();
+
+        // Helper function to convert image to base64
+        $toBase64 = function ($path) {
+            if (!$path) return null;
+            $fullPath = storage_path('app/public/' . $path);
+            if (file_exists($fullPath)) {
+                $type = pathinfo($fullPath, PATHINFO_EXTENSION);
+                $data = file_get_contents($fullPath);
+                return 'data:image/' . $type . ';base64,' . base64_encode($data);
+            }
+            return null;
+        };
+
+        // Thai months for date formatting
+        $thaiMonths = [
+            1 => 'มกราคม', 2 => 'กุมภาพันธ์', 3 => 'มีนาคม', 4 => 'เมษายน',
+            5 => 'พฤษภาคม', 6 => 'มิถุนายน', 7 => 'กรกฎาคม', 8 => 'สิงหาคม',
+            9 => 'กันยายน', 10 => 'ตุลาคม', 11 => 'พฤศจิกายน', 12 => 'ธันวาคม'
+        ];
+
+        $issuedDate = $certificate->issued_date;
+
+        return response()->json([
+            'certificate' => [
+                'number' => $certificate->certificate_number,
+                'issued_date' => $issuedDate->format('Y-m-d'),
+                'issued_date_thai' => $issuedDate->day . ' ' . $thaiMonths[$issuedDate->month] . ' พ.ศ. ' . ($issuedDate->year + 543),
+            ],
+            'student' => [
+                'name' => $certificate->student->name,
+            ],
+            'course' => [
+                'title' => $certificate->course->title,
+            ],
+            'teacher' => [
+                'name' => optional($certificate->course->teacher)->name ?? '',
+                'signature' => $toBase64(optional($certificate->course->teacher)->signature_image),
+            ],
+            'template' => [
+                'name' => $template->name ?? 'CT Learning',
+                'primary_color' => $template->primary_color ?? '#c9a227',
+                'border_color' => $template->border_color ?? '#c9a227',
+                'text_color' => $template->text_color ?? '#333333',
+                'logo' => $toBase64($template->logo_image),
+                'admin_name' => $template->admin_name ?? 'ผู้อำนวยการ',
+                'admin_position' => $template->admin_position ?? '',
+                'admin_signature' => $toBase64($template->admin_signature),
+                'show_teacher_signature' => $template->show_teacher_signature ?? true,
+            ],
+        ]);
     }
 }

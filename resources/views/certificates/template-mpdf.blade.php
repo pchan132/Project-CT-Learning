@@ -372,12 +372,17 @@
 
     <!-- Signatures (outside main-content for mPDF) -->
     @php
-        $teacherSigPath =
-            $course->teacher->signature_image ?? null
-                ? public_path('storage/' . $course->teacher->signature_image)
-                : null;
-        $adminSigPath =
-            $template->admin_signature ?? null ? public_path('storage/' . $template->admin_signature) : null;
+        // Teacher signature path
+        $teacherSigPath = null;
+        if (optional($course->teacher)->signature_image) {
+            $teacherSigPath = public_path('storage/' . $course->teacher->signature_image);
+        }
+
+        // Admin signature path
+        $adminSigPath = null;
+        if (!empty($template->admin_signature)) {
+            $adminSigPath = public_path('storage/' . $template->admin_signature);
+        }
 
         // Convert to base64 for mPDF compatibility
         $teacherSigBase64 = null;
@@ -402,7 +407,7 @@
                         <div style="height: 12mm;"></div>
                     @endif
                     <div class="sig-line"></div>
-                    <div class="sig-name">{{ $course->teacher->name ?? '' }}</div>
+                    <div class="sig-name">{{ optional($course->teacher)->name ?? '' }}</div>
                     <div class="sig-position">ผู้สอน</div>
                 </td>
 

@@ -27,3 +27,14 @@ Route::get('/health', function () {
         'storage' => is_writable(storage_path()) ? 'writable' : 'not_writable',
     ]);
 });
+
+Route::get('/debug-cert/{id}', function ($id) {
+    $certificate = \App\Models\Certificate::with(['course.teacher', 'student', 'template'])->findOrFail($id);
+    return [
+        'certificate' => $certificate,
+        'teacher' => $certificate->course->teacher,
+        'template' => $certificate->template ?? \App\Models\CertificateTemplate::getActiveTemplate(),
+        'teacher_name' => optional($certificate->course->teacher)->name,
+        'admin_name' => $certificate->template->admin_name ?? 'Default Admin',
+    ];
+});

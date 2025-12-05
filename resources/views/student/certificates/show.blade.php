@@ -187,18 +187,16 @@
                 class="px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 font-semibold transition">
                 <i class="fas fa-arrow-left mr-2"></i>กลับ
             </a>
-            <a href="{{ route('student.certificates.download', $certificate->id) }}"
-                class="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 font-semibold shadow-lg transition">
+            <button type="button" id="previewPdfBtn"
+                class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold shadow-lg transition"
+                data-certificate-id="{{ $certificate->id }}">
+                <i class="fas fa-eye mr-2"></i>ดูตัวอย่าง PDF
+            </button>
+            <button type="button" id="downloadPdfBtn"
+                class="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 font-semibold shadow-lg transition"
+                data-certificate-id="{{ $certificate->id }}">
                 <i class="fas fa-download mr-2"></i>ดาวน์โหลด PDF
-            </a>
-            <form action="{{ route('student.certificates.regenerate', $certificate->id) }}" method="POST" class="inline">
-                @csrf
-                <button type="submit"
-                    class="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-semibold transition"
-                    onclick="return confirm('ต้องการสร้างใบประกาศนียบัตรใหม่ตาม Template ล่าสุดหรือไม่?')">
-                    <i class="fas fa-sync-alt mr-2"></i>สร้าง PDF ใหม่
-                </button>
-            </form>
+            </button>
         </div>
 
         <!-- Footer -->
@@ -237,3 +235,52 @@
     </div>
     </div>
 @endsection
+
+@push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const previewBtn = document.getElementById('previewPdfBtn');
+            const downloadBtn = document.getElementById('downloadPdfBtn');
+
+            if (previewBtn) {
+                previewBtn.addEventListener('click', async function() {
+                    const certId = this.dataset.certificateId;
+                    const originalText = this.innerHTML;
+
+                    try {
+                        this.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>กำลังสร้าง...';
+                        this.disabled = true;
+
+                        await window.CertificatePDF.preview(certId);
+                    } catch (error) {
+                        console.error('Preview failed:', error);
+                        alert('ไม่สามารถสร้าง PDF ได้ กรุณาลองใหม่อีกครั้ง');
+                    } finally {
+                        this.innerHTML = originalText;
+                        this.disabled = false;
+                    }
+                });
+            }
+
+            if (downloadBtn) {
+                downloadBtn.addEventListener('click', async function() {
+                    const certId = this.dataset.certificateId;
+                    const originalText = this.innerHTML;
+
+                    try {
+                        this.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>กำลังดาวน์โหลด...';
+                        this.disabled = true;
+
+                        await window.CertificatePDF.download(certId);
+                    } catch (error) {
+                        console.error('Download failed:', error);
+                        alert('ไม่สามารถดาวน์โหลด PDF ได้ กรุณาลองใหม่อีกครั้ง');
+                    } finally {
+                        this.innerHTML = originalText;
+                        this.disabled = false;
+                    }
+                });
+            }
+        });
+    </script>
+@endpush
