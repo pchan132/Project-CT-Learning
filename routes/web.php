@@ -143,6 +143,9 @@ Route::middleware(['auth', 'teacher'])->prefix('teacher')->name('teacher.')->gro
     Route::put('profile', [TeacherProfileController::class, 'updateProfile'])->name('profile.update');
     Route::delete('profile/image', [TeacherProfileController::class, 'deleteProfileImage'])->name('profile.delete-image');
     
+    // Route สำหรับดูตัวอย่าง Certificate พร้อมลายเซ็น
+    Route::get('certificate-preview', [TeacherProfileController::class, 'certificatePreview'])->name('certificate-preview');
+    
     // Routes สำหรับ Modules
     Route::prefix('courses/{course}/modules')->name('courses.modules.')->group(function () {
         Route::get('/', [App\Http\Controllers\Teacher\ModuleController::class, 'index'])->name('index');

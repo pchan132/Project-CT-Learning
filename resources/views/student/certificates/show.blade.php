@@ -19,6 +19,11 @@
     $teacher = $certificate->course->teacher;
     $teacherSignature = $teacher->signature_image ?? null;
 
+    // ตำแหน่งลายเซ็น (ดึงจาก template)
+    $showTeacherSignature = $template->show_teacher_signature ?? true;
+    $teacherSignaturePosition = $template->teacher_signature_position ?? 'left';
+    $adminSignaturePosition = $template->admin_signature_position ?? 'right';
+
     // Thai date
     $thaiMonths = [
         1 => 'มกราคม',
@@ -99,8 +104,8 @@
                             <img src="{{ asset('storage/' . $template->logo_image) }}" alt="Logo"
                                 class="h-20 w-auto object-contain">
                         @else
-                            <div class="h-20 w-20 rounded-full flex items-center justify-center"
-                                style="background: {{ $goldColor }};">
+                            <div class="h-20 w-20 rounded-full flex items-center justify-center overflow-hidden"
+                                style="background: linear-gradient(135deg, #22c55e, #16a34a);">
                                 <i class="fas fa-award text-3xl text-white"></i>
                             </div>
                         @endif
@@ -133,18 +138,33 @@
                     <!-- Footer / Signatures / Seal -->
                     <div class="relative w-full flex justify-between items-end mt-12">
 
-                        <!-- Left Signature -->
+                        {{-- Left Signature (ตามตำแหน่งที่กำหนดใน template) --}}
                         <div class="text-center w-64">
-                            <div class="border-b-2 border-gray-400 mb-3 pb-2">
-                                <div class="h-12 w-full flex items-end justify-center">
-                                    @if ($teacherSignature)
-                                        <img src="{{ asset('storage/' . $teacherSignature) }}" alt="Signature"
-                                            class="h-10 object-contain">
-                                    @endif
+                            @if ($teacherSignaturePosition == 'left' && $showTeacherSignature)
+                                {{-- ลายเซ็นครูผู้สอน --}}
+                                <div class="border-b-2 border-gray-400 mb-3 pb-2">
+                                    <div class="h-12 w-full flex items-end justify-center">
+                                        @if ($teacherSignature)
+                                            <img src="{{ asset('storage/' . $teacherSignature) }}" alt="Signature"
+                                                class="h-10 object-contain">
+                                        @endif
+                                    </div>
                                 </div>
-                            </div>
-                            <p class="text-lg font-bold text-gray-800">{{ $teacher->name ?? 'ผู้สอน' }}</p>
-                            <p class="text-sm text-gray-500">ผู้สอน</p>
+                                <p class="text-lg font-bold text-gray-800">{{ $teacher->name ?? 'ผู้สอน' }}</p>
+                                <p class="text-sm text-gray-500">ผู้สอน</p>
+                            @elseif ($adminSignaturePosition == 'left')
+                                {{-- ลายเซ็น Admin --}}
+                                <div class="border-b-2 border-gray-400 mb-3 pb-2">
+                                    <div class="h-12 w-full flex items-end justify-center">
+                                        @if ($template && $template->admin_signature)
+                                            <img src="{{ asset('storage/' . $template->admin_signature) }}"
+                                                alt="Admin Signature" class="h-10 object-contain">
+                                        @endif
+                                    </div>
+                                </div>
+                                <p class="text-lg font-bold text-gray-800">{{ $template->admin_name ?? 'ผู้อำนวยการ' }}</p>
+                                <p class="text-sm text-gray-500">{{ $template->admin_position ?? 'ผู้รับรอง' }}</p>
+                            @endif
                         </div>
 
                         <!-- Center Seal -->
@@ -172,18 +192,33 @@
                             </div>
                         </div>
 
-                        <!-- Right Signature -->
+                        {{-- Right Signature (ตามตำแหน่งที่กำหนดใน template) --}}
                         <div class="text-center w-64">
-                            <div class="border-b-2 border-gray-400 mb-3 pb-2">
-                                <div class="h-12 w-full flex items-end justify-center">
-                                    @if ($template && $template->admin_signature)
-                                        <img src="{{ asset('storage/' . $template->admin_signature) }}"
-                                            alt="Admin Signature" class="h-10 object-contain">
-                                    @endif
+                            @if ($teacherSignaturePosition == 'right' && $showTeacherSignature)
+                                {{-- ลายเซ็นครูผู้สอน --}}
+                                <div class="border-b-2 border-gray-400 mb-3 pb-2">
+                                    <div class="h-12 w-full flex items-end justify-center">
+                                        @if ($teacherSignature)
+                                            <img src="{{ asset('storage/' . $teacherSignature) }}" alt="Signature"
+                                                class="h-10 object-contain">
+                                        @endif
+                                    </div>
                                 </div>
-                            </div>
-                            <p class="text-lg font-bold text-gray-800">{{ $template->admin_name ?? 'ผู้อำนวยการ' }}</p>
-                            <p class="text-sm text-gray-500">{{ $template->admin_position ?? 'ผู้รับรอง' }}</p>
+                                <p class="text-lg font-bold text-gray-800">{{ $teacher->name ?? 'ผู้สอน' }}</p>
+                                <p class="text-sm text-gray-500">ผู้สอน</p>
+                            @elseif ($adminSignaturePosition == 'right')
+                                {{-- ลายเซ็น Admin --}}
+                                <div class="border-b-2 border-gray-400 mb-3 pb-2">
+                                    <div class="h-12 w-full flex items-end justify-center">
+                                        @if ($template && $template->admin_signature)
+                                            <img src="{{ asset('storage/' . $template->admin_signature) }}"
+                                                alt="Admin Signature" class="h-10 object-contain">
+                                        @endif
+                                    </div>
+                                </div>
+                                <p class="text-lg font-bold text-gray-800">{{ $template->admin_name ?? 'ผู้อำนวยการ' }}</p>
+                                <p class="text-sm text-gray-500">{{ $template->admin_position ?? 'ผู้รับรอง' }}</p>
+                            @endif
                         </div>
                     </div>
 

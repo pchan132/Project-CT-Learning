@@ -165,6 +165,12 @@
                                         <i class="fas fa-info-circle mr-1"></i>
                                         แนะนำ: ใช้รูป PNG พื้นหลังโปร่งใส ขนาดไม่เกิน 2MB
                                     </p>
+
+                                    <!-- ปุ่มดูตัวอย่าง Certificate -->
+                                    <a href="{{ route('teacher.certificate-preview') }}"
+                                        class="inline-flex items-center mt-3 px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white font-medium rounded-lg transition-colors">
+                                        <i class="fas fa-certificate mr-2"></i>ดูตัวอย่างใบประกาศนียบัตร
+                                    </a>
                                 </div>
                             </div>
                         </div>
