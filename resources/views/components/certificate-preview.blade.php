@@ -116,7 +116,8 @@
                             @if ($teacherSignature)
                                 <img src="{{ $teacherSignature }}" alt="Signature" class="h-10 object-contain">
                             @else
-                                <span class="text-2xl text-blue-900 italic">{{ $teacherName }}</span>
+                                {{-- No signature image --}}
+                                <div class="h-10"></div>
                             @endif
                         </div>
                     </div>
@@ -174,7 +175,8 @@
                             @if ($teacherSignature)
                                 <img src="{{ $teacherSignature }}" alt="Signature" class="h-10 object-contain">
                             @else
-                                <span class="text-2xl text-blue-900 italic">{{ $teacherName }}</span>
+                                {{-- No signature image --}}
+                                <div class="h-10"></div>
                             @endif
                         </div>
                     </div>

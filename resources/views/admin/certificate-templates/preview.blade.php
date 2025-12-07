@@ -206,7 +206,7 @@
                     if (teacherSignature) {
                         sigBox.innerHTML = `<img src="${teacherSignature}" alt="Signature" class="h-10 object-contain">`;
                     } else {
-                        sigBox.innerHTML = `<span class="text-2xl text-blue-900 italic">${teacherName}</span>`;
+                        sigBox.innerHTML = `<div class="h-10"></div>`;
                     }
                 }
             }
