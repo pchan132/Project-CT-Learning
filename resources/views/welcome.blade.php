@@ -205,6 +205,28 @@
                     class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-violet-400 hover:bg-violet-900/50">คอรส์เรียน</a>
                 <a href="#contact"
                     class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-violet-400 hover:bg-violet-900/50">ติดต่อ</a>
+
+                @if (Route::has('login'))
+                    @auth
+                        <a href="{{ url('/dashboard') }}"
+                            class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-violet-400 hover:text-violet-300 hover:bg-violet-900/50">
+                            <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
+                        </a>
+                    @else
+                        <div class="pt-3 mt-3 border-t border-violet-700/50 space-y-2">
+                            <a href="{{ route('login') }}"
+                                class="block px-3 py-2.5 rounded-lg text-center text-base font-semibold text-gray-300 bg-violet-800/50 hover:bg-violet-700/50 transition-colors">
+                                <i class="fas fa-sign-in-alt mr-2"></i>เข้าสู่ระบบ
+                            </a>
+                            @if (Route::has('register'))
+                                <a href="{{ route('register') }}"
+                                    class="block px-3 py-2.5 rounded-lg text-center text-base font-semibold text-white bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 transition-colors">
+                                    <i class="fas fa-user-plus mr-2"></i>หลักสูตรที่เปิดสอน
+                                </a>
+                            @endif
+                        </div>
+                    @endauth
+                @endif
             </div>
         </div>
     </nav>

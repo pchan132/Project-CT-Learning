@@ -24,7 +24,7 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 // ----หน้าแรกของเว็บไซต์  **********
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('welcome');
 
 // ------ Dashboard Route - Redirect based on role -----------**
 Route::get('/dashboard', function () {
