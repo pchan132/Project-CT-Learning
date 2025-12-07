@@ -144,17 +144,22 @@ $isYouTube = false;
 $youtubeId = null;
 $videoUrl = $lesson->content_url;
 
-// Match YouTube URL patterns
+// Match YouTube URL patterns (watch, embed, v, youtu.be)
 if (
     preg_match(
         '/(?:youtube\.com\/(?:watch\?v=|embed\/|v\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/',
-                                                $videoUrl,
-                                                $matches,
-                                            )
-                                        ) {
-                                            $isYouTube = true;
-                                            $youtubeId = $matches[1];
-                                        }
+        $videoUrl,
+        $matches,
+    )
+) {
+    $isYouTube = true;
+    $youtubeId = $matches[1];
+}
+
+// สร้าง YouTube watch URL สำหรับปุ่มดูต้นทาง
+$youtubeWatchUrl = $isYouTube
+    ? 'https://www.youtube.com/watch?v=' . $youtubeId
+                                            : $videoUrl;
                                     @endphp
 
                                     <div class="aspect-video bg-gray-900 rounded-xl overflow-hidden shadow-inner">
@@ -172,6 +177,7 @@ if (
                                             </video>
                                         @endif
                                     </div>
+
                                     @if ($lesson->content_text)
                                         <div class="mt-6 prose dark:prose-invert max-w-none">
                                             <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">รายละเอียดเพิ่มเติม
@@ -343,6 +349,83 @@ if (
                                     <p class="text-gray-600 dark:text-gray-400">ไม่สามารถแสดงเนื้อหาประเภทนี้ได้</p>
                                 </div>
                         @endswitch
+
+                        {{-- ปุ่มดูต้นทาง - แสดงสำหรับทุก type ที่มี URL --}}
+                        @if ($lesson->content_url && $lesson->content_type !== 'TEXT')
+                            <div class="flex justify-center mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
+                                @php
+                                    // กำหนด URL และ label ตาม content type
+                                    $sourceUrl = $lesson->content_url;
+                                    $sourceLabel = 'ดูที่ต้นทาง';
+                                    $sourceIcon = 'external-link';
+                                    $sourceBgColor = 'bg-blue-600 hover:bg-blue-700';
+
+                                    switch ($lesson->content_type) {
+                                        case 'VIDEO':
+                                            // แปลง embed URL เป็น watch URL สำหรับ YouTube
+                                            if (
+                                                preg_match(
+                                                    '/(?:youtube\.com\/(?:watch\?v=|embed\/|v\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/',
+                                                    $sourceUrl,
+                                                    $m,
+                                                )
+                                            ) {
+                                                $sourceUrl = 'https://www.youtube.com/watch?v=' . $m[1];
+                                            }
+                                            $sourceLabel = 'ดูบน YouTube';
+                                            $sourceIcon = 'youtube';
+                                            $sourceBgColor = 'bg-red-600 hover:bg-red-700';
+                                            break;
+                                        case 'GDRIVE':
+                                            $sourceLabel = 'เปิดใน Google Drive';
+                                            $sourceIcon = 'google-drive';
+                                            $sourceBgColor = 'bg-yellow-600 hover:bg-yellow-700';
+                                            break;
+                                        case 'CANVA':
+                                            $sourceLabel = 'เปิดใน Canva';
+                                            $sourceIcon = 'canva';
+                                            $sourceBgColor = 'bg-cyan-600 hover:bg-cyan-700';
+                                            break;
+                                        case 'PDF':
+                                            $sourceLabel = 'เปิด PDF ต้นฉบับ';
+                                            $sourceBgColor = 'bg-red-600 hover:bg-red-700';
+                                            break;
+                                        case 'PPT':
+                                            $sourceLabel = 'ดาวน์โหลด PowerPoint';
+                                            $sourceBgColor = 'bg-orange-600 hover:bg-orange-700';
+                                            break;
+                                    }
+                                @endphp
+
+                                <a href="{{ $sourceUrl }}" target="_blank"
+                                    class="inline-flex items-center {{ $sourceBgColor }} text-white px-6 py-3 rounded-lg transition-colors font-medium shadow-md">
+                                    @switch($sourceIcon)
+                                        @case('youtube')
+                                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                                                <path
+                                                    d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+                                            </svg>
+                                        @break
+
+                                        @case('google-drive')
+                                            <i class="fab fa-google-drive mr-2"></i>
+                                        @break
+
+                                        @case('canva')
+                                            <i class="fas fa-palette mr-2"></i>
+                                        @break
+
+                                        @default
+                                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14">
+                                                </path>
+                                            </svg>
+                                    @endswitch
+                                    {{ $sourceLabel }}
+                                </a>
+                            </div>
+                        @endif
                     </div>
 
                     <!-- Complete Lesson Section -->
