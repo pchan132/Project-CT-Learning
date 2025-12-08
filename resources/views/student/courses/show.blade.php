@@ -5,11 +5,12 @@
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             {{ $course->title }}
         </h2>
-        <a href="{{ route('student.courses.index') }}" class="text-blue-600 hover:text-blue-800 text-sm flex items-center">
+        <a href="{{ route('student.courses.index') }}"
+            class=" hover:text-blue-500 text-sm flex items-center border bg-blue-600 text-white rounded px-2 py-1 hover:bg-blue-100 transition-colors">
             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
             </svg>
-            กลับไปหน้าคอร์สเรียน
+            กลับไปหน้ารายวิชา
         </a>
     </div>
 @endsection
@@ -175,16 +176,16 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                 </svg>
-                                ดู
+                                ดูและพิมพ์ใบประกาศนียบัตร
                             </a>
-                            <a href="{{ route('student.certificates.download', $existingCertificate->id) }}"
+                            {{-- <a href="{{ route('student.certificates.download', $existingCertificate->id) }}"
                                 class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center">
                                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                                 </svg>
                                 ดาวน์โหลด
-                            </a>
+                            </a> --}}
                         </div>
                     </div>
                 </div>
@@ -251,7 +252,7 @@
                             d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
                         </path>
                     </svg>
-                    เนื้อหาคอร์ส
+                    เนื้อหารายวิชา
                 </h2>
 
                 @if ($course->modules->count() > 0)
@@ -552,7 +553,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
-                        ข้อมูลคอร์ส
+                        ข้อมูลรายวิชา
                     </h3>
                     <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">{{ $course->description }}</p>
                 </div>

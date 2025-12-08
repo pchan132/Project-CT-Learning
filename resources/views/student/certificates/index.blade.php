@@ -53,12 +53,12 @@
                             <div class="flex gap-2">
                                 <a href="{{ route('student.certificates.show', $certificate->id) }}"
                                     class="flex-1 text-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-sm font-semibold">
-                                    <i class="fas fa-eye mr-1"></i>ดู
+                                    <i class="fas fa-eye mr-1"></i>ดูและพิมพ์ใบประกาศนียบัตร
                                 </a>
-                                <a href="{{ route('student.certificates.download', $certificate->id) }}"
+                                {{-- <a href="{{ route('student.certificates.download', $certificate->id) }}"
                                     class="flex-1 text-center px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 text-sm font-semibold">
                                     <i class="fas fa-download mr-1"></i>ดาวน์โหลด
-                                </a>
+                                </a> --}}
                             </div>
                         </div>
                     </div>

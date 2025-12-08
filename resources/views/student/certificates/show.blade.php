@@ -129,7 +129,7 @@
                         </h2>
                         <p class="text-xl text-gray-600">
                             ซึ่งจัดโดย <span
-                                class="font-semibold text-gray-800">{{ $template->name ?? 'CT Learning' }}</span>
+                                class="font-semibold text-gray-800">{{ $teacher->name ?? 'CT Learning' }}</span>
                             <br>
                             เมื่อวันที่ {{ $thaiDate }}
                         </p>
@@ -168,7 +168,7 @@
                         </div>
 
                         <!-- Center Seal -->
-                        <div class="absolute left-1/2 transform -translate-x-1/2 bottom-4">
+                        {{-- <div class="absolute left-1/2 transform -translate-x-1/2 bottom-4">
                             <div class="relative inline-flex justify-center items-center">
                                 <div
                                     class="seal-outer w-32 h-32 rounded-full flex items-center justify-center border-4 border-yellow-200">
@@ -190,7 +190,7 @@
                                     <div class="w-8 h-12 transform -rotate-12" style="background-color: #ca8a04;"></div>
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
 
                         {{-- Right Signature (ตามตำแหน่งที่กำหนดใน template) --}}
                         <div class="text-center w-64">
@@ -223,9 +223,9 @@
                     </div>
 
                     <!-- Certificate Number -->
-                    <div class="absolute bottom-2 left-1/2 transform -translate-x-1/2">
+                    {{-- <div class="absolute bottom-2 left-1/2 transform -translate-x-1/2">
                         <p class="text-sm text-gray-400">Certificate No: {{ $certificate->certificate_number }}</p>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
 

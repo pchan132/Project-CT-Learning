@@ -8,10 +8,10 @@
         <div class="text-center mb-10">
             <h1 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3">
                 <i class="fas fa-chalkboard-teacher text-blue-500 mr-3"></i>
-                อาจารย์ผู้สอน
+                ผู้สอนทั้งหมด
             </h1>
             <p class="text-gray-600 dark:text-gray-400 text-lg">
-                พบกับอาจารย์ผู้เชี่ยวชาญที่พร้อมถ่ายทอดความรู้ให้คุณ
+                พบกับผู้สอนที่พร้อมถ่ายทอดความรู้ให้คุณ
             </p>
         </div>
 
@@ -39,7 +39,7 @@
                             <!-- Course Count Badge -->
                             <div
                                 class="absolute top-3 right-3 bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
-                                {{ $teacher->teaching_courses_count }} คอร์ส
+                                {{ $teacher->teaching_courses_count }} รายวิชา
                             </div>
                         </div>
 
@@ -54,16 +54,16 @@
                                     {{ $teacher->position }}
                                 </p>
                             @endif
-                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                            {{-- <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
                                 <i class="fas fa-envelope mr-1"></i>
                                 {{ $teacher->email }}
-                            </p>
+                            </p> --}}
 
                             <!-- View Profile Button -->
                             <div class="mt-4">
                                 <span
                                     class="inline-flex items-center text-sm text-blue-600 dark:text-blue-400 font-medium group-hover:underline">
-                                    ดูโปรไฟล์และคอร์ส
+                                    ดูโปรไฟล์และรายวิชา
                                     <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
                                 </span>
                             </div>
@@ -77,8 +77,8 @@
                     class="w-24 h-24 mx-auto mb-6 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
                     <i class="fas fa-user-slash text-4xl text-gray-400"></i>
                 </div>
-                <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">ยังไม่มีอาจารย์</h3>
-                <p class="text-gray-500 dark:text-gray-400">ยังไม่มีอาจารย์ในระบบขณะนี้</p>
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">ยังไม่มีผู้สอน</h3>
+                <p class="text-gray-500 dark:text-gray-400">ยังไม่มีผู้สอนในระบบขณะนี้</p>
             </div>
         @endif
     </div>

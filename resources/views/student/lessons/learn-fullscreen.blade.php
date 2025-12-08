@@ -237,7 +237,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M11 17l-5-5m0 0l5-5m-5 5h12"></path>
                     </svg>
-                    กลับหน้าคอร์ส
+                    กลับหน้ารายวิชา
                 </a>
 
                 {{-- Certificate Button - Show when course is 100% complete AND all quizzes passed --}}
@@ -590,6 +590,19 @@
                                                 <source src="{{ $lesson->content_display_url }}" type="video/mp4">
                                             </video>
                                         @endif
+                                        {{-- ปุ่มดู YouTube --}}
+                                        <div class="flex justify-center gap-4 p-4 bg-gray-700/50">
+                                            <a href="{{ $lesson->content_url }}" target="_blank"
+                                                class="inline-flex items-center bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition-colors font-medium shadow-md">
+                                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14">
+                                                    </path>
+                                                </svg>
+                                                ดูบน YouTube
+                                            </a>
+                                        </div>
                                     </div>
                                 @endif
                             @break
@@ -615,7 +628,8 @@
                                             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor"
                                                 viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4">
+                                                </path>
                                             </svg>
                                             ดาวน์โหลด
                                         </a>
@@ -667,14 +681,16 @@
                                                 </path>
                                             </svg>
                                             <h3 class="text-xl font-semibold text-white mb-2">งานนำเสนอ PowerPoint</h3>
-                                            <p class="text-gray-400 mb-6">คลิกปุ่มด้านล่างเพื่อดาวน์โหลดหรือเปิดงานนำเสนอ</p>
+                                            <p class="text-gray-400 mb-6">คลิกปุ่มด้านล่างเพื่อดาวน์โหลดหรือเปิดงานนำเสนอ
+                                            </p>
                                         </div>
                                         <a href="{{ $lesson->content_display_url }}" target="_blank"
                                             class="inline-flex items-center bg-orange-600 text-white px-8 py-3 rounded-lg hover:bg-orange-700 transition-colors font-medium shadow-md">
                                             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor"
                                                 viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4">
+                                                </path>
                                             </svg>
                                             ดาวน์โหลดงานนำเสนอ
                                         </a>
