@@ -58,4 +58,13 @@
             </x-primary-button>
         </div>
     </form>
+
+    <div>
+        <p class="mt-4 text-sm text-gray-600 dark:text-gray-400">
+            สมัครสมาชิกเสร็จแล้วใช่ไหม?
+            <a href="{{ route('login') }}" class="text-indigo-500 hover:underline">
+                เข้าสู่ระบบ
+            </a>
+        </p>
+    </div>
 </x-guest-layout>

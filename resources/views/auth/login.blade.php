@@ -50,4 +50,13 @@
             </x-primary-button>
         </div>
     </form>
+
+    <div>
+        <p class="mt-4 text-sm text-gray-600 dark:text-gray-400">
+            ยังไม่มีบัญชีใช่ไหม?
+            <a href="{{ route('register') }}" class="text-indigo-500 hover:underline">
+                สมัครสมาชิก
+            </a>
+        </p>
+    </div>
 </x-guest-layout>

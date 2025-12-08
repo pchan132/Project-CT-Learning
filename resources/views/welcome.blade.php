@@ -154,9 +154,9 @@
                         <a href="#courses"
                             class="nav-link text-gray-300 hover:text-violet-400 px-3 py-2 text-sm font-medium transition duration-150">หลักสูตร</a>
                         <a href="#teachers"
-                            class="nav-link text-gray-300 hover:text-violet-400 px-3 py-2 text-sm font-medium transition duration-150">อาจารย์ประจำแผนก</a>
+                            class="nav-link text-gray-300 hover:text-violet-400 px-3 py-2 text-sm font-medium transition duration-150">ผู้สอน</a>
                         <a href="#projects"
-                            class="nav-link text-gray-300 hover:text-violet-400 px-3 py-2 text-sm font-medium transition duration-150">คอรส์เรียน</a>
+                            class="nav-link text-gray-300 hover:text-violet-400 px-3 py-2 text-sm font-medium transition duration-150">รายวิชา</a>
                         <a href="#contact"
                             class="nav-link text-gray-300 hover:text-violet-400 px-3 py-2 text-sm font-medium transition duration-150">ติดต่อ</a>
 
@@ -200,9 +200,9 @@
                 <a href="#courses"
                     class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-violet-400 hover:bg-violet-900/50">หลักสูตร</a>
                 <a href="#teachers"
-                    class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-violet-400 hover:bg-violet-900/50">อาจารย์ประจำแผนก</a>
+                    class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-violet-400 hover:bg-violet-900/50">ผู้สอน</a>
                 <a href="#projects"
-                    class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-violet-400 hover:bg-violet-900/50">คอรส์เรียน</a>
+                    class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-violet-400 hover:bg-violet-900/50">รายวิชา</a>
                 <a href="#contact"
                     class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-violet-400 hover:bg-violet-900/50">ติดต่อ</a>
 
@@ -290,26 +290,26 @@
                     <div>
                         <p
                             class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-fuchsia-500">
-                            3</p>
-                        <p class="text-sm text-gray-400">หลักสูตร</p>
+                            {{ \App\Models\Course::count() }}</p>
+                        <p class="text-sm text-gray-400">รายวิชาออนไลน์</p>
                     </div>
                     <div>
                         <p
                             class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-fuchsia-500">
-                            10+</p>
-                        <p class="text-sm text-gray-400">อาจารย์ประจำแผนก</p>
+                            {{ \App\Models\User::where('role', 'teacher')->count() }}</p>
+                        <p class="text-sm text-gray-400">ผู้สอน</p>
                     </div>
                     <div>
                         <p
                             class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-fuchsia-500">
-                            45</p>
-                        <p class="text-sm text-gray-400">ห้องเรียน</p>
+                            {{ \App\Models\User::where('role', 'student')->count() }}</p>
+                        <p class="text-sm text-gray-400">นักเรียน</p>
                     </div>
                     <div>
                         <p
                             class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-fuchsia-500">
-                            200+</p>
-                        <p class="text-sm text-gray-400">ผลงานนักศึกษา</p>
+                            {{ \App\Models\Enrollment::count() }}</p>
+                        <p class="text-sm text-gray-400">การลงทะเบียนเรียน</p>
                     </div>
                 </div>
             </div>
@@ -437,124 +437,50 @@
         <section id="teachers" class="py-24">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 fade-in-up" data-delay="700">
                 <div class="text-center mb-16">
-                    <h2 class="text-4xl font-bold text-white">อาจารย์<span class="text-fuchsia-400">ประจำแผนก</span>
+                    <h2 class="text-4xl font-bold text-white">ผู้สอน
+                        {{-- <span class="text-fuchsia-400">ประจำแผนก</span> --}}
                     </h2>
                     <div class="mt-4 h-1 w-24 bg-violet-500 mx-auto rounded-full"></div>
                 </div>
 
-                <!-- ใช้ Grid 4 คอลัมน์สำหรับ Desktop และ 2 คอลัมน์สำหรับ Mobile -->
-                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8">
-                    <!-- คณาจารย์จะถูกจัดเรียงอัตโนมัติ 10 ท่าน -->
-                    <!-- Teacher 1: อาจารย์รณภูมิ นาคสมบูรณ์ (หัวหน้าแผนก) -->
-                    <div class="tech-card p-4 text-center">
-                        <img src="https://placehold.co/300x300/1F1539/EC4899?text=รณภูมิ" alt="อาจารย์รณภูมิ"
-                            class="w-32 h-32 object-cover rounded-full mx-auto ring-4 ring-violet-500/50 hover:ring-fuchsia-500 transition duration-300">
-                        <div class="mt-4">
-                            <h3 class="text-lg font-semibold text-white"></h3>
-                            <p class="text-xs text-fuchsia-400"></p>
-                            <p class="text-xs text-gray-500 mt-1"></p>
-                        </div>
-                    </div>
+                <!-- ดึงข้อมูลอาจารย์จากฐานข้อมูล -->
+                @php
+                    $teachers = \App\Models\User::where('role', 'teacher')->get();
+                @endphp
 
-                    <!-- Teacher 2: อาจารย์วิชัย เทคโนโลยี -->
-                    <div class="tech-card p-4 text-center">
-                        <img src="https://placehold.co/300x300/1F1539/EC4899?text=วิชัย" alt="อาจารย์วิชัย"
-                            class="w-32 h-32 object-cover rounded-full mx-auto ring-4 ring-violet-500/50 hover:ring-fuchsia-500 transition duration-300">
-                        <div class="mt-4">
-                            <h3 class="text-lg font-semibold text-white">วิชัย เทคโนโลยี</h3>
-                            <p class="text-xs text-violet-400">อาจารย์ประจำแผนก</p>
-                            <p class="text-xs text-gray-500 mt-1">การพัฒนาซอฟต์แวร์</p>
-                        </div>
+                @if ($teachers->count() > 0)
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+                        @foreach ($teachers as $teacher)
+                            <div
+                                class="tech-card p-4 text-center hover:transform hover:scale-105 transition duration-300">
+                                @if ($teacher->profile_image)
+                                    <img src="{{ asset('storage/' . $teacher->profile_image) }}"
+                                        alt="{{ $teacher->name }}"
+                                        class="w-32 h-32 object-cover rounded-full mx-auto ring-4 ring-violet-500/50 hover:ring-fuchsia-500 transition duration-300">
+                                @else
+                                    <div
+                                        class="w-32 h-32 bg-gradient-to-br from-violet-600 to-fuchsia-600 rounded-full mx-auto ring-4 ring-violet-500/50 hover:ring-fuchsia-500 transition duration-300 flex items-center justify-center">
+                                        <span class="text-4xl font-bold text-white">
+                                            {{ mb_substr($teacher->name, 0, 1) }}
+                                        </span>
+                                    </div>
+                                @endif
+                                <div class="mt-4">
+                                    <h3 class="text-lg font-semibold text-white">{{ $teacher->name }}</h3>
+                                    <p class="text-xs text-violet-400">อาจารย์ประจำแผนก</p>
+                                    <p class="text-xs text-gray-500 mt-1">
+                                        <i class="fas fa-envelope mr-1"></i>{{ $teacher->email }}
+                                    </p>
+                                </div>
+                            </div>
+                        @endforeach
                     </div>
-
-                    <!-- Teacher 3: อาจารย์สมศรี คอมพิวเตอร์ -->
-                    <div class="tech-card p-4 text-center">
-                        <img src="https://placehold.co/300x300/1F1539/EC4899?text=สมศรี" alt="อาจารย์สมศรี"
-                            class="w-32 h-32 object-cover rounded-full mx-auto ring-4 ring-violet-500/50 hover:ring-fuchsia-500 transition duration-300">
-                        <div class="mt-4">
-                            <h3 class="text-lg font-semibold text-white">สมศรี คอมพิวเตอร์</h3>
-                            <p class="text-xs text-violet-400">อาจารย์ประจำแผนก</p>
-                            <p class="text-xs text-gray-500 mt-1">ฮาร์ดแวร์คอมพิวเตอร์</p>
-                        </div>
+                @else
+                    <div class="text-center text-gray-400">
+                        <i class="fas fa-user-slash text-6xl mb-4 opacity-30"></i>
+                        <p>ยังไม่มีข้อมูลอาจารย์ในระบบ</p>
                     </div>
-
-                    <!-- Teacher 4: อาจารย์มานะ พัฒนา -->
-                    <div class="tech-card p-4 text-center">
-                        <img src="https://placehold.co/300x300/1F1539/EC4899?text=มานะ" alt="อาจารย์มานะ"
-                            class="w-32 h-32 object-cover rounded-full mx-auto ring-4 ring-violet-500/50 hover:ring-fuchsia-500 transition duration-300">
-                        <div class="mt-4">
-                            <h3 class="text-lg font-semibold text-white">มานะ พัฒนา</h3>
-                            <p class="text-xs text-violet-400">อาจารย์ประจำแผนก</p>
-                            <p class="text-xs text-gray-500 mt-1">ระบบฐานข้อมูล</p>
-                        </div>
-                    </div>
-
-                    <!-- Teacher 5: อาจารย์จิตวัฒน์ -->
-                    <div class="tech-card p-4 text-center">
-                        <img src="https://placehold.co/300x300/1F1539/EC4899?text=จิตวัฒน์" alt="อาจารย์จิตวัฒน์"
-                            class="w-32 h-32 object-cover rounded-full mx-auto ring-4 ring-violet-500/50 hover:ring-fuchsia-500 transition duration-300">
-                        <div class="mt-4">
-                            <h3 class="text-lg font-semibold text-white">จิตวัฒน์ เปิ่นวงษ์</h3>
-                            <p class="text-xs text-violet-400">อาจารย์ประจำแผนก</p>
-                            <p class="text-xs text-gray-500 mt-1">การเขียนโปรแกรม</p>
-                        </div>
-                    </div>
-
-                    <!-- Teacher 6: อาจารย์กัญชิตา -->
-                    <div class="tech-card p-4 text-center">
-                        <img src="https://placehold.co/300x300/1F1539/EC4899?text=กัญชิตา" alt="อาจารย์กัญชิตา"
-                            class="w-32 h-32 object-cover rounded-full mx-auto ring-4 ring-violet-500/50 hover:ring-fuchsia-500 transition duration-300">
-                        <div class="mt-4">
-                            <h3 class="text-lg font-semibold text-white">กัญชิตา ธูปแช่ม</h3>
-                            <p class="text-xs text-violet-400">อาจารย์ประจำแผนก</p>
-                            <p class="text-xs text-gray-500 mt-1">การพัฒนาเว็บ</p>
-                        </div>
-                    </div>
-
-                    <!-- Teacher 7: อาจารย์ธนกฤต -->
-                    <div class="tech-card p-4 text-center">
-                        <img src="https://placehold.co/300x300/1F1539/EC4899?text=ธนกฤต" alt="อาจารย์ธนกฤต"
-                            class="w-32 h-32 object-cover rounded-full mx-auto ring-4 ring-violet-500/50 hover:ring-fuchsia-500 transition duration-300">
-                        <div class="mt-4">
-                            <h3 class="text-lg font-semibold text-white">ธนกฤต จำปาทอง</h3>
-                            <p class="text-xs text-violet-400">อาจารย์ประจำแผนก</p>
-                            <p class="text-xs text-gray-500 mt-1">ระบบเครือข่าย</p>
-                        </div>
-                    </div>
-
-                    <!-- Teacher 8: อาจารย์เมธาวี -->
-                    <div class="tech-card p-4 text-center">
-                        <img src="https://placehold.co/300x300/1F1539/EC4899?text=เมธาวี" alt="อาจารย์เมธาวี"
-                            class="w-32 h-32 object-cover rounded-full mx-auto ring-4 ring-violet-500/50 hover:ring-fuchsia-500 transition duration-300">
-                        <div class="mt-4">
-                            <h3 class="text-lg font-semibold text-white">เมธาวี ภู่โต</h3>
-                            <p class="text-xs text-violet-400">อาจารย์ประจำแผนก</p>
-                            <p class="text-xs text-gray-500 mt-1">อิเล็กทรอนิกส์</p>
-                        </div>
-                    </div>
-
-                    <!-- Teacher 9: อาจารย์อนุชา -->
-                    <div class="tech-card p-4 text-center">
-                        <img src="https://placehold.co/300x300/1F1539/EC4899?text=อนุชา" alt="อาจารย์อนุชา"
-                            class="w-32 h-32 object-cover rounded-full mx-auto ring-4 ring-violet-500/50 hover:ring-fuchsia-500 transition duration-300">
-                        <div class="mt-4">
-                            <h3 class="text-lg font-semibold text-white">อนุชา ดำรงค์สกุล</h3>
-                            <p class="text-xs text-violet-400">อาจารย์ประจำแผนก</p>
-                            <p class="text-xs text-gray-500 mt-1">มัลติมีเดีย</p>
-                        </div>
-                    </div>
-
-                    <!-- Teacher 10: อาจารย์รพีพร -->
-                    <div class="tech-card p-4 text-center">
-                        <img src="https://placehold.co/300x300/1F1539/EC4899?text=รพีพร" alt="อาจารย์รพีพร"
-                            class="w-32 h-32 object-cover rounded-full mx-auto ring-4 ring-violet-500/50 hover:ring-fuchsia-500 transition duration-300">
-                        <div class="mt-4">
-                            <h3 class="text-lg font-semibold text-white">รพีพร ชูสุวรรณ</h3>
-                            <p class="text-xs text-violet-400">อาจารย์ประจำแผนก</p>
-                            <p class="text-xs text-gray-500 mt-1">ปัญญาประดิษฐ์</p>
-                        </div>
-                    </div>
-                </div>
+                @endif
             </div>
         </section>
 
@@ -562,90 +488,85 @@
         <section id="projects" class="py-24 bg-gray-900/30">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 fade-in-up" data-delay="800">
                 <div class="text-center mb-16">
-                    <h2 class="text-4xl font-bold text-white">คอรส์เรียน<span class="text-violet-400">สุดล้ำ</span>
+                    <h2 class="text-4xl font-bold text-white">รายวิชา<span class="text-violet-400">ออนไลน์</span>
                     </h2>
                     <div class="mt-4 h-1 w-24 bg-fuchsia-500 mx-auto rounded-full"></div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <!-- Project 1: ระบบจัดการร้านค้าออนไลน์ -->
-                    <div class="tech-card p-4 transition duration-300 hover:shadow-xl hover:shadow-fuchsia-500/20">
-                        <div class="h-48 rounded-lg overflow-hidden mb-4 relative">
-                            <img src="https://placehold.co/600x400/1F1539/A855F7?text=E-Commerce+System"
-                                alt="Project 1" class="w-full h-full object-cover">
-                            <div
-                                class="absolute inset-0 bg-violet-900/50 flex items-center justify-center text-xs font-mono text-white p-2">
-                                WEB APP | PHP & MYSQL
-                            </div>
-                        </div>
-                        <h3 class="text-xl font-semibold text-white mb-2">ระบบจัดการร้านค้าออนไลน์</h3>
-                        <p class="text-gray-400 text-sm mb-3">โครงการพัฒนาระบบจัดการร้านค้าออนไลน์ด้วย PHP และ
-                            MySQL
-                            สำหรับผู้ประกอบการขนาดเล็ก</p>
-                        <div class="flex justify-between items-center text-xs text-gray-500">
-                            <span><i class="fas fa-user mr-1"></i> สมชาย & สมศรี</span>
-                            <span><i class="fas fa-calendar-alt mr-1"></i> 2566</span>
-                        </div>
-                        <a href="http://122.154.173.20/Stock/frontend/login.page.php"
-                            class="mt-4 inline-block px-4 py-2 bg-fuchsia-600 text-white rounded-full hover:bg-fuchsia-700 transition duration-300 text-sm">
-                            ดูโครงการ <i class="fas fa-external-link-alt ml-1"></i>
-                        </a>
-                    </div>
+                <!-- ดึงข้อมูลรายวิชา 3 รายวิชาล่าสุดจากฐานข้อมูล -->
+                @php
+                    $latestCourses = \App\Models\Course::with('teacher')->latest('created_at')->take(3)->get();
+                @endphp
 
-                    <!-- Project 2: ระบบควบคุมอุปกรณ์ไฟฟ้าผ่านแอปพลิเคชัน -->
-                    <div class="tech-card p-4 transition duration-300 hover:shadow-xl hover:shadow-fuchsia-500/20">
-                        <div class="h-48 rounded-lg overflow-hidden mb-4 relative">
-                            <img src="https://placehold.co/600x400/1F1539/A855F7?text=Smart+Home+IOT" alt="Project 2"
-                                class="w-full h-full object-cover">
+                @if ($latestCourses->count() > 0)
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        @foreach ($latestCourses as $course)
                             <div
-                                class="absolute inset-0 bg-violet-900/50 flex items-center justify-center text-xs font-mono text-white p-2">
-                                IOT | Arduino & Mobile App
+                                class="tech-card p-4 transition duration-300 hover:shadow-xl hover:shadow-fuchsia-500/20">
+                                <div class="h-48 rounded-lg overflow-hidden mb-4 relative group">
+                                    @if ($course->cover_image_url)
+                                        <img src="{{ asset('storage/' . $course->cover_image_url) }}"
+                                            alt="{{ $course->title }}" class="w-full h-full object-cover"
+                                            onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'w-full h-full bg-gradient-to-br from-violet-600 to-fuchsia-600 flex items-center justify-center\'><i class=\'fas fa-book text-white text-6xl opacity-50\'></i></div>';">
+                                    @else
+                                        <div
+                                            class="w-full h-full bg-gradient-to-br from-violet-600 to-fuchsia-600 flex items-center justify-center">
+                                            <i class="fas fa-book text-white text-6xl opacity-50"></i>
+                                        </div>
+                                    @endif
+                                    <div
+                                        class="absolute inset-0 bg-violet-900/30 group-hover:bg-violet-900/60 transition-colors flex items-center justify-center text-xs font-mono text-white p-2">
+                                        <span
+                                            class="px-3 py-1 bg-fuchsia-600/80 backdrop-blur-sm rounded-full">{{ $course->title }}</span>
+                                    </div>
+                                </div>
+                                <h3 class="text-xl font-semibold text-white mb-2">{{ $course->title }}</h3>
+                                <p class="text-gray-400 text-sm mb-3 line-clamp-2">
+                                    {{ Str::limit($course->description, 80) }}
+                                </p>
+                                <div class="flex justify-between items-center text-xs text-gray-500 mb-3">
+                                    <span>
+                                        <i class="fas fa-user mr-1"></i>
+                                        {{ $course->teacher ? $course->teacher->name : 'ไม่ระบุผู้สอน' }}
+                                    </span>
+                                    <span>
+                                        <i class="fas fa-calendar-alt mr-1"></i>
+                                        {{ $course->created_at->format('d/m/Y') }}
+                                    </span>
+                                </div>
+                                @auth
+                                    <a href="{{ route('student.courses.show', $course->id) }}"
+                                        class="mt-4 inline-block px-4 py-2 bg-fuchsia-600 text-white rounded-full hover:bg-fuchsia-700 transition duration-300 text-sm">
+                                        ดูรายละเอียด <i class="fas fa-arrow-right ml-1"></i>
+                                    </a>
+                                @else
+                                    <a href="{{ route('login') }}"
+                                        class="mt-4 inline-block px-4 py-2 bg-violet-600 text-white rounded-full hover:bg-violet-700 transition duration-300 text-sm">
+                                        เข้าสู่ระบบเพื่อเรียน <i class="fas fa-sign-in-alt ml-1"></i>
+                                    </a>
+                                @endauth
                             </div>
-                        </div>
-                        <h3 class="text-xl font-semibold text-white mb-2">ระบบควบคุมอุปกรณ์ไฟฟ้า</h3>
-                        <p class="text-gray-400 text-sm mb-3">
-                            โครงการพัฒนาระบบควบคุมอุปกรณ์ไฟฟ้าภายในบ้านผ่านแอปพลิเคชันบนสมาร์ทโฟน ด้วย Arduino และ
-                            IoT
-                        </p>
-                        <div class="flex justify-between items-center text-xs text-gray-500">
-                            <span><i class="fas fa-user mr-1"></i> วิชัย & มานะ</span>
-                            <span><i class="fas fa-calendar-alt mr-1"></i> 2566</span>
-                        </div>
-                        <button
-                            class="mt-4 inline-block px-4 py-2 bg-gray-600 text-white rounded-full hover:bg-gray-700 transition duration-300 text-sm">
-                            ดูโครงการ <i class="fas fa-external-link-alt ml-1"></i>
-                        </button>
+                        @endforeach
                     </div>
-
-                    <!-- Project 3: แอปพลิเคชันแจ้งเตือนการใช้น้ำ -->
-                    <div class="tech-card p-4 transition duration-300 hover:shadow-xl hover:shadow-fuchsia-500/20">
-                        <div class="h-48 rounded-lg overflow-hidden mb-4 relative">
-                            <img src="https://placehold.co/600x400/1F1539/A855F7?text=Water+Saving+App"
-                                alt="Project 3" class="w-full h-full object-cover">
-                            <div
-                                class="absolute inset-0 bg-violet-900/50 flex items-center justify-center text-xs font-mono text-white p-2">
-                                MOBILE APP | Android & Sensors
-                            </div>
-                        </div>
-                        <h3 class="text-xl font-semibold text-white mb-2">แอปแจ้งเตือนการใช้น้ำ</h3>
-                        <p class="text-gray-400 text-sm mb-3">โครงการพัฒนาแอปพลิเคชันแจ้งเตือนการใช้น้ำในครัวเรือน
-                            เพื่อส่งเสริมการประหยัดน้ำและพลังงาน</p>
-                        <div class="flex justify-between items-center text-xs text-gray-500">
-                            <span><i class="fas fa-user mr-1"></i> สมใจ & สมหมาย</span>
-                            <span><i class="fas fa-calendar-alt mr-1"></i> 2565</span>
-                        </div>
-                        <button
-                            class="mt-4 inline-block px-4 py-2 bg-gray-600 text-white rounded-full hover:bg-gray-700 transition duration-300 text-sm">
-                            ดูโครงการ <i class="fas fa-external-link-alt ml-1"></i>
-                        </button>
+                @else
+                    <div class="text-center text-gray-400">
+                        <i class="fas fa-book-open text-6xl mb-4 opacity-30"></i>
+                        <p>ยังไม่มีรายวิชาในระบบ</p>
                     </div>
-                </div>
+                @endif
 
                 <div class="text-center mt-16 fade-in-up" data-delay="900">
-                    <button
-                        class="px-10 py-3 btn-primary text-white rounded-full font-bold shadow-lg shadow-violet-500/30">
-                        ดูผลงานทั้งหมด <i class="fas fa-arrow-right ml-2"></i>
-                    </button>
+                    @auth
+                        <a href="{{ route('student.courses.index') }}"
+                            class="px-10 py-3 btn-primary text-white rounded-full font-bold shadow-lg shadow-violet-500/30">
+                            ดูรายวิชาทั้งหมด <i class="fas fa-arrow-right ml-2"></i>
+                        </a>
+                    @else
+                        <a href="{{ route('login') }}"
+                            class="px-10 py-3 btn-primary text-white rounded-full font-bold shadow-lg shadow-violet-500/30">
+                            เข้าสู่ระบบเพื่อดูรายวิชา <i class="fas fa-sign-in-alt ml-2"></i>
+                        </a>
+                    @endauth
                 </div>
             </div>
         </section>
