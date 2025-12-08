@@ -196,26 +196,19 @@ class CertificateTemplateController extends Controller
      */
     public function preview(CertificateTemplate $certificateTemplate)
     {
-        // สร้างข้อมูลตัวอย่างสำหรับ preview
-        $previewData = [
+        // ดึงคอร์สทั้งหมดสำหรับ dropdown
+        $courses = \App\Models\Course::orderBy('title')->get();
+        
+        // ดึง teacher ที่มี courses (สำหรับแสดงลายเซ็น)
+        $teachers = \App\Models\User::where('role', 'teacher')
+            ->whereHas('teachingCourses')
+            ->orderBy('name')
+            ->get();
+        
+        return view('admin.certificate-templates.preview', [
             'template' => $certificateTemplate,
-            'certificate' => (object)[
-                'certificate_number' => 'CERT-PREVIEW-001',
-                'issued_date' => now(),
-            ],
-            'student' => (object)[
-                'name' => 'นายทดสอบ ตัวอย่าง',
-            ],
-            'course' => (object)[
-                'title' => 'คอร์สทดสอบตัวอย่าง',
-                'teacher' => auth()->user(),
-            ],
-            'teacherSignature' => auth()->user()->signature_image_url,
-        ];
-
-        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('certificates.template-dynamic', $previewData)
-            ->setPaper('a4', 'landscape');
-
-        return $pdf->stream('certificate-preview.pdf');
+            'courses' => $courses,
+            'teachers' => $teachers,
+        ]);
     }
 }

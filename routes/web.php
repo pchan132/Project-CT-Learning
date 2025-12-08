@@ -24,7 +24,7 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 // ----หน้าแรกของเว็บไซต์  **********
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('welcome');
 
 // ------ Dashboard Route - Redirect based on role -----------**
 Route::get('/dashboard', function () {
@@ -124,6 +124,7 @@ Route::middleware(['auth', 'student'])->prefix('student')->name('student.')->gro
     Route::get('/certificates/{certificate}', [App\Http\Controllers\Student\CertificateController::class, 'show'])->name('certificates.show');
     Route::get('/certificates/{certificate}/download', [App\Http\Controllers\Student\CertificateController::class, 'download'])->name('certificates.download');
     Route::post('/certificates/{certificate}/regenerate', [App\Http\Controllers\Student\CertificateController::class, 'regenerate'])->name('certificates.regenerate');
+    Route::get('/certificates/{certificate}/data', [App\Http\Controllers\Student\CertificateController::class, 'getData'])->name('certificates.data');
 });
 
 // ของครู 
@@ -141,6 +142,9 @@ Route::middleware(['auth', 'teacher'])->prefix('teacher')->name('teacher.')->gro
     Route::get('profile', [TeacherProfileController::class, 'editProfile'])->name('profile.edit');
     Route::put('profile', [TeacherProfileController::class, 'updateProfile'])->name('profile.update');
     Route::delete('profile/image', [TeacherProfileController::class, 'deleteProfileImage'])->name('profile.delete-image');
+    
+    // Route สำหรับดูตัวอย่าง Certificate พร้อมลายเซ็น
+    Route::get('certificate-preview', [TeacherProfileController::class, 'certificatePreview'])->name('certificate-preview');
     
     // Routes สำหรับ Modules
     Route::prefix('courses/{course}/modules')->name('courses.modules.')->group(function () {

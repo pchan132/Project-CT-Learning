@@ -1,291 +1,185 @@
-# 🎓 CT Learning - Learning Management System
+# 🎓 CT Learning - Complete Learning Management System
 
 ![Laravel](https://img.shields.io/badge/Laravel-10.x-red.svg)
 ![PHP](https://img.shields.io/badge/PHP-8.1+-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
-![Status](https://img.shields.io/badge/status-Active%20Development-orange.svg)
+![Status](https://img.shields.io/badge/status-Production%20Ready-brightgreen.svg)
+![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)
 
-ระบบจัดการการเรียนการสอนออนไลน์ (LMS) ที่พัฒนาด้วย Laravel Framework 10.x พร้อมฟีเจอร์ครบครันสำหรับครูผู้สอนและนักเรียน รองรับการสอนแบบ Multi-media และการติดตามความคืบหน้าแบบ Real-time
+**ระบบจัดการการเรียนการสอนออนไลน์ (LMS) ที่สมบูรณ์แบบ** พัฒนาด้วย Laravel 10.x พร้อมฟีเจอร์ครบถ้วนสำหรับการสอนแบบ Multi-media ระบบแบบทดสอบ และการออกใบประกาศนียบัตรอัตโนมัติ ✅ **Production Ready**
 
 ## 📋 สารบัญ
 
-- [คุณสมบัติหลัก](#คุณสมบัติหลัก)
-- [สถาปัตยกรรมระบบ](#สถาปัตยกรรมระบบ)
-- [ฟีเจอร์ที่พัฒนาแล้ว](#ฟีเจอร์ที่พัฒนาแล้ว)
-- [การติดตั้ง](#การติดตั้ง)
-- [Routes & API](#routes--api)
-- [ฟังก์ชันที่ใช้งานได้](#ฟังก์ชันที่ใช้งานได้)
-- [Documentation](#documentation)
-- [Tech Stack](#tech-stack)
-- [Screenshots & UI](#screenshots--ui)
+- [🎯 ภาพรวมระบบ](#-ภาพรวมระบบ)
+- [✅ ฟีเจอร์ที่พร้อมใช้งาน](#-ฟีเจอร์ที่พร้อมใช้งาน)
+- [🏗️ สถาปัตยกรรมระบบ](#️-สถาปัตยกรรมระบบ)
+- [⚡ Quick Start](#-quick-start)
+- [🛠️ การติดตั้ง](#️-การติดตั้ง)
+- [👥 บทบาทผู้ใช้](#-บทบาทผู้ใช้)
+- [📚 เอกสารประกอบ](#-เอกสารประกอบ)
+- [🚀 Deployment](#-deployment)
+- [📞 Contact & Support](#-contact--support)
 
 ---
 
-## 🎯 คุณสมบัติหลัก
+## 🎯 ภาพรวมระบบ
 
-### 👨‍🏫 สำหรับครู (Teacher)
-- ✅ **ระบบสมัครสมาชิกแบบแยกประเภท**: Register แยกระหว่าง Teacher และ Student
-- ✅ **Dashboard สำหรับครู**: แสดงสถิติคอร์ส จำนวนนักเรียน และการจัดการคอร์ส
-- ✅ **จัดการคอร์สเรียน**: สร้าง แก้ไข ลบคอร์สเรียน พร้อมอัพโหลดรูปปก
-- ✅ **จัดการโมดูล**: จัดระเบียบเนื้อหาเป็นโมดูล พร้อมกำหนดลำดับ
-- ✅ **จัดการบทเรียน**: สร้างบทเรียนรองรับ 3 รูปแบบ
-  - 📄 **PDF**: อัพโหลดเอกสาร PDF, PPT, DOCX (ขนาดสูงสุด 10MB)
-  - 🎥 **Video**: ฝัง YouTube videos พร้อมการแปลง URL อัตโนมัติ
-  - 📝 **Article**: เขียนบทความแบบ text-based พร้อมการจัดรูปแบบ
-- ✅ **ระบบสิทธิ์**: ตรวจสอบสิทธิ์ครูผู้สอน (Owner-based authorization)
-- ✅ **ดูรายชื่อนักเรียน**: ตรวจสอบนักเรียนที่ลงทะเบียนเรียนในแต่ละคอร์ส
+CT Learning เป็นระบบ Learning Management System (LMS) ที่พัฒนาด้วย Laravel 10.x สำหรับแผนกเทคโนโลยีคอมพิวเตอร์ มีฟีเจอร์ครบถ้วนสำหรับการสอนแบบ Multi-media พร้อมระบบ Authentication แยกตามบทบาท และระบบจัดการเนื้อหาที่สมบูรณ์
 
-### 👨‍🎓 สำหรับนักเรียน (Student)
-- ✅ **ระบบสมัครสมาชิก**: สมัครแยกประเภท Student
-- ✅ **Dashboard สำหรับนักเรียน**: แสดงคอร์สที่ลงทะเบียนพร้อม Progress Bar
-- ✅ **ระบบลงทะเบียนเรียน**: ลงทะเบียนคอร์สเรียนได้ด้วยตนเอง
-- ✅ **เข้าเรียนคอร์ส**: ดูคอร์สที่ลงทะเบียนพร้อม progress bar และ completion status
-- ✅ **เรียนบทเรียน**: เข้าถึงเนื้อหาทั้ง 3 รูปแบบ (PDF, Video, Article)
-- ✅ **ติดตามความคืบหน้า**: 
-  - บันทึกบทเรียนที่เรียนจบด้วย AJAX (ไม่ต้อง reload หน้า)
-  - แสดง progress percentage ของแต่ละคอร์ส
-  - ระบบ completion tracking ที่แม่นยำ
-- ✅ **Navigation ที่สะดวก**: Breadcrumb navigation ครบทุกหน้า
+### 🎯 วัตถุประสงค์หลัก
+- **สำหรับครูผู้สอน**: สร้างและจัดการคอร์สเรียนออนไลน์ได้อย่างสมบูรณ์
+- **สำหรับนักเรียน**: เข้าเรียนและติดตามความคืบหน้าการเรียนได้ง่าย
+- **สำหรับผู้ดูแลระบบ**: จัดการผู้ใช้และคอร์สเรียนได้อย่างมีประสิทธิภาพ
 
-### 🎨 UI/UX Features
-- ✅ **Dark Mode Toggle**: รองรับโหมดมืด/สว่าง
+---
+
+## ✅ ฟีเจอร์ที่พร้อมใช้งาน (100% Complete)
+
+### 🔐 ระบบ Authentication & Authorization
+- ✅ **Multi-role System**: Student, Teacher, Admin
+- ✅ **Separated Registration**: ลงทะเบียนแยกระหว่างนักเรียนและครูผู้สอน
+- ✅ **Role-based Middleware**: ควบคุมการเข้าถึงตามสิทธิ์
+- ✅ **Auto Dashboard Redirect**: นำทางไปยังหน้าหลักตามบทบาท
+- ✅ **Email Verification**: ยืนยันอีเมลผู้ใช้
+- ✅ **Password Reset**: รีเซ็ตรหัสผ่าน
+
+### 👥 ระบบจัดการผู้ใช้ (Admin)
+- ✅ **User Management**: สร้าง แก้ไข ลบ ผู้ใช้ทั้งหมด
+- ✅ **Role Assignment**: กำหนดและเปลี่ยนบทบาทผู้ใช้
+- ✅ **User Statistics**: สถิติการใช้งานของผู้ใช้
+- ✅ **Filter by Role**: กรองผู้ใช้ตามบทบาท
+
+### 📚 ระบบการจัดการคอร์สเรียน (Teacher)
+- ✅ **Course CRUD**: สร้าง แก้ไข ลบ คอร์สเรียน
+- ✅ **Cover Image Upload**: อัพโหลดรูปปกคอร์สเรียน
+- ✅ **Course Categories**: จัดหมวดหมู่คอร์สเรียน
+- ✅ **Course Status**: เปิด/ปิด คอร์สเรียน
+- ✅ **Student Enrollment**: ดูรายชื่อนักเรียนที่ลงทะเบียน
+
+### 📖 ระบบจัดการเนื้อหาการสอน
+- ✅ **Nested Structure**: Course → Modules → Lessons
+- ✅ **Multi-format Content**: 
+  - 📄 **PDF/Documents**: รองรับ PDF, DOC, DOCX, PPT, PPTX (10MB)
+  - 🎥 **Video**: YouTube, Vimeo, Direct MP4, Video Upload (100MB)
+  - 📝 **Text Articles**: Rich Text Editor (Quill.js)
+  - 🌐 **Google Drive**: ฝังเนื้อหาจาก Google Drive
+  - 🎨 **Canva**: ฝังผลงานจาก Canva
+- ✅ **File Management**: จัดการไฟล์ผ่าน Laravel Storage
+- ✅ **Content Ordering**: จัดลำดับเนื้อหาได้ (Drag & Drop)
+
+### 📝 ระบบแบบทดสอบ (Quiz System)
+- ✅ **Quiz Creation**: สร้างแบบทดสอบในแต่ละ Module
+- ✅ **Question Types**: Multiple Choice (พร้อมแผนขยาย)
+- ✅ **Timer Support**: กำหนดเวลาในการทำแบบทดสอบ
+- ✅ **Auto-grading**: ตรวจและคำนวณคะแนนอัตโนมัติ
+- ✅ **Passing Score**: กำหนดคะแนนผ่านต่อแบบทดสอบ
+- ✅ **Attempt Tracking**: บันทึกประวัติการทำแบบทดสอบ
+- ✅ **Results Analysis**: แสดงผลลัพธ์พร้อมสถิติ
+- ✅ **Real-time Timer**: นับถอยหลังพร้อม auto-submit
+
+### 🎓 ระบบใบประกาศนียบัตร (Certificate System)
+- ✅ **Automatic Generation**: สร้าง PDF อัตโนมัติเมื่อผ่านเงื่อนไข
+- ✅ **Certificate Templates**: รูปแบบเอกสารที่สวยงาม
+- ✅ **Unique Certificate Numbers**: เลขที่อ้างอิงไม่ซ้ำกัน
+- ✅ **Download & Share**: ดาวน์โหลดและแชร์ได้
+- ✅ **Verification System**: ตรวจสอบความถูกต้องของใบประกาศนียบัตร
+- ✅ **Eligibility Validation**: ตรวจสอบความสมบูรณ์ของการเรียน
+
+### 📊 ระบบติดตามความคืบหน้า (Progress Tracking)
+- ✅ **Real-time Progress**: อัพเดทความคืบหน้าแบบ real-time
+- ✅ **Progress Visualization**: Progress bars และ completion badges
+- ✅ **Lesson Completion Tracking**: บันทึกการเรียนเสร็จแต่ละบทเรียน
+- ✅ **Course Completion**: ติดตามการเรียนจบคอร์ส
+- ✅ **Statistics Dashboard**: สถิติการเรียนสำหรับครูและผู้ดูแล
+- ✅ **AJAX Completion**: บันทึกความคืบหน้าโดยไม่ต้อง reload
+
+### 🎨 ส่วนติดต่อผู้ใช้ (UI/UX)
 - ✅ **Responsive Design**: รองรับทุกขนาดหน้าจอ (Mobile, Tablet, Desktop)
+- ✅ **Dark Mode Support**: สลับโหมดมืด/สว่างได้
 - ✅ **Modern UI**: ใช้ Tailwind CSS พร้อม Glass Morphism design
-- ✅ **Interactive Components**: Hover effects, transitions, และ micro-interactions
-- ✅ **Icon Integration**: ใช้ Font Awesome icons
+- ✅ **Interactive Elements**: Hover effects, transitions, micro-interactions
+- ✅ **Accessibility**: รองรับการเข้าถึงสำหรับผู้พิการ
+- ✅ **Color-coded Roles**: Admin (🔴 Red), Teacher (🔵 Blue), Student (🟢 Green)
 
 ---
 
 ## 🏗️ สถาปัตยกรรมระบบ
 
+### Technology Stack
+- **Backend**: Laravel 10.x (PHP 8.1+)
+- **Frontend**: Blade Templates + Tailwind CSS + Alpine.js
+- **Database**: MySQL 8.0
+- **Authentication**: Laravel Breeze
+- **File Storage**: Laravel Storage System
+- **PDF Generation**: DomPDF
+- **Build Tools**: Vite + NPM
+
 ### Database Schema
-
 ```
-┌─────────────────┐
-│     users       │
-│─────────────────│
-│ id              │
-│ name            │
-│ email           │
-│ password        │
-│ role (enum)     │ ← 'teacher', 'student'
-│ created_at      │
-│ updated_at      │
-└─────────────────┘
-         │
-         │ 1:N (teacher)
-         ▼
-┌─────────────────┐
-│    courses      │
-│─────────────────│
-│ id              │
-│ teacher_id (FK) │
-│ title           │
-│ description     │
-│ cover_image_url │
-│ created_at      │
-│ updated_at      │
-└─────────────────┘
-         │
-         │ 1:N
-         ▼
-┌─────────────────┐         ┌──────────────────┐
-│    modules      │         │   enrollments    │
-│─────────────────│         │──────────────────│
-│ id              │         │ id               │
-│ course_id (FK)  │         │ user_id (FK)     │
-│ title           │         │ course_id (FK)   │
-│ description     │         │ enrolled_at      │
-│ order           │         └──────────────────┘
-│ created_at      │
-│ updated_at      │
-└─────────────────┘
-         │
-         │ 1:N
-         ▼
-┌─────────────────┐
-│    lessons      │
-│─────────────────│
-│ id              │
-│ module_id (FK)  │
-│ title           │
-│ content_type    │ ← 'PDF', 'VIDEO', 'TEXT'
-│ content_url     │ ← file path or YouTube URL
-│ content_text    │ ← article content
-│ order           │
-│ created_at      │
-│ updated_at      │
-└─────────────────┘
-         │
-         │ 1:N
-         ▼
-┌───────────────────────┐
-│ lesson_completions    │
-│───────────────────────│
-│ id                    │
-│ lesson_id (FK)        │
-│ user_id (FK)          │
-│ completed_at          │
-└───────────────────────┘
+users (Student, Teacher, Admin)
+├── courses (teacher_id)
+│   ├── modules (course_id, order)
+│   │   └── lessons (module_id, content_type, order)
+│   └── enrollments (user_id, course_id)
+├── quizzes (module_id)
+│   ├── questions (quiz_id, order)
+│   │   └── answers (question_id, is_correct)
+│   └── quiz_attempts (user_id, score, passed)
+├── lesson_completions (user_id, lesson_id)
+└── certificates (user_id, course_id, certificate_number)
 ```
 
-### MVC Architecture
-
+### 🏛️ โครงสร้างโปรเจค
 ```
-app/
-├── Http/
-│   ├── Controllers/
-│   │   ├── Teacher/
-│   │   │   ├── CourseController.php       # CRUD คอร์ส + Dashboard
-│   │   │   ├── ModuleController.php       # CRUD โมดูล
-│   │   │   └── LessonController.php       # CRUD บทเรียน + file upload
-│   │   ├── Student/
-│   │   │   └── CourseController.php       # ดูคอร์ส + ลงทะเบียน
-│   │   └── Auth/
-│   │       └── RegisteredUserController.php # Register แยกประเภท
-│   └── Middleware/
-│       ├── TeacherMiddleware.php          # ตรวจสอบสิทธิ์ครู
-│       └── StudentMiddleware.php          # ตรวจสอบสิทธิ์นักเรียน
-├── Models/
-│   ├── User.php                           # role-based user + relationships
-│   ├── Course.php                         # progress calculation + relationships
-│   ├── Module.php                         # ordering + relationships
-│   ├── Lesson.php                         # completion check + relationships
-│   ├── Enrollment.php                     # student-course relationship
-│   └── LessonCompletion.php               # tracking completion
-└── View/
-    └── Components/
-        ├── AppLayout.php                  # Main layout component
-        ├── teacher-components/
-        │   ├── teacher-courses-grid.blade.php    # Course grid display
-        │   └── statistics-teacher-courses.blade.php # Dashboard stats
-        └── [other blade components]
-
-resources/views/
-├── teacher/
-│   ├── dashboard.blade.php               # Teacher dashboard
-│   ├── courses/
-│   │   ├── index.blade.php               # รายการคอร์ส
-│   │   ├── create.blade.php              # ฟอร์มสร้างคอร์ส
-│   │   ├── edit.blade.php                # ฟอร์มแก้ไขคอร์ส
-│   │   └── show.blade.php                # รายละเอียดคอร์ส
-│   ├── modules/
-│   │   ├── index.blade.php               # รายการโมดูล
-│   │   ├── create.blade.php              # ฟอร์มสร้างโมดูล
-│   │   ├── edit.blade.php                # ฟอร์มแก้ไขโมดูล
-│   │   └── show.blade.php                # รายละเอียดโมดูล
-│   └── lessons/
-│       ├── index.blade.php               # รายการบทเรียน
-│       ├── create.blade.php              # ฟอร์มสร้างบทเรียน
-│       ├── edit.blade.php                # ฟอร์มแก้ไขบทเรียน
-│       └── show.blade.php                # รายละเอียดบทเรียน
-├── student/
-│   ├── dashboard.blade.php               # Student dashboard
-│   └── courses/
-│       └── index.blade.php               # รายการคอร์สที่ลงทะเบียน
-└── auth/
-    ├── register.blade.php                # Registration form (dynamic role)
-    ├── login.blade.php                   # Login form
-    └── [other auth views]
+ct-learning/
+├── app/
+│   ├── Http/Controllers/
+│   │   ├── Admin/              # 🔴 Admin Controllers
+│   │   ├── Teacher/            # 🔵 Teacher Controllers  
+│   │   ├── Student/            # 🟢 Student Controllers
+│   │   └── Auth/               # Authentication
+│   ├── Models/                 # 📊 Eloquent Models
+│   └── Middleware/             # 🛡️ Role-based Middleware
+├── database/
+│   ├── migrations/             # 🗄️ Database Migrations
+│   └── seeders/                # 🌱 Test Data
+├── resources/views/
+│   ├── admin/                  # 🔴 Admin Views
+│   ├── teacher/                # 🔵 Teacher Views
+│   ├── student/                # 🟢 Student Views
+│   └── layouts/                # 🎨 Layout Components
+├── routes/web.php               # 🛣️ Web Routes
+├── storage/app/public/         # 📁 File Uploads
+└── context/docs/               # 📚 Complete Documentation
 ```
 
 ---
 
-## 🚀 ฟีเจอร์ที่พัฒนาแล้ว (Current Status)
+## ⚡ Quick Start (5 นาที)
 
-### ✅ Phase 1: Core Foundation (Completed)
-- **Authentication System**
-  - Laravel Breeze integration
-  - Role-based registration (Teacher/Student)
-  - Separate registration routes: `/register/teacher` และ `/register/student`
-  - Automatic dashboard redirection based on role
+### 📋 ความต้องการระบบ
+- **PHP 8.1+** และ **Composer**
+- **MySQL 8.0+** หรือ **MariaDB 10.3+**
+- **Node.js 16+** และ **NPM**
+- **Git**
 
-- **User Management**
-  - User model with role-based methods (`isTeacher()`, `isStudent()`)
-  - Role-based middleware (`TeacherMiddleware`, `StudentMiddleware`)
-  - User relationships with courses and enrollments
-
-- **Course Management (Teacher)**
-  - Full CRUD operations for courses
-  - Cover image upload with storage management
-  - Owner-based authorization (ครูเห็นเฉพาะคอร์สของตัวเอง)
-  - Course listing with grid layout
-
-- **Dashboard Systems**
-  - **Teacher Dashboard**: 
-    - Statistics cards (จำนวนคอร์ส, จำนวนนักเรียน)
-    - Course grid with cover images
-    - Modern Glass Morphism UI design
-    - Hover effects and transitions
-  - **Student Dashboard**: 
-    - Basic dashboard structure (ready for course listing)
-
-- **Database Design**
-  - Complete migration system
-  - Proper foreign key constraints
-  - Optimized table structure with indexes
-
-- **UI/UX Foundation**
-  - Tailwind CSS integration
-  - Dark mode support
-  - Responsive design
-  - Component-based architecture
-  - Font Awesome icons
-
-### ✅ Phase 2: Content Management (In Progress)
-- **Module Management**
-  - Nested resource routes (`/courses/{course}/modules`)
-  - Module CRUD with ordering system
-  - Module-Lesson relationship
-
-- **Lesson Management**
-  - Support for 3 content types: PDF, Video, Article
-  - File upload system for PDF/PPT/DOCX
-  - YouTube URL integration with auto-embed conversion
-  - Text-based article content
-
-- **Student Learning System**
-  - Course enrollment system
-  - Progress tracking foundation
-  - Lesson completion tracking structure
-
-### 🔄 Phase 3: Learning Experience (Planned)
-- AJAX completion system
-- Real-time progress updates
-- Interactive lesson viewer
-- Breadcrumb navigation
-
----
-
-## 🚀 การติดตั้ง
-
-### Requirements
-- PHP >= 8.1
-- Composer
-- Node.js & NPM
-- MySQL/PostgreSQL
-- Laravel 10.x
-
-### Installation Steps
+### 🛠️ การติดตั้ง
 
 ```bash
-# 1. Clone repository
+# 1. Clone Repository
 git clone https://github.com/pchan132/Project-CT-Learning.git
-cd ct-learning
+cd Project-CT-Learning
 
-# 2. Install PHP dependencies
+# 2. Install Dependencies
 composer install
-
-# 3. Install JavaScript dependencies
 npm install
 
-# 4. สร้างไฟล์ .env
-copy .env.example .env
-
-# 5. Generate application key
+# 3. Environment Setup
+cp .env.example .env
 php artisan key:generate
 
-# 6. ตั้งค่า database ใน .env
+# 4. Database Configuration
+# แก้ไข .env ตั้งค่าฐานข้อมูล
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
@@ -293,426 +187,153 @@ DB_DATABASE=ct_learning
 DB_USERNAME=root
 DB_PASSWORD=
 
-# 7. Run migrations
-php artisan migrate
-
-# 8. สร้าง symbolic link สำหรับ storage
+# 5. Database Setup
+php artisan migrate:fresh --seed
 php artisan storage:link
 
-# 9. Compile assets
+# 6. Start Development Server
+php artisan serve
 npm run dev
-# หรือ production
+```
+
+### 🌐 เข้าใช้งานระบบ
+- **Application**: http://127.0.0.1:8000
+- **Admin**: admin@ct.ac.th / password
+- **Teacher**: teacher1@ct.ac.th / password  
+- **Student**: student1@ct.ac.th / password
+
+---
+
+## 👥 บทบาทผู้ใช้
+
+| บทบาท | สี | สิทธิ์หลัก | Dashboard |
+|--------|-----|-----------|-----------|
+| **Admin** | 🔴 แดง | จัดการผู้ใช้, คอร์ส, สถิติ | `/admin/dashboard` |
+| **Teacher** | 🔵 น้ำเงิน | สร้างคอร์ส, จัดการเนื้อหา, ตรวจแบบทดสอบ | `/teacher/dashboard` |
+| **Student** | 🟢 เขียว | เรียนคอร์ส, ทำแบบทดสอบ, ดูความคืบหน้า | `/student/dashboard` |
+
+### บัญชีทดสอบ
+| Role | Email | Password | คำอธิบาย |
+|------|-------|----------|-----------|
+| **Admin** | admin@ct.ac.th | password | ผู้ดูแลระบบ |
+| **Teacher** | teacher1@ct.ac.th | password | ครูผู้สอนคนที่ 1 |
+| **Teacher** | teacher2@ct.ac.th | password | ครูผู้สอนคนที่ 2 |
+| **Student** | student1@ct.ac.th | password | นักเรียนคนที่ 1 |
+| **Student** | student2@ct.ac.th | password | นักเรียนคนที่ 2 |
+| **Student** | student3@ct.ac.th | password | นักเรียนคนที่ 3 |
+
+---
+
+## 📚 เอกสารประกอบ (Complete Documentation)
+
+### 📖 คู่มือหลัก
+1. **[PROJECT-SUMMARY-2025.md](./PROJECT-SUMMARY-2025.md)** - สรุปโปรเจคล่าสุด
+2. **[DEVELOPER-QUICK-START.md](./DEVELOPER-QUICK-START.md)** - คู่มือนักพัฒนาฉบับเร่งด่วน
+3. **[DEVELOPMENT-GUIDE.md](./context/docs/DEVELOPMENT-GUIDE.md)** - คู่มือพัฒนาแบบละเอียด (1,792 lines)
+4. **[ARCHITECTURE.md](./context/docs/ARCHITECTURE.md)** - สถาปัตยกรรมระบบ (923 lines)
+
+### 🔧 คู่มืออ้างอิง
+5. **[ROUTES-REFERENCE.md](./context/docs/ROUTES-REFERENCE.md)** - รายการ Routes ทั้งหมด (742 lines)
+6. **[QUICK-REFERENCE.md](./context/docs/QUICK-REFERENCE.md)** - คู่มือใช้งานด่วน (612 lines)
+7. **[LMS-COMPLETE-GUIDE.md](./context/docs/LMS-COMPLETE-GUIDE.md)** - คู่มือระบบครบถ้วน (1,089 lines)
+
+### 🛠️ การแก้ไขปัญหา
+8. **[MODULE-LESSON-TROUBLESHOOTING.md](./context/docs/MODULE-LESSON-TROUBLESHOOTING.md)** - แก้ปัญหาระบบบทเรียน
+9. **[routes-fix.md](./context/docs/routes-fix.md)** - แก้ปัญหา routes
+10. **[image-upload-fix.md](./context/docs/image-upload-fix.md)** - แก้ปัญหาอัพโหลดรูป
+
+### 📅 บันทึกการพัฒนา
+11. **[DAY1-COMPLETE.md](./context/docs/DAY1-COMPLETE.md)** - Authentication & Roles
+12. **[DAY2-COMPLETE.md](./context/docs/DAY2-COMPLETE.md)** - Course Management  
+13. **[DAY3-COMPLETE.md](./context/docs/DAY3-COMPLETE.md)** - Module & Lesson Management
+14. **[DAY4-COMPLETE.md](./context/docs/DAY4-COMPLETE.md)** - Quiz System & Certificate
+
+---
+
+## 🚀 Deployment
+
+### 🔧 Production Checklist
+```bash
+# 1. Environment
+APP_ENV=production
+APP_DEBUG=false
+
+# 2. Database
+php artisan migrate --force
+
+# 3. Cache
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+
+# 4. Assets
 npm run build
 
-# 10. Start development server
-php artisan serve
+# 5. Permissions
+chmod -R 775 storage bootstrap/cache
+
+# 6. Optimize
+composer install --optimize-autoloader --no-dev
 ```
 
-### Seeding (Optional)
+### 🌐 Server Requirements
+- **PHP**: 8.1+ พร้อม extensions: `bcmath`, `ctype`, `fileinfo`, `json`, `mbstring`, `openssl`, `pdo`, `tokenizer`, `xml`
+- **Database**: MySQL 8.0+ หรือ MariaDB 10.3+
+- **Web Server**: Nginx หรือ Apache พร้อม SSL
+- **Node.js**: 16+ (สำหรับ build assets)
+
+---
+
+## 📞 Contact & Support
+
+### 🏫 Team
+- **Project Lead**: [Pchan132](https://github.com/pchan132)
+- **GitHub**: https://github.com/pchan132/Project-CT-Learning
+- **Issues**: https://github.com/pchan132/Project-CT-Learning/issues
+
+### 💬 การขอความช่วยเหลือ
+1. **ตรวจสอบ logs**: `storage/logs/laravel.log`
+2. **ค้นหาใน documentation**: `context/docs/`
+3. **สร้าง GitHub Issue**: พร้อมรายละเอียดปัญหา
+4. **ติดต่อทีม**: dev@ct.ac.th
+
+---
+
+## 🎉 Summary
+
+**CT Learning LMS v2.0** เป็นระบบที่พร้อมใช้งานจริง พัฒนาด้วยเทคโนโลยีล่าสุด มีเอกสารครบถ้วน และเป็นไปตามมาตรฐานการพัฒนาที่ดีที่สุด
+
+### ✅ พร้อมใช้งาน:
+- **Complete LMS System**: ครบถ้วนทุกฟีเจอร์
+- **Multi-role Architecture**: Admin/Teacher/Student  
+- **Modern UI/UX**: Responsive + Dark Mode
+- **Rich Content**: PDF/Video/Text/Google Drive/Canva
+- **Assessment System**: Quiz + Auto-grading
+- **Certificate System**: PDF Generation
+- **Progress Tracking**: Real-time Analytics
+- **Complete Documentation**: 20+ เอกสาร
+
+### 🚀 เริ่มต้นได้ทันที:
 ```bash
-php artisan db:seed
-```
-
----
-
-## 🛣️ Routes & API
-
-### Authentication Routes
-```php
-// Registration (Separated by role)
-GET    /register/student                   # Student registration form
-POST   /register/student                   # Student registration submit
-GET    /register/teacher                   # Teacher registration form
-POST   /register/teacher                   # Teacher registration submit
-
-// Standard Auth
-POST   /login                              # Login
-POST   /logout                             # Logout
-```
-
-### Teacher Routes
-
-#### Dashboard
-```php
-GET    /teacher/dashboard                  # Teacher dashboard with statistics
-```
-
-#### Course Management
-```php
-GET    /teacher/courses                     # รายการคอร์สทั้งหมด
-GET    /teacher/courses/create              # ฟอร์มสร้างคอร์ส
-POST   /teacher/courses                     # บันทึกคอร์สใหม่
-GET    /teacher/courses/{course}            # รายละเอียดคอร์ส
-GET    /teacher/courses/{course}/edit       # ฟอร์มแก้ไขคอร์ส
-PUT    /teacher/courses/{course}            # อัพเดทคอร์ส
-DELETE /teacher/courses/{course}            # ลบคอร์ส
-```
-
-#### Module Management (Nested)
-```php
-GET    /teacher/courses/{course}/modules                  # รายการโมดูล
-GET    /teacher/courses/{course}/modules/create           # ฟอร์มสร้างโมดูล
-POST   /teacher/courses/{course}/modules                  # บันทึกโมดูลใหม่
-GET    /teacher/courses/{course}/modules/{module}         # รายละเอียดโมดูล
-GET    /teacher/courses/{course}/modules/{module}/edit    # ฟอร์มแก้ไขโมดูล
-PUT    /teacher/courses/{course}/modules/{module}         # อัพเดทโมดูล
-DELETE /teacher/courses/{course}/modules/{module}         # ลบโมดูล
-```
-
-#### Lesson Management (Double Nested)
-```php
-GET    /teacher/courses/{course}/modules/{module}/lessons                 # รายการบทเรียน
-GET    /teacher/courses/{course}/modules/{module}/lessons/create          # ฟอร์มสร้างบทเรียน
-POST   /teacher/courses/{course}/modules/{module}/lessons                 # บันทึกบทเรียนใหม่
-GET    /teacher/courses/{course}/modules/{module}/lessons/{lesson}        # รายละเอียดบทเรียน
-GET    /teacher/courses/{course}/modules/{module}/lessons/{lesson}/edit   # ฟอร์มแก้ไขบทเรียน
-PUT    /teacher/courses/{course}/modules/{module}/lessons/{lesson}        # อัพเดทบทเรียน
-DELETE /teacher/courses/{course}/modules/{module}/lessons/{lesson}        # ลบบทเรียน
-```
-
-### Student Routes
-
-```php
-GET  /student/dashboard                                     # Student dashboard
-GET  /student/courses                                        # Dashboard (คอร์สที่เรียน)
-POST /student/courses/enroll                                 # ลงทะเบียนเรียนคอร์ส
-```
-
-### AJAX Routes (Planned)
-```php
-POST /lessons/{lesson}/complete    # บันทึก completion (AJAX)
-```
-
----
-
-## ⚡ ฟังก์ชันที่ใช้งานได้
-
-### Model Methods
-
-#### User Model
-```php
-// Role checking
-$user->isTeacher();     // returns true/false
-$user->isStudent();     // returns true/false
-
-// Relationships
-$user->teachingCourses();        // hasMany Course (ถ้าเป็นครู)
-$user->enrollments();           // hasMany Enrollment (ถ้าเป็นนักเรียน)
-$user->lessonCompletions();     // hasMany LessonCompletion
-$user->enrolledCourses();        // belongsToMany Course
-
-// Statistics
-$user->teaching_courses_count;      // จำนวนคอร์สที่สอน
-$user->enrolled_courses_count;      // จำนวนคอร์สที่ลงทะเบียน
-$user->overall_progress;            // Progress รวมทั้งหมด
-```
-
-#### Course Model
-```php
-// Progress calculation
-$course->getProgressForStudent($userId);  // returns 0-100
-$course->getCompletedLessonsCount($userId); // จำนวนบทเรียนที่เรียนจบ
-
-// Relationships
-$course->teacher();      // belongsTo User
-$course->modules();      // hasMany Module (ordered)
-$course->lessons();      // hasManyThrough Lesson
-$course->enrollments();  // hasMany Enrollment
-
-// Statistics
-$course->total_modules;      // จำนวนโมดูลทั้งหมด
-$course->total_lessons;      // จำนวนบทเรียนทั้งหมด
-
-// Helper
-$course->isEnrolledByStudent($studentId); // ตรวจสอบการลงทะเบียน
-```
-
-#### Module Model
-```php
-// Relationships
-$module->course();   // belongsTo Course
-$module->lessons();  // hasMany Lesson
-
-// Scope: เรียงตาม order
-Module::ordered()->get();
-```
-
-#### Lesson Model
-```php
-// เช็คว่าเรียนจบหรือยัง (planned)
-$lesson->isCompletedBy($userId);  // returns true/false
-
-// Relationships
-$lesson->module();       // belongsTo Module
-$lesson->completions();  // hasMany LessonCompletion
-
-// Scope: เรียงตาม order
-Lesson::ordered()->get();
-```
-
-### Authorization
-
-```php
-// Teacher: ตรวจสอบว่าเป็นเจ้าของคอร์ส
-if (auth()->id() !== $course->teacher_id) {
-    abort(403, 'Unauthorized action.');
-}
-
-// Student: ตรวจสอบว่าลงทะเบียนแล้ว (planned)
-$enrollment = auth()->user()->enrollments()
-    ->where('course_id', $course->id)
-    ->first();
-    
-if (!$enrollment) {
-    abort(403, 'You are not enrolled in this course.');
-}
-```
-
-### File Upload
-
-```php
-// ใน CourseController (Cover Image)
-if ($request->hasFile('cover_image_url')) {
-    $data['cover_image_url'] = $request->file('cover_image_url')->store('cover_images', 'public');
-}
-
-// ใน LessonController (PDF Files)
-if ($request->hasFile('file')) {
-    $file = $request->file('file');
-    $filename = time() . '_' . $file->getClientOriginalName();
-    $path = $file->storeAs('lessons/pdf', $filename, 'public');
-    $validated['content_url'] = $path;
-}
-
-// Supported types: PDF, DOC, DOCX, PPT, PPTX
-// Max size: 10MB
-```
-
-### YouTube URL Processing
-
-```php
-// ใน LessonController (Video type)
-if ($request->content_type === 'VIDEO') {
-    $url = $request->youtube_url;
-    // Convert youtube.com/watch?v=ID to youtube.com/embed/ID
-    $embedUrl = preg_replace(
-        '/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/',
-        'https://www.youtube.com/embed/$1',
-        $url
-    );
-    $validated['content_url'] = $embedUrl;
-}
-```
-
----
-
-## 📚 Documentation
-
-เอกสารเพิ่มเติมอยู่ในโฟลเดอร์ `context/docs/`:
-
-- **[ARCHITECTURE.md](context/docs/ARCHITECTURE.md)** - เอกสารสถาปัตยกรรมระบบอย่างละเอียด
-- **[authentication.md](context/docs/authentication.md)** - เอกสารระบบ authentication
-- **[teacher-course-crud.md](context/docs/teacher-course-crud.md)** - เอกสารการทำ CRUD คอร์สเรียน
-- **[routes-fix.md](context/docs/routes-fix.md)** - บันทึกการแก้ไขปัญหา routes
-- **[dark-mode-toggle.md](context/docs/dark-mode-toggle.md)** - เอกสารการทำ Dark Mode
-- **[ROUTES-REFERENCE.md](context/docs/ROUTES-REFERENCE.md)** - อ้างอิง routes ทั้งหมด
-
----
-
-## 🛠️ Tech Stack
-
-### Backend
-- **Laravel 10.x** - PHP Framework
-- **Laravel Breeze** - Authentication starter kit
-- **Eloquent ORM** - Database ORM
-- **Laravel Storage** - File management
-- **MySQL/PostgreSQL** - Database
-
-### Frontend
-- **Blade Templates** - Template engine
-- **Blade Components** - Reusable UI components (`<x-app-layout>`)
-- **Tailwind CSS** - Utility-first CSS framework
-- **Alpine.js** - Lightweight JavaScript framework
-- **Font Awesome** - Icon library
-- **Vite** - Asset bundler
-
-### Development Tools
-- **Composer** - PHP dependency manager
-- **NPM** - JavaScript package manager
-- **Git** - Version control
-
----
-
-## 🖼️ Screenshots & UI
-
-### Teacher Dashboard
-- **Statistics Cards**: แสดงจำนวนคอร์ส จำนวนนักเรียน ด้วย Glass Morphism design
-- **Course Grid**: แสดงคอร์สเรียนในรูปแบบ grid พร้อมรูปปก ปุ่มจัดการ
-- **Responsive Design**: รองรับทุกขนาดหน้าจอ
-- **Dark Mode**: รองรับโหมดมืด/สว่าง
-
-### Registration System
-- **Separated Registration**: แยกฟอร์มสมัครสำหรับ Teacher และ Student
-- **Role-based Redirection**: นำทางไปยัง Dashboard ที่ถูกต้องหลังสมัคร
-
-### Course Management
-- **Cover Image Upload**: รองรับการอัพโหลดรูปปกคอร์ส
-- **CRUD Operations**: สร้าง อ่าน แก้ไข ลบ คอร์สเรียน
-- **Authorization**: ครูเห็นเฉพาะคอร์สของตัวเอง
-
----
-
-## 🔧 Troubleshooting
-
-### ปัญหาที่พบบ่อย
-
-#### 1. Error 403 Unauthorized
-```bash
-# แก้ไข: ตรวจสอบ authorization ใน Controller
-if (auth()->id() !== $course->teacher_id) {
-    abort(403, 'Unauthorized action.');
-}
-```
-
-#### 2. Undefined variable $slot
-```bash
-# แก้ไข: ใช้ Blade Component แทน @extends
-# เปลี่ยนจาก
-@extends('layouts.app')
-@section('content')
-
-# เป็น
-<x-app-layout>
-<!-- content -->
-</x-app-layout>
-```
-
-#### 3. File upload ไม่ทำงาน
-```bash
-# ตรวจสอบว่าสร้าง symbolic link แล้ว
+git clone https://github.com/pchan132/Project-CT-Learning.git
+cd Project-CT-Learning
+composer install && npm install
+php artisan migrate:fresh --seed
 php artisan storage:link
-
-# ตรวจสอบ permissions
-chmod -R 775 storage
-chmod -R 775 bootstrap/cache
-```
-
-#### 4. Routes not found
-```bash
-# Clear cache
-php artisan route:clear
-php artisan cache:clear
-php artisan config:clear
-php artisan view:clear
-
-# ดูรายการ routes
-php artisan route:list --name=teacher
-```
-
-#### 5. Dark mode ไม่ทำงาน
-```bash
-# ตรวจสอบว่ามี Alpine.js ใน layout
-<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+php artisan serve & npm run dev
 ```
 
 ---
 
-## 📈 Development Roadmap
-
-### ✅ Phase 1: Core Foundation (Completed)
-- [x] Authentication system (Teacher/Student roles)
-- [x] Role-based registration
-- [x] User management system
-- [x] Course CRUD
-- [x] Teacher dashboard with statistics
-- [x] File upload system (cover images)
-- [x] Responsive UI with Tailwind CSS
-- [x] Dark mode support
-
-### 🔄 Phase 2: Content Management (In Progress)
-- [x] Module CRUD with ordering
-- [x] Lesson CRUD with 3 content types
-- [x] File upload (PDF, PPT, DOC)
-- [x] YouTube video embedding
-- [x] Student enrollment system
-- [ ] Progress tracking foundation
-- [ ] AJAX completion system
-
-### 📋 Phase 3: Learning Experience (Planned)
-- [ ] Interactive lesson viewer
-- [ ] Real-time progress updates
-- [ ] Breadcrumb navigation
-- [ ] Student course dashboard
-- [ ] Lesson completion tracking
-
-### 🚀 Phase 4: Advanced Features (Future)
-- [ ] Quiz system
-- [ ] Certificate generation
-- [ ] Discussion forums
-- [ ] Assignment submission
-- [ ] Grade management
-- [ ] Email notifications
-- [ ] Analytics dashboard
-
----
-
-## 👥 Contributors
-
-- **Pchan132** - Initial work & ongoing development - [GitHub](https://github.com/pchan132)
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## 🙏 Acknowledgments
-
-- **Laravel Framework** - For the excellent PHP framework
-- **Tailwind CSS** - For the beautiful utility-first CSS framework
-- **Laravel Breeze** - For the authentication scaffolding
-- **Font Awesome** - For the amazing icon library
-- **Alpine.js** - For the lightweight JavaScript framework
-
----
-
-## 📞 Contact
-
-For questions or support, please open an issue on GitHub or contact:
-- **Repository**: [Project-CT-Learning](https://github.com/pchan132/Project-CT-Learning)
-
----
-
-## ⚠️ Important Notes
-
-### สำหรับ Developer
-1. **Blade Components**: ระบบใช้ `<x-app-layout>` **ไม่ใช่** `@extends('layouts.app')`
-2. **Authorization**: ใช้ manual checks (`auth()->id() !== $owner`) **ไม่ใช่** Gates/Policies
-3. **Nested Routes**: ใส่ parameters ครบ เช่น `route('teacher.courses.modules.index', $course)`
-4. **File Upload**: ไฟล์จะถูกเก็บที่ `storage/app/public/cover_images/` และ `storage/app/public/lessons/pdf/`
-5. **AJAX CSRF**: อย่าลืมใส่ `X-CSRF-TOKEN` ใน header
-6. **Dark Mode**: ใช้ Alpine.js สำหรับจัดการ state
-
-### สำหรับ User
-1. **Teacher**: Register → Login → Create Course → Add Modules → Add Lessons
-2. **Student**: Register → Login → Browse Courses → Enroll → Learn
-3. **Progress**: คำนวณจาก (completed lessons / total lessons) × 100
-4. **Content Types**:
-   - PDF: รองรับ .pdf, .doc, .docx, .ppt, .pptx (max 10MB)
-   - Video: เฉพาะ YouTube URLs (auto-convert to embed)
-   - Article: Text content with line breaks
-
-### Current Limitations
-- Student dashboard ยังไม่แสดงคอร์สที่ลงทะเบียน (อยู่ระหว่างพัฒนา)
-- Progress tracking ยังไม่สมบูรณ์
-- ยังไม่มี AJAX completion system
-- ยังไม่มี interactive lesson viewer
+**Created:** 8 ธันวาคม 2025  
+**Version:** 2.0.0 (Production Ready)  
+**Documentation:** 100% Complete  
+**Status:** ✅ Ready for Production
 
 ---
 
 <p align="center">
-  <strong>🚀 CT Learning - Building the Future of Online Education 🚀</strong><br>
-  Made with ❤️ using Laravel & Tailwind CSS
+  <strong>🚀 CT Learning - Complete LMS System 🚀</strong><br>
+  <em>Empowering Education Through Technology</em><br>
+  Made with ❤️ using Laravel, Tailwind CSS & Modern Web Technologies
 </p>

@@ -104,6 +104,24 @@ class TeacherProfileController extends Controller
     }
 
     /**
+     * แสดงหน้าตัวอย่าง Certificate พร้อมลายเซ็นของ Teacher
+     */
+    public function certificatePreview()
+    {
+        /** @var User $teacher */
+        $teacher = Auth::user();
+
+        if (!$teacher->isTeacher()) {
+            abort(403, 'คุณไม่มีสิทธิ์เข้าถึงหน้านี้');
+        }
+
+        // ดึงคอร์สที่ Teacher สอน
+        $courses = $teacher->teachingCourses()->get();
+
+        return view('teacher.certificate-preview', compact('teacher', 'courses'));
+    }
+
+    /**
      * ลบรูปโปรไฟล์
      */
     public function deleteProfileImage()

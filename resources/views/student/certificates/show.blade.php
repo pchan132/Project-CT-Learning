@@ -10,18 +10,61 @@
     // ดึง template จาก certificate หรือใช้ template ที่ active
     $template = $certificate->template ?? \App\Models\CertificateTemplate::getActiveTemplate();
 
-    // กำหนดสีเริ่มต้นถ้าไม่มี template
-    $primaryColor = $template->primary_color ?? '#f59e0b';
-    $borderColor = $template->border_color ?? '#d4af37';
+    // กำหนดสี Blue + Gold theme
+    $primaryColor = $template->primary_color ?? '#2563eb';
+    $goldColor = $template->border_color ?? '#ca8a04';
     $textColor = $template->text_color ?? '#1f2937';
 
     // ครูผู้สอน
     $teacher = $certificate->course->teacher;
     $teacherSignature = $teacher->signature_image ?? null;
+
+    // ตำแหน่งลายเซ็น (ดึงจาก template)
+    $showTeacherSignature = $template->show_teacher_signature ?? true;
+    $teacherSignaturePosition = $template->teacher_signature_position ?? 'left';
+    $adminSignaturePosition = $template->admin_signature_position ?? 'right';
+
+    // Thai date
+    $thaiMonths = [
+        1 => 'มกราคม',
+        2 => 'กุมภาพันธ์',
+        3 => 'มีนาคม',
+        4 => 'เมษายน',
+        5 => 'พฤษภาคม',
+        6 => 'มิถุนายน',
+        7 => 'กรกฎาคม',
+        8 => 'สิงหาคม',
+        9 => 'กันยายน',
+        10 => 'ตุลาคม',
+        11 => 'พฤศจิกายน',
+        12 => 'ธันวาคม',
+    ];
+    $issuedDate = $certificate->issued_date;
+    $thaiDate = $issuedDate->day . ' ' . $thaiMonths[$issuedDate->month] . ' พ.ศ. ' . ($issuedDate->year + 543);
 @endphp
 
+@push('styles')
+    <link
+        href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=Sarabun:wght@300;400;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        .font-header {
+            font-family: 'Chakra Petch', sans-serif;
+        }
+
+        .font-sarabun {
+            font-family: 'Sarabun', sans-serif;
+        }
+
+        .seal-outer {
+            background: linear-gradient(135deg, #fbbf24, #d97706);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+    </style>
+@endpush
+
 @section('content')
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <!-- Breadcrumb -->
         <div class="mb-6 flex items-center text-sm text-gray-600 dark:text-gray-400">
             <a href="{{ route('student.certificates.index') }}" class="hover:text-blue-600">ใบประกาศนียบัตรของฉัน</a>
@@ -36,204 +79,250 @@
             </div>
         @endif
 
-        <!-- Certificate Display with Template Design -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl overflow-hidden"
-            style="border: 6px solid {{ $borderColor }};">
+        <!-- Certificate Container (A4 Landscape: 1123px x 794px) -->
+        <div class="overflow-x-auto pb-4">
+            <div id="certificate-container"
+                class="relative bg-white shadow-2xl overflow-hidden text-center mx-auto font-sarabun"
+                style="width: 1123px; height: 794px;">
 
-            {{-- Background Image --}}
-            @if ($template && $template->background_image)
-                <div class="relative"
-                    style="background-image: url('{{ asset('storage/' . $template->background_image) }}'); background-size: cover; background-position: center;">
-                @else
-                    <div class="relative bg-gradient-to-br from-amber-50 to-orange-50 dark:from-gray-800 dark:to-gray-900">
-            @endif
+                <!-- Decorative Left Border -->
+                <div class="absolute left-0 top-0 bottom-0 w-4 h-full" style="background-color: {{ $primaryColor }};"></div>
+                <div class="absolute left-4 top-0 bottom-0 w-2 h-full" style="background-color: {{ $goldColor }};"></div>
 
-            <!-- Header -->
-            <div class="p-8 text-center"
-                style="background: linear-gradient(135deg, {{ $primaryColor }}dd, {{ $primaryColor }}aa);">
-                @if ($template && $template->logo_image)
-                    <img src="{{ asset('storage/' . $template->logo_image) }}" alt="Logo"
-                        class="w-20 h-20 mx-auto mb-4 object-contain">
-                @else
-                    <i class="fas fa-award text-7xl text-white mb-4"></i>
-                @endif
-                <h1 class="text-4xl font-bold text-white mb-2">ใบประกาศนียบัตร</h1>
-                <p class="text-white text-lg opacity-90">Certificate of Completion</p>
-            </div>
+                <!-- Decorative Corners -->
+                <div class="absolute top-0 right-0 w-32 h-32 rounded-bl-full -mr-16 -mt-16 opacity-50"
+                    style="background-color: #fef3c7;"></div>
+                <div class="absolute bottom-0 right-0 w-48 h-48 rounded-tl-full -mr-10 -mb-10 opacity-50"
+                    style="background-color: #dbeafe;"></div>
 
-            <!-- Body -->
-            <div class="p-12 text-center bg-white/90 dark:bg-gray-800/90">
-                <p class="text-lg text-gray-600 dark:text-gray-400 mb-4">ขอมอบใบประกาศนียบัตรนี้ให้แก่</p>
-                <h2 class="text-4xl font-bold mb-6" style="color: {{ $textColor }};">{{ $certificate->student->name }}
-                </h2>
+                <!-- Main Content Area -->
+                <div class="relative z-10 h-full flex flex-col justify-between px-24 py-20">
 
-                <div class="w-48 h-1 mx-auto mb-6"
-                    style="background: linear-gradient(to right, transparent, {{ $primaryColor }}, transparent);"></div>
-
-                <p class="text-lg text-gray-600 dark:text-gray-400 mb-2">สำเร็จการศึกษาจากคอร์ส</p>
-                <h3 class="text-3xl font-bold mb-8" style="color: {{ $primaryColor }};">{{ $certificate->course->title }}
-                </h3>
-
-                <!-- Signatures Section -->
-                @if ($template)
-                    <div class="grid grid-cols-2 gap-8 my-12 px-12">
-                        @php
-                            $adminPosition = $template->admin_signature_position ?? 'right';
-                            $teacherPosition = $template->teacher_signature_position ?? 'left';
-                        @endphp
-
-                        {{-- Left Signature --}}
-                        <div class="text-center">
-                            @if ($teacherPosition === 'left' && $template->show_teacher_signature)
-                                {{-- Teacher Signature on Left --}}
-                                @if ($teacherSignature)
-                                    <img src="{{ asset('storage/' . $teacherSignature) }}" alt="Teacher Signature"
-                                        class="h-16 mx-auto mb-2 object-contain">
-                                @else
-                                    <div class="h-16 mb-2"></div>
-                                @endif
-                                <div class="w-48 h-px bg-gray-400 mx-auto mb-2"></div>
-                                <p class="font-semibold" style="color: {{ $textColor }};">{{ $teacher->name }}</p>
-                                <p class="text-sm text-gray-500">ผู้สอน</p>
-                            @elseif($adminPosition === 'left')
-                                {{-- Admin Signature on Left --}}
-                                @if ($template->admin_signature)
-                                    <img src="{{ asset('storage/' . $template->admin_signature) }}" alt="Admin Signature"
-                                        class="h-16 mx-auto mb-2 object-contain">
-                                @else
-                                    <div class="h-16 mb-2"></div>
-                                @endif
-                                <div class="w-48 h-px bg-gray-400 mx-auto mb-2"></div>
-                                <p class="font-semibold" style="color: {{ $textColor }};">
-                                    {{ $template->admin_name ?? 'ผู้อำนวยการ' }}</p>
-                                <p class="text-sm text-gray-500">{{ $template->admin_position ?? 'ผู้รับรอง' }}</p>
-                            @endif
-                        </div>
-
-                        {{-- Right Signature --}}
-                        <div class="text-center">
-                            @if ($teacherPosition === 'right' && $template->show_teacher_signature)
-                                {{-- Teacher Signature on Right --}}
-                                @if ($teacherSignature)
-                                    <img src="{{ asset('storage/' . $teacherSignature) }}" alt="Teacher Signature"
-                                        class="h-16 mx-auto mb-2 object-contain">
-                                @else
-                                    <div class="h-16 mb-2"></div>
-                                @endif
-                                <div class="w-48 h-px bg-gray-400 mx-auto mb-2"></div>
-                                <p class="font-semibold" style="color: {{ $textColor }};">{{ $teacher->name }}</p>
-                                <p class="text-sm text-gray-500">ผู้สอน</p>
-                            @elseif($adminPosition === 'right')
-                                {{-- Admin Signature on Right --}}
-                                @if ($template->admin_signature)
-                                    <img src="{{ asset('storage/' . $template->admin_signature) }}" alt="Admin Signature"
-                                        class="h-16 mx-auto mb-2 object-contain">
-                                @else
-                                    <div class="h-16 mb-2"></div>
-                                @endif
-                                <div class="w-48 h-px bg-gray-400 mx-auto mb-2"></div>
-                                <p class="font-semibold" style="color: {{ $textColor }};">
-                                    {{ $template->admin_name ?? 'ผู้อำนวยการ' }}</p>
-                                <p class="text-sm text-gray-500">{{ $template->admin_position ?? 'ผู้รับรอง' }}</p>
-                            @endif
-                        </div>
-                    </div>
-                @else
-                    {{-- Fallback: Only Teacher Signature --}}
-                    <div class="my-12">
-                        <p class="text-gray-600 dark:text-gray-400 mb-4">ผู้สอนโดย</p>
-                        @if ($teacherSignature)
-                            <img src="{{ asset('storage/' . $teacherSignature) }}" alt="Teacher Signature"
-                                class="h-16 mx-auto mb-2 object-contain">
+                    <!-- Logo Section -->
+                    <div class="flex justify-center mb-2">
+                        @if ($template && $template->logo_image)
+                            <img src="{{ asset('storage/' . $template->logo_image) }}" alt="Logo"
+                                class="h-20 w-auto object-contain">
                         @else
-                            <div class="h-12 mb-2"></div>
+                            <div class="h-20 w-20 rounded-full flex items-center justify-center overflow-hidden"
+                                style="background: linear-gradient(135deg, #22c55e, #16a34a);">
+                                <i class="fas fa-award text-3xl text-white"></i>
+                            </div>
                         @endif
-                        <div class="w-48 h-px bg-gray-400 mx-auto mb-2"></div>
-                        <p class="font-semibold text-gray-900 dark:text-white">{{ $teacher->name }}</p>
                     </div>
-                @endif
 
-                <!-- Seal/Badge -->
-                <div class="flex justify-center mb-8">
-                    <div class="w-24 h-24 rounded-full flex items-center justify-center shadow-xl"
-                        style="background: linear-gradient(135deg, {{ $primaryColor }}, {{ $borderColor }});">
-                        <div class="w-16 h-16 rounded-full bg-white flex items-center justify-center">
-                            <i class="fas fa-check text-3xl" style="color: {{ $primaryColor }};"></i>
+                    <!-- Header Section -->
+                    <div class="space-y-2 mt-2">
+                        <p class="text-gray-500 text-lg tracking-widest uppercase">Certificate of Completion</p>
+                        <h1 class="text-6xl font-header font-bold drop-shadow-sm mt-2" style="color: {{ $goldColor }};">
+                            {{ $certificate->student->name }}
+                        </h1>
+                    </div>
+
+                    <!-- Body Section -->
+                    <div class="space-y-6 my-auto">
+                        <p class="text-2xl text-gray-700 font-light leading-relaxed">
+                            ได้ผ่านการอบรมและทดสอบความรู้ในหลักสูตร
+                        </p>
+                        <h2 class="text-4xl font-bold py-2" style="color: {{ $primaryColor }};">
+                            "{{ $certificate->course->title }}"
+                        </h2>
+                        <p class="text-xl text-gray-600">
+                            ซึ่งจัดโดย <span
+                                class="font-semibold text-gray-800">{{ $template->name ?? 'CT Learning' }}</span>
+                            <br>
+                            เมื่อวันที่ {{ $thaiDate }}
+                        </p>
+                    </div>
+
+                    <!-- Footer / Signatures / Seal -->
+                    <div class="relative w-full flex justify-between items-end mt-12">
+
+                        {{-- Left Signature (ตามตำแหน่งที่กำหนดใน template) --}}
+                        <div class="text-center w-64">
+                            @if ($teacherSignaturePosition == 'left' && $showTeacherSignature)
+                                {{-- ลายเซ็นครูผู้สอน --}}
+                                <div class="border-b-2 border-gray-400 mb-3 pb-2">
+                                    <div class="h-12 w-full flex items-end justify-center">
+                                        @if ($teacherSignature)
+                                            <img src="{{ asset('storage/' . $teacherSignature) }}" alt="Signature"
+                                                class="h-10 object-contain">
+                                        @endif
+                                    </div>
+                                </div>
+                                <p class="text-lg font-bold text-gray-800">{{ $teacher->name ?? 'ผู้สอน' }}</p>
+                                <p class="text-sm text-gray-500">ผู้สอน</p>
+                            @elseif ($adminSignaturePosition == 'left')
+                                {{-- ลายเซ็น Admin --}}
+                                <div class="border-b-2 border-gray-400 mb-3 pb-2">
+                                    <div class="h-12 w-full flex items-end justify-center">
+                                        @if ($template && $template->admin_signature)
+                                            <img src="{{ asset('storage/' . $template->admin_signature) }}"
+                                                alt="Admin Signature" class="h-10 object-contain">
+                                        @endif
+                                    </div>
+                                </div>
+                                <p class="text-lg font-bold text-gray-800">{{ $template->admin_name ?? 'ผู้อำนวยการ' }}</p>
+                                <p class="text-sm text-gray-500">{{ $template->admin_position ?? 'ผู้รับรอง' }}</p>
+                            @endif
+                        </div>
+
+                        <!-- Center Seal -->
+                        <div class="absolute left-1/2 transform -translate-x-1/2 bottom-4">
+                            <div class="relative inline-flex justify-center items-center">
+                                <div
+                                    class="seal-outer w-32 h-32 rounded-full flex items-center justify-center border-4 border-yellow-200">
+                                    <div
+                                        class="w-24 h-24 border-2 border-dashed border-white rounded-full flex flex-col items-center justify-center text-white">
+                                        <span class="text-lg font-bold tracking-wider">BEST</span>
+                                        <span class="text-sm font-light">AWARD</span>
+                                        <div class="w-8 h-8 mt-1">
+                                            <svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full text-white">
+                                                <path
+                                                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Ribbon tails -->
+                                <div class="absolute -bottom-4 -z-10 flex gap-12">
+                                    <div class="w-8 h-12 transform rotate-12" style="background-color: #ca8a04;"></div>
+                                    <div class="w-8 h-12 transform -rotate-12" style="background-color: #ca8a04;"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Right Signature (ตามตำแหน่งที่กำหนดใน template) --}}
+                        <div class="text-center w-64">
+                            @if ($teacherSignaturePosition == 'right' && $showTeacherSignature)
+                                {{-- ลายเซ็นครูผู้สอน --}}
+                                <div class="border-b-2 border-gray-400 mb-3 pb-2">
+                                    <div class="h-12 w-full flex items-end justify-center">
+                                        @if ($teacherSignature)
+                                            <img src="{{ asset('storage/' . $teacherSignature) }}" alt="Signature"
+                                                class="h-10 object-contain">
+                                        @endif
+                                    </div>
+                                </div>
+                                <p class="text-lg font-bold text-gray-800">{{ $teacher->name ?? 'ผู้สอน' }}</p>
+                                <p class="text-sm text-gray-500">ผู้สอน</p>
+                            @elseif ($adminSignaturePosition == 'right')
+                                {{-- ลายเซ็น Admin --}}
+                                <div class="border-b-2 border-gray-400 mb-3 pb-2">
+                                    <div class="h-12 w-full flex items-end justify-center">
+                                        @if ($template && $template->admin_signature)
+                                            <img src="{{ asset('storage/' . $template->admin_signature) }}"
+                                                alt="Admin Signature" class="h-10 object-contain">
+                                        @endif
+                                    </div>
+                                </div>
+                                <p class="text-lg font-bold text-gray-800">{{ $template->admin_name ?? 'ผู้อำนวยการ' }}</p>
+                                <p class="text-sm text-gray-500">{{ $template->admin_position ?? 'ผู้รับรอง' }}</p>
+                            @endif
                         </div>
                     </div>
-                </div>
 
-                <!-- Details -->
-                <div class="flex justify-center items-center gap-8 mb-8 text-sm">
-                    <div class="text-center">
-                        <p class="text-gray-500 dark:text-gray-400">เลขที่ใบประกาศนียบัตร</p>
-                        <p class="font-mono font-bold text-gray-900 dark:text-white">{{ $certificate->certificate_number }}
-                        </p>
-                    </div>
-                    <div class="w-px h-12 bg-gray-300 dark:bg-gray-600"></div>
-                    <div class="text-center">
-                        <p class="text-gray-500 dark:text-gray-400">วันที่ออก</p>
-                        <p class="font-bold text-gray-900 dark:text-white">{{ $certificate->issued_date->format('d/m/Y') }}
-                        </p>
+                    <!-- Certificate Number -->
+                    <div class="absolute bottom-2 left-1/2 transform -translate-x-1/2">
+                        <p class="text-sm text-gray-400">Certificate No: {{ $certificate->certificate_number }}</p>
                     </div>
                 </div>
             </div>
 
-        </div>
-
-        <!-- Actions -->
-        <div class="bg-gray-50 dark:bg-gray-700 p-6 flex flex-wrap justify-center gap-4">
-            <a href="{{ route('student.certificates.index') }}"
-                class="px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 font-semibold transition">
-                <i class="fas fa-arrow-left mr-2"></i>กลับ
-            </a>
-            <a href="{{ route('student.certificates.download', $certificate->id) }}"
-                class="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 font-semibold shadow-lg transition">
-                <i class="fas fa-download mr-2"></i>ดาวน์โหลด PDF
-            </a>
-            <form action="{{ route('student.certificates.regenerate', $certificate->id) }}" method="POST" class="inline">
-                @csrf
-                <button type="submit"
-                    class="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-semibold transition"
-                    onclick="return confirm('ต้องการสร้างใบประกาศนียบัตรใหม่ตาม Template ล่าสุดหรือไม่?')">
-                    <i class="fas fa-sync-alt mr-2"></i>สร้าง PDF ใหม่
+            <!-- Actions -->
+            <div class="mt-6 bg-gray-50 dark:bg-gray-700 p-6 flex flex-wrap justify-center gap-4 rounded-xl">
+                <a href="{{ route('student.certificates.index') }}"
+                    class="px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 font-semibold transition">
+                    <i class="fas fa-arrow-left mr-2"></i>กลับ
+                </a>
+                <button type="button" id="previewPdfBtn"
+                    class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold shadow-lg transition"
+                    data-certificate-id="{{ $certificate->id }}">
+                    <i class="fas fa-eye mr-2"></i>ดูตัวอย่าง PDF
                 </button>
-            </form>
-        </div>
+                <button type="button" id="downloadPdfBtn"
+                    class="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 font-semibold shadow-lg transition"
+                    data-certificate-id="{{ $certificate->id }}">
+                    <i class="fas fa-download mr-2"></i>ดาวน์โหลด PDF
+                </button>
+            </div>
 
-        <!-- Footer -->
-        <div class="p-4 text-center text-sm text-gray-600 dark:text-gray-400"
-            style="background-color: {{ $primaryColor }}22;">
-            <p>ออกให้โดย CT Learning Platform • {{ config('app.name') }}</p>
+            <!-- Course Details -->
+            <div class="mt-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4">
+                    <i class="fas fa-info-circle text-blue-500 mr-2"></i>รายละเอียดคอร์ส
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                        <i class="fas fa-list text-2xl text-blue-500 mb-2"></i>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">โมดูลทั้งหมด</p>
+                        <p class="text-2xl font-bold text-gray-900 dark:text-white">
+                            {{ $certificate->course->modules->count() }}</p>
+                    </div>
+                    <div class="text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                        <i class="fas fa-book-open text-2xl text-green-500 mb-2"></i>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">บทเรียนทั้งหมด</p>
+                        <p class="text-2xl font-bold text-gray-900 dark:text-white">
+                            {{ $certificate->course->total_lessons }}
+                        </p>
+                    </div>
+                    <div class="text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                        <i class="fas fa-clipboard-question text-2xl text-purple-500 mb-2"></i>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">แบบทดสอบทั้งหมด</p>
+                        <p class="text-2xl font-bold text-gray-900 dark:text-white">
+                            {{ $certificate->course->modules->sum(function ($module) {return $module->quizzes->count();}) }}
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
+    @endsection
 
-    <!-- Course Details -->
-    <div class="mt-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
-        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4">
-            <i class="fas fa-info-circle text-blue-500 mr-2"></i>รายละเอียดคอร์ส
-        </h3>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div class="text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                <i class="fas fa-list text-2xl text-blue-500 mb-2"></i>
-                <p class="text-sm text-gray-600 dark:text-gray-400">โมดูลทั้งหมด</p>
-                <p class="text-2xl font-bold text-gray-900 dark:text-white">
-                    {{ $certificate->course->modules->count() }}</p>
-            </div>
-            <div class="text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                <i class="fas fa-book-open text-2xl text-green-500 mb-2"></i>
-                <p class="text-sm text-gray-600 dark:text-gray-400">บทเรียนทั้งหมด</p>
-                <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ $certificate->course->total_lessons }}
-                </p>
-            </div>
-            <div class="text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                <i class="fas fa-clipboard-question text-2xl text-purple-500 mb-2"></i>
-                <p class="text-sm text-gray-600 dark:text-gray-400">แบบทดสอบทั้งหมด</p>
-                <p class="text-2xl font-bold text-gray-900 dark:text-white">
-                    {{ $certificate->course->modules->sum(function ($module) {return $module->quizzes->count();}) }}
-                </p>
-            </div>
-        </div>
-    </div>
-    </div>
-@endsection
+    @push('scripts')
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const previewBtn = document.getElementById('previewPdfBtn');
+                const downloadBtn = document.getElementById('downloadPdfBtn');
+
+                if (previewBtn) {
+                    previewBtn.addEventListener('click', async function() {
+                        const certId = this.dataset.certificateId;
+                        const originalText = this.innerHTML;
+
+                        try {
+                            this.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>กำลังสร้าง...';
+                            this.disabled = true;
+
+                            await window.CertificatePDF.preview(certId);
+                        } catch (error) {
+                            console.error('Preview failed:', error);
+                            alert('ไม่สามารถสร้าง PDF ได้ กรุณาลองใหม่อีกครั้ง');
+                        } finally {
+                            this.innerHTML = originalText;
+                            this.disabled = false;
+                        }
+                    });
+                }
+
+                if (downloadBtn) {
+                    downloadBtn.addEventListener('click', async function() {
+                        const certId = this.dataset.certificateId;
+                        const originalText = this.innerHTML;
+
+                        try {
+                            this.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>กำลังดาวน์โหลด...';
+                            this.disabled = true;
+
+                            await window.CertificatePDF.download(certId);
+                        } catch (error) {
+                            console.error('Download failed:', error);
+                            alert('ไม่สามารถดาวน์โหลด PDF ได้ กรุณาลองใหม่อีกครั้ง');
+                        } finally {
+                            this.innerHTML = originalText;
+                            this.disabled = false;
+                        }
+                    });
+                }
+            });
+        </script>
+    @endpush

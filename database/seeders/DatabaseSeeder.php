@@ -263,6 +263,9 @@ class DatabaseSeeder extends Seeder
             'student_id' => $students[0]->id,
         ]);
 
+        // Seed Certificate Template
+        $this->call(CertificateTemplateSeeder::class);
+
         $this->command->info('✅ Seeded successfully!');
         $this->command->info('📧 Admin: admin@ct.ac.th / password');
         $this->command->info('📧 Teacher 1: teacher1@ct.ac.th / password');
