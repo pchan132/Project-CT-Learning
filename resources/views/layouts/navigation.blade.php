@@ -31,12 +31,12 @@
                             </x-nav-link>
                             <x-nav-link :href="route('admin.courses')" :active="request()->routeIs('admin.courses*')" class="flex items-center space-x-2">
                                 <i class="fas fa-book text-sm"></i>
-                                <span>{{ __('คอร์ส') }}</span>
+                                <span>{{ __('รายวิชาออนไลน์') }}</span>
                             </x-nav-link>
-                            <x-nav-link :href="route('admin.statistics')" :active="request()->routeIs('admin.statistics')" class="flex items-center space-x-2">
+                            {{-- <x-nav-link :href="route('admin.statistics')" :active="request()->routeIs('admin.statistics')" class="flex items-center space-x-2">
                                 <i class="fas fa-chart-bar text-sm"></i>
                                 <span>{{ __('สถิติ') }}</span>
-                            </x-nav-link>
+                            </x-nav-link> --}}
                         @endif
 
                         <!-- Teacher Navigation -->
@@ -47,11 +47,11 @@
                             </x-nav-link>
                             <x-nav-link :href="route('teacher.courses.index')" :active="request()->routeIs('teacher.courses.*')" class="flex items-center space-x-2">
                                 <i class="fas fa-chalkboard-teacher text-sm"></i>
-                                <span>{{ __('คอร์สของฉัน') }}</span>
+                                <span>{{ __('รายวิชาของฉัน') }}</span>
                             </x-nav-link>
                             <x-nav-link :href="route('teachers.index')" :active="request()->routeIs('teachers.*')" class="flex items-center space-x-2">
                                 <i class="fas fa-users text-sm"></i>
-                                <span>{{ __('อาจารย์ทั้งหมด') }}</span>
+                                <span>{{ __('ผู้สอนทั้งหมด') }}</span>
                             </x-nav-link>
 
                             <x-nav-link :href="route('teacher.profile.edit')" :active="request()->routeIs('teacher.profile.edit')" class="flex items-center space-x-2">
@@ -68,15 +68,15 @@
                             </x-nav-link>
                             <x-nav-link :href="route('student.courses.my-courses')" :active="request()->routeIs('student.courses.my-courses')" class="flex items-center space-x-2">
                                 <i class="fas fa-book-reader text-sm"></i>
-                                <span>{{ __('คอร์สของฉัน') }}</span>
+                                <span>{{ __('รายวิชาของฉัน') }}</span>
                             </x-nav-link>
                             <x-nav-link :href="route('student.courses.index')" :active="request()->routeIs('student.courses.index')" class="flex items-center space-x-2">
                                 <i class="fas fa-search text-sm"></i>
-                                <span>{{ __('ค้นหาคอร์ส') }}</span>
+                                <span>{{ __('ค้นหารายวิชา') }}</span>
                             </x-nav-link>
                             <x-nav-link :href="route('teachers.index')" :active="request()->routeIs('teachers.*')" class="flex items-center space-x-2">
                                 <i class="fas fa-chalkboard-teacher text-sm"></i>
-                                <span>{{ __('อาจารย์') }}</span>
+                                <span>{{ __('ผู้สอน') }}</span>
                             </x-nav-link>
                             <x-nav-link :href="route('student.certificates.index')" :active="request()->routeIs('student.certificates.*')" class="flex items-center space-x-2">
                                 <i class="fas fa-certificate text-sm"></i>
@@ -234,7 +234,7 @@
                         <i class="fas fa-users mr-3 w-5 text-center"></i>{{ __('จัดการผู้ใช้') }}
                     </x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('admin.courses')" :active="request()->routeIs('admin.courses*')" class="flex items-center">
-                        <i class="fas fa-book mr-3 w-5 text-center"></i>{{ __('จัดการคอร์ส') }}
+                        <i class="fas fa-book mr-3 w-5 text-center"></i>{{ __('จัดการรายวิชาออนไลน์') }}
                     </x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('admin.statistics')" :active="request()->routeIs('admin.statistics')" class="flex items-center">
                         <i class="fas fa-chart-bar mr-3 w-5 text-center"></i>{{ __('สถิติระบบ') }}
@@ -247,10 +247,10 @@
                         <i class="fas fa-home mr-3 w-5 text-center"></i>{{ __('หน้าหลัก') }}
                     </x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('teacher.courses.index')" :active="request()->routeIs('teacher.courses.*')" class="flex items-center">
-                        <i class="fas fa-chalkboard-teacher mr-3 w-5 text-center"></i>{{ __('คอร์สของฉัน') }}
+                        <i class="fas fa-chalkboard-teacher mr-3 w-5 text-center"></i>{{ __('รายวิชาของฉัน') }}
                     </x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('teachers.index')" :active="request()->routeIs('teachers.*')" class="flex items-center">
-                        <i class="fas fa-users mr-3 w-5 text-center"></i>{{ __('อาจารย์ทั้งหมด') }}
+                        <i class="fas fa-users mr-3 w-5 text-center"></i>{{ __('ผู้สอนทั้งหมด') }}
                     </x-responsive-nav-link>
                 @endif
 
@@ -260,13 +260,13 @@
                         <i class="fas fa-home mr-3 w-5 text-center"></i>{{ __('หน้าหลัก') }}
                     </x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('student.courses.my-courses')" :active="request()->routeIs('student.courses.my-courses')" class="flex items-center">
-                        <i class="fas fa-book-reader mr-3 w-5 text-center"></i>{{ __('คอร์สของฉัน') }}
+                        <i class="fas fa-book-reader mr-3 w-5 text-center"></i>{{ __('รายวิชาของฉัน') }}
                     </x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('student.courses.index')" :active="request()->routeIs('student.courses.index')" class="flex items-center">
-                        <i class="fas fa-search mr-3 w-5 text-center"></i>{{ __('ค้นหาคอร์ส') }}
+                        <i class="fas fa-search mr-3 w-5 text-center"></i>{{ __('ค้นหารายวิชา') }}
                     </x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('teachers.index')" :active="request()->routeIs('teachers.*')" class="flex items-center">
-                        <i class="fas fa-chalkboard-teacher mr-3 w-5 text-center"></i>{{ __('อาจารย์') }}
+                        <i class="fas fa-chalkboard-teacher mr-3 w-5 text-center"></i>{{ __('ผู้สอน') }}
                     </x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('student.certificates.index')" :active="request()->routeIs('student.certificates.*')" class="flex items-center">
                         <i class="fas fa-certificate mr-3 w-5 text-center"></i>{{ __('ใบประกาศ') }}
