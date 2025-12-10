@@ -63,7 +63,13 @@ class LessonController extends Controller
             'gdrive_url' => 'nullable|required_if:content_type,GDRIVE|url|max:500',
             'canva_url' => 'nullable|required_if:content_type,CANVA|url|max:500',
             'order' => 'required|integer|min:1',
+            'required_duration_minutes' => 'nullable|integer|min:1|max:1440', // 1 minute to 24 hours
         ]);
+
+        // Set default required_duration_minutes if not provided
+        if (!isset($data['required_duration_minutes']) || empty($data['required_duration_minutes'])) {
+            $data['required_duration_minutes'] = 1;
+        }
 
         // จัดการ file upload สำหรับ PDF/PPT
         if ($request->hasFile('file')) {
@@ -165,7 +171,13 @@ class LessonController extends Controller
             'gdrive_url' => 'nullable|required_if:content_type,GDRIVE|url|max:500',
             'canva_url' => 'nullable|required_if:content_type,CANVA|url|max:500',
             'order' => 'required|integer|min:1',
+            'required_duration_minutes' => 'nullable|integer|min:1|max:1440', // 1 minute to 24 hours
         ]);
+
+        // Set default required_duration_minutes if not provided
+        if (!isset($data['required_duration_minutes']) || empty($data['required_duration_minutes'])) {
+            $data['required_duration_minutes'] = 1;
+        }
 
         // จัดการ file upload ถ้ามีการอัปโหลดไฟล์ใหม่
         if ($request->hasFile('file')) {
