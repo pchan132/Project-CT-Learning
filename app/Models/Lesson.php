@@ -16,6 +16,7 @@ class Lesson extends Model
         'content_url',
         'content_text',
         'order',
+        'required_duration_minutes',
     ];
 
     /**

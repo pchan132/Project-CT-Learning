@@ -74,6 +74,28 @@
                         </p>
                     </div>
 
+                    <!-- Required Duration -->
+                    <div class="mb-6">
+                        <label for="required_duration_minutes"
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            <i class="fas fa-clock mr-1 text-blue-500"></i>ระยะเวลาที่ต้องเรียน (นาที) <span
+                                class="text-red-500">*</span>
+                        </label>
+                        <input type="number" id="required_duration_minutes" name="required_duration_minutes"
+                            value="{{ old('required_duration_minutes', $lesson->required_duration_minutes ?? 1) }}"
+                            min="1" max="1440"
+                            class="mt-1 block w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 @error('required_duration_minutes') border-red-500 @enderror"
+                            required>
+                        @error('required_duration_minutes')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                        <p class="mt-1 text-sm text-gray-500">
+                            <i
+                                class="fas fa-info-circle mr-1"></i>ระยะเวลาขั้นต่ำที่นักเรียนต้องอยู่ในหน้าบทเรียนนี้ก่อนจะสามารถไปบทถัดไปได้
+                            (ปัจจุบัน: {{ $lesson->required_duration_minutes ?? 1 }} นาที)
+                        </p>
+                    </div>
+
                     <!-- Content Type -->
                     <div class="mb-6">
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">

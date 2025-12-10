@@ -722,42 +722,100 @@
                         </div>
                     @endif
 
-                    <!-- Action Buttons -->
-                    <div class="mt-6 space-y-3">
-                        @if (!$isCompleted)
-                            <button id="completeLessonBtn" onclick="completeLesson()"
-                                class="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-4 rounded-xl hover:from-green-600 hover:to-emerald-700 transition-all flex items-center justify-center font-semibold text-lg shadow-lg">
-                                <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M5 13l4 4L19 7"></path>
-                                </svg>
-                                บทเรียนนี้เรียนเสร็จสมบูรณ์แล้ว ✓
-                            </button>
-                        @else
-                            <div
-                                class="w-full bg-green-500/20 border-2 border-green-500 text-green-400 px-6 py-4 rounded-xl flex items-center justify-center font-semibold text-lg">
-                                <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>
-                                บทเรียนนี้เรียนเสร็จสมบูรณ์แล้ว ✓
-                            </div>
-                        @endif
+                    <!-- Action Buttons (Only for last lesson) -->
+                    @if (!$nextLesson)
+                        <div class="mt-6 space-y-3">
+                            @if (!$isCompleted)
+                                <!-- Timer Display for Complete Button -->
+                                <div id="complete-timer-display-fs"
+                                    class="w-full bg-yellow-500/10 border-2 border-yellow-500/50 rounded-xl p-4 mb-3">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <div class="flex items-center">
+                                            <svg class="w-5 h-5 mr-2 text-yellow-400" fill="none"
+                                                stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                            </svg>
+                                            <span class="text-sm text-yellow-200"
+                                                id="complete-timer-label-fs">กำลังจับเวลา...</span>
+                                        </div>
+                                        <span id="complete-timer-countdown-fs"
+                                            class="font-mono text-lg font-bold text-yellow-400">
+                                            {{ str_pad(floor($lesson->required_duration_minutes / 60), 2, '0', STR_PAD_LEFT) }}:{{ str_pad($lesson->required_duration_minutes % 60, 2, '0', STR_PAD_LEFT) }}
+                                        </span>
+                                    </div>
+                                    <div class="w-full bg-yellow-500/20 rounded-full h-2">
+                                        <div id="complete-timer-progress-fs"
+                                            class="bg-yellow-500 h-2 rounded-full transition-all duration-1000"
+                                            style="width: 0%"></div>
+                                    </div>
+                                </div>
 
-                        @if ($nextLesson)
-                            <a href="{{ route('student.courses.learn-lesson', [$course, $nextLesson]) }}"
-                                class="w-full bg-blue-600 hover:bg-blue-700 text-white px-6 py-4 rounded-xl transition-all flex items-center justify-center font-semibold text-lg">
+                                <button id="completeLessonBtn" disabled
+                                    class="w-full bg-gray-700 cursor-not-allowed text-gray-400 px-6 py-4 rounded-xl flex items-center justify-center font-semibold text-lg opacity-60">
+                                    <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    บทเรียนนี้เรียนเสร็จสมบูรณ์แล้ว ✓
+                                </button>
+                            @else
+                                <div
+                                    class="w-full bg-green-500/20 border-2 border-green-500 text-green-400 px-6 py-4 rounded-xl flex items-center justify-center font-semibold text-lg">
+                                    <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    บทเรียนนี้เรียนเสร็จสมบูรณ์แล้ว ✓
+                                </div>
+                            @endif
+                        </div>
+                    @endif
+
+                    @if ($nextLesson)
+                        <!-- Next Lesson Button with Timer -->
+                        <div class="mt-6 space-y-3">
+                            <!-- Timer Display -->
+                            <div id="timer-display-fs"
+                                class="w-full bg-yellow-500/10 border-2 border-yellow-500/50 rounded-xl p-4 mb-3">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div class="flex items-center">
+                                        <svg class="w-5 h-5 mr-2 text-yellow-400" fill="none"
+                                            stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                        <span class="text-sm text-yellow-200"
+                                            id="timer-label-fs">กำลังจับเวลา...</span>
+                                    </div>
+                                    <span id="timer-countdown-fs" class="font-mono text-lg font-bold text-yellow-400">
+                                        {{ str_pad(floor($lesson->required_duration_minutes / 60), 2, '0', STR_PAD_LEFT) }}:{{ str_pad($lesson->required_duration_minutes % 60, 2, '0', STR_PAD_LEFT) }}
+                                    </span>
+                                </div>
+                                <div class="w-full bg-yellow-500/20 rounded-full h-2">
+                                    <div id="timer-progress-fs"
+                                        class="bg-yellow-500 h-2 rounded-full transition-all duration-1000"
+                                        style="width: 0%"></div>
+                                </div>
+                            </div>
+
+                            <button type="button" id="next-lesson-btn-fs" disabled
+                                data-href="{{ route('student.courses.learn-lesson', [$course, $nextLesson]) }}"
+                                class="w-full bg-gray-700 cursor-not-allowed text-gray-400 px-6 py-4 rounded-xl flex items-center justify-center font-semibold text-lg opacity-60">
                                 บทถัดไป
                                 <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M9 5l7 7-7 7"></path>
                                 </svg>
-                            </a>
-                        @endif
-                    </div>
+                            </button>
+                        </div>
+                    @endif
                 </div>
-            </main>
         </div>
+        </main>
+    </div>
     </div>
 
     <!-- Toast Container -->
@@ -1062,6 +1120,178 @@
                 sunIcon.classList.remove('hidden');
                 moonIcon.classList.add('hidden');
             }
+
+            // ==================== UNIFIED LESSON TIMER SYSTEM (FULLSCREEN) ====================
+            // Check if lesson was already completed
+            const isCompleted = {{ $isCompleted ? 'true' : 'false' }};
+            const requiredMinutes = {{ $lesson->required_duration_minutes ?? 1 }};
+            const requiredSeconds = requiredMinutes * 60;
+            let elapsedSeconds = 0;
+            let timerInterval = null;
+
+            // Elements for Next Lesson Button (if exists)
+            const nextLessonBtnFs = document.getElementById('next-lesson-btn-fs');
+            const timerDisplayFs = document.getElementById('timer-display-fs');
+            const timerLabelFs = document.getElementById('timer-label-fs');
+            const timerCountdownFs = document.getElementById('timer-countdown-fs');
+            const timerProgressFs = document.getElementById('timer-progress-fs');
+
+            // Elements for Complete Button (if no next lesson)
+            const completeLessonBtn = document.getElementById('completeLessonBtn');
+            const completeTimerDisplayFs = document.getElementById('complete-timer-display-fs');
+            const completeTimerLabelFs = document.getElementById('complete-timer-label-fs');
+            const completeTimerCountdownFs = document.getElementById('complete-timer-countdown-fs');
+            const completeTimerProgressFs = document.getElementById('complete-timer-progress-fs');
+
+            // Determine which timer to use
+            const hasNextLesson = nextLessonBtnFs && timerDisplayFs;
+            const hasCompleteButton = completeLessonBtn && completeTimerDisplayFs;
+
+            if (!hasNextLesson && !hasCompleteButton) return; // No timer needed
+
+            // If already completed, enable buttons immediately
+            if (isCompleted) {
+                if (hasNextLesson) enableNextLessonButtonFs();
+                return;
+            }
+
+            // Start the timer (ALWAYS runs - no pause on tab switch to prevent cheating)
+            function startTimerFs() {
+                if (timerInterval) return; // Already running
+
+                timerInterval = setInterval(function() {
+                    elapsedSeconds++;
+                    const remainingSeconds = Math.max(0, requiredSeconds - elapsedSeconds);
+
+                    // Update countdown display
+                    const minutes = Math.floor(remainingSeconds / 60);
+                    const seconds = remainingSeconds % 60;
+                    const timeText = String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2,
+                        '0');
+
+                    // Update progress
+                    const progress = Math.min((elapsedSeconds / requiredSeconds) * 100, 100);
+
+                    // Update appropriate timer display
+                    if (hasNextLesson) {
+                        timerCountdownFs.textContent = timeText;
+                        timerProgressFs.style.width = progress + '%';
+                    }
+
+                    if (hasCompleteButton) {
+                        completeTimerCountdownFs.textContent = timeText;
+                        completeTimerProgressFs.style.width = progress + '%';
+                    }
+
+                    // Check if time is up
+                    if (elapsedSeconds >= requiredSeconds) {
+                        clearInterval(timerInterval);
+                        if (hasNextLesson) {
+                            enableNextLessonButtonFs();
+                        }
+                        if (hasCompleteButton) {
+                            enableCompleteButtonFs();
+                        }
+                    }
+                }, 1000);
+            }
+
+            function enableNextLessonButtonFs() {
+                // Update timer display
+                timerDisplayFs.classList.remove('bg-yellow-500/10', 'border-yellow-500/50');
+                timerDisplayFs.classList.add('bg-green-500/10', 'border-green-500/50');
+
+                timerLabelFs.textContent = 'เวลาครบแล้ว! คุณสามารถไปบทถัดไปได้';
+                timerLabelFs.classList.remove('text-yellow-200');
+                timerLabelFs.classList.add('text-green-200');
+
+                timerCountdownFs.textContent = '00:00';
+                timerCountdownFs.classList.remove('text-yellow-400');
+                timerCountdownFs.classList.add('text-green-400');
+
+                timerProgressFs.style.width = '100%';
+                timerProgressFs.classList.remove('bg-yellow-500');
+                timerProgressFs.classList.add('bg-green-500');
+
+                timerProgressFs.parentElement.classList.remove('bg-yellow-500/20');
+                timerProgressFs.parentElement.classList.add('bg-green-500/20');
+
+                // Enable next lesson button
+                nextLessonBtnFs.disabled = false;
+                nextLessonBtnFs.classList.remove('bg-gray-700', 'cursor-not-allowed', 'text-gray-400',
+                    'opacity-60');
+                nextLessonBtnFs.classList.add('bg-blue-600', 'hover:bg-blue-700', 'text-white', 'cursor-pointer');
+
+                nextLessonBtnFs.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    // Mark current lesson as complete before going to next lesson
+                    completeAndGoNextFs(nextLessonBtnFs.dataset.href);
+                });
+
+                showNotification('🎉 คุณสามารถไปบทเรียนถัดไปได้แล้ว!', 'success');
+            }
+
+            // Function to complete lesson and go to next (Fullscreen)
+            function completeAndGoNextFs(nextUrl) {
+                // Send AJAX request to mark as complete
+                fetch(`{{ route('student.courses.complete-lesson', [$course, $lesson]) }}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Redirect to next lesson
+                            window.location.href = nextUrl;
+                        } else {
+                            // Even if marking fails, still go to next lesson
+                            window.location.href = nextUrl;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        // Still go to next lesson even if error
+                        window.location.href = nextUrl;
+                    });
+            }
+
+            function enableCompleteButtonFs() {
+                // Update timer display
+                completeTimerDisplayFs.classList.remove('bg-yellow-500/10', 'border-yellow-500/50');
+                completeTimerDisplayFs.classList.add('bg-green-500/10', 'border-green-500/50');
+
+                completeTimerLabelFs.textContent = 'เวลาครบแล้ว! คุณสามารถทำเครื่องหมายว่าเรียนเสร็จได้';
+                completeTimerLabelFs.classList.remove('text-yellow-200');
+                completeTimerLabelFs.classList.add('text-green-200');
+
+                completeTimerCountdownFs.textContent = '00:00';
+                completeTimerCountdownFs.classList.remove('text-yellow-400');
+                completeTimerCountdownFs.classList.add('text-green-400');
+
+                completeTimerProgressFs.style.width = '100%';
+                completeTimerProgressFs.classList.remove('bg-yellow-500');
+                completeTimerProgressFs.classList.add('bg-green-500');
+
+                completeTimerProgressFs.parentElement.classList.remove('bg-yellow-500/20');
+                completeTimerProgressFs.parentElement.classList.add('bg-green-500/20');
+
+                // Enable complete button
+                completeLessonBtn.disabled = false;
+                completeLessonBtn.classList.remove('bg-gray-700', 'cursor-not-allowed', 'text-gray-400',
+                    'opacity-60');
+                completeLessonBtn.classList.add('bg-gradient-to-r', 'from-green-500', 'to-emerald-600',
+                    'hover:from-green-600', 'hover:to-emerald-700', 'text-white', 'shadow-lg', 'cursor-pointer');
+
+                completeLessonBtn.onclick = completeLesson;
+
+                showNotification('🎉 คุณสามารถทำเครื่องหมายว่าเรียนเสร็จได้แล้ว!', 'success');
+            }
+
+            // Start the timer on page load
+            startTimerFs();
         });
     </script>
 </body>
