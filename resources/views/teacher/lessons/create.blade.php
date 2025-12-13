@@ -122,7 +122,9 @@
                                     class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 dark:border-gray-600"
                                     @if (old('content_type') == 'GDRIVE') checked @endif>
                                 <span class="ml-3 text-sm text-gray-700 dark:text-gray-300"><i
-                                        class="fab fa-google-drive mr-2 text-yellow-500"></i>Google Drive</span>
+                                        class="fab fa-google-drive mr-2 text-yellow-500"></i>Google Drive (วิดีโอ, เอกสาร,
+                                    รูปภาพ,
+                                    PDF, Google Docs, Google Sheets, Google Slides)</span>
                             </label>
                             <label
                                 class="flex items-center p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700">
@@ -200,14 +202,14 @@
                                         <i class="fas fa-link mr-2 text-blue-500"></i>URL วิดีโอ (YouTube, Vimeo)
                                     </span>
                                 </label>
-                                <label
+                                {{-- <label
                                     class="flex items-center p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700">
                                     <input type="radio" name="video_type" value="upload"
                                         class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 dark:border-gray-600">
                                     <span class="ml-3 text-sm text-gray-700 dark:text-gray-300">
                                         <i class="fas fa-upload mr-2 text-green-500"></i>อัปโหลดไฟล์วิดีโอ
                                     </span>
-                                </label>
+                                </label> --}}
                             </div>
 
                             <!-- URL Input -->

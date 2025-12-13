@@ -118,21 +118,16 @@
                                 <span class="ml-3 text-sm text-gray-700 dark:text-gray-300"><i
                                         class="fas fa-video mr-2 text-purple-500"></i>วิดีโอ (YouTube, Vimeo, etc.)</span>
                             </label>
-                            <label
-                                class="flex items-center p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700">
-                                <input type="radio" name="content_type" value="TEXT"
-                                    class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 dark:border-gray-600"
-                                    @if (old('content_type', $lesson->content_type) == 'TEXT') checked @endif>
-                                <span class="ml-3 text-sm text-gray-700 dark:text-gray-300"><i
-                                        class="fas fa-align-left mr-2 text-gray-500"></i>ข้อความ</span>
-                            </label>
+
                             <label
                                 class="flex items-center p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700">
                                 <input type="radio" name="content_type" value="GDRIVE"
                                     class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 dark:border-gray-600"
                                     @if (old('content_type', $lesson->content_type) == 'GDRIVE') checked @endif>
                                 <span class="ml-3 text-sm text-gray-700 dark:text-gray-300"><i
-                                        class="fab fa-google-drive mr-2 text-yellow-500"></i>Google Drive</span>
+                                        class="fab fa-google-drive mr-2 text-yellow-500"></i>Google Drive (วิดีโอ, เอกสาร,
+                                    รูปภาพ,
+                                    PDF, Google Docs, Google Sheets, Google Slides)</span>
                             </label>
                             <label
                                 class="flex items-center p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700">
@@ -141,6 +136,14 @@
                                     @if (old('content_type', $lesson->content_type) == 'CANVA') checked @endif>
                                 <span class="ml-3 text-sm text-gray-700 dark:text-gray-300"><i
                                         class="fas fa-palette mr-2 text-cyan-500"></i>Canva</span>
+                            </label>
+                            <label
+                                class="flex items-center p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <input type="radio" name="content_type" value="TEXT"
+                                    class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 dark:border-gray-600"
+                                    @if (old('content_type', $lesson->content_type) == 'TEXT') checked @endif>
+                                <span class="ml-3 text-sm text-gray-700 dark:text-gray-300"><i
+                                        class="fas fa-align-left mr-2 text-gray-500"></i>ข้อความ</span>
                             </label>
                         </div>
                         @error('content_type')
@@ -303,7 +306,8 @@
                             <div>
                                 <p class="text-sm text-gray-500 dark:text-gray-400">สร้างเมื่อ</p>
                                 <p class="font-semibold text-gray-900 dark:text-white">
-                                    {{ $lesson->created_at->format('d/m/Y H:i') }}</p>
+                                    {{-- {{ $lesson->created_at->format('d/m/Y H:i') }}</p> --}}
+                                    {{ $lesson->created_at->format('d/m/Y') }}</p>
                             </div>
                         </div>
                     </div>

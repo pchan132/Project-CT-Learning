@@ -26,7 +26,7 @@
                 class="mb-6 bg-yellow-100 dark:bg-yellow-900/30 border border-yellow-400 text-yellow-700 dark:text-yellow-300 px-4 py-3 rounded-lg">
                 <i class="fas fa-exclamation-triangle mr-2"></i>
                 คุณยังไม่ได้อัพโหลดลายเซ็น
-                <a href="{{ route('teacher.profile.edit') }}"
+                <a href="{{ route('teacher.signature.index') }}"
                     class="underline font-semibold">คลิกที่นี่เพื่ออัพโหลดลายเซ็น</a>
             </div>
         @endif
@@ -96,9 +96,9 @@
 
         <!-- Back Button -->
         <div class="mt-6">
-            <a href="{{ route('teacher.profile.edit') }}"
+            <a href="{{ route('teacher.signature.index') }}"
                 class="inline-flex items-center text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">
-                <i class="fas fa-arrow-left mr-2"></i>กลับไปหน้าแก้ไขโปรไฟล์
+                <i class="fas fa-arrow-left mr-2"></i>กลับไปหน้าจัดการลายเซ็น
             </a>
         </div>
     </div>

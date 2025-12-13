@@ -14,7 +14,7 @@
                 <div class="flex justify-between items-start mb-4">
                     <a href="{{ route('teacher.courses.show', $course) }}"
                         class="text-blue-100 hover:text-white flex items-center text-sm">
-                        <i class="fas fa-arrow-left mr-2"></i>กลับไปหน้าหลักของคอร์ส
+                        <i class="fas fa-arrow-left mr-2"></i>กลับไปหน้าหลักของรายวิชา
                     </a>
                     <div class="flex items-center space-x-3 text-sm bg-white/20 px-4 py-2 rounded-full backdrop-blur-sm">
                         <span>{{ $modules->count() }} โมดูล</span>

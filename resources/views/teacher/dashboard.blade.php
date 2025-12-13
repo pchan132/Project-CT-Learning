@@ -39,16 +39,16 @@
                         <h1 class="text-2xl md:text-3xl font-bold text-white mb-2">
                             {{ auth()->user()->name }} 👨‍🏫
                         </h1>
-                        <p class="text-white/80">จัดการคอร์สและติดตามความก้าวหน้าของนักเรียน</p>
+                        <p class="text-white/80">จัดการรายวิชาและติดตามความก้าวหน้าของนักเรียน</p>
                     </div>
                     <div class="flex flex-wrap gap-3">
                         <a href="{{ route('teacher.courses.create') }}"
                             class="inline-flex items-center px-5 py-3 bg-white text-indigo-700 font-bold rounded-xl hover:bg-indigo-50 transition shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
-                            <i class="fas fa-plus mr-2"></i>สร้างคอร์สใหม่
+                            <i class="fas fa-plus mr-2"></i>สร้างรายวิชาใหม่
                         </a>
                         <a href="{{ route('teacher.courses.index') }}"
                             class="inline-flex items-center px-5 py-3 bg-white/10 text-white font-semibold rounded-xl hover:bg-white/20 transition border border-white/30">
-                            <i class="fas fa-list mr-2"></i>คอร์สทั้งหมด
+                            <i class="fas fa-list mr-2"></i>รายวิชาทั้งหมด
                         </a>
                     </div>
                 </div>
@@ -62,7 +62,7 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-3xl font-bold text-gray-900 dark:text-white">{{ $courses->count() }}</p>
-                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">คอร์สของฉัน</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">รายวิชาของฉัน</p>
                     </div>
                     <div
                         class="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/50 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
@@ -117,7 +117,7 @@
                 <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-100 dark:border-gray-700">
                     <div class="px-6 py-4 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">
                         <h3 class="text-lg font-bold text-gray-900 dark:text-white flex items-center">
-                            <i class="fas fa-book-open text-indigo-500 mr-2"></i>คอร์สของฉัน
+                            <i class="fas fa-book-open text-indigo-500 mr-2"></i>รายวิชาของฉัน
                         </h3>
                         <a href="{{ route('teacher.courses.index') }}"
                             class="text-indigo-600 dark:text-indigo-400 text-sm font-medium hover:underline flex items-center">
@@ -167,7 +167,7 @@
                                             </a>
                                             <a href="{{ route('teacher.courses.show', $course) }}"
                                                 class="inline-flex items-center px-2.5 py-1.5 text-xs font-medium text-indigo-700 bg-indigo-100 hover:bg-indigo-200 dark:text-indigo-300 dark:bg-indigo-900/50 dark:hover:bg-indigo-900/70 rounded-lg transition"
-                                                title="จัดการคอร์ส">
+                                                title="จัดการรายวิชา">
                                                 <i class="fas fa-cog mr-1"></i>จัดการ
                                             </a>
                                             <a href="{{ route('teacher.courses.edit', $course) }}"
@@ -186,11 +186,11 @@
                                 class="w-20 h-20 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
                                 <i class="fas fa-book-open text-gray-400 text-3xl"></i>
                             </div>
-                            <h4 class="font-medium text-gray-900 dark:text-white mb-2 text-lg">ยังไม่มีคอร์ส</h4>
-                            <p class="text-gray-500 dark:text-gray-400 text-sm mb-6">เริ่มต้นสร้างคอร์สแรกของคุณ</p>
+                            <h4 class="font-medium text-gray-900 dark:text-white mb-2 text-lg">ยังไม่มีรายวิชา</h4>
+                            <p class="text-gray-500 dark:text-gray-400 text-sm mb-6">เริ่มต้นสร้างรายวิชาแรกของคุณ</p>
                             <a href="{{ route('teacher.courses.create') }}"
                                 class="inline-flex items-center px-5 py-2.5 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition shadow hover:shadow-lg">
-                                <i class="fas fa-plus mr-2"></i>สร้างคอร์สใหม่
+                                <i class="fas fa-plus mr-2"></i>สร้างรายวิชาใหม่
                             </a>
                         </div>
                     @endif
@@ -252,8 +252,8 @@
                                 <i class="fas fa-plus text-indigo-600 dark:text-indigo-400"></i>
                             </div>
                             <div>
-                                <p class="font-medium text-gray-900 dark:text-white text-sm">สร้างคอร์สใหม่</p>
-                                <p class="text-xs text-gray-500 dark:text-gray-400">เพิ่มคอร์สเรียนใหม่</p>
+                                <p class="font-medium text-gray-900 dark:text-white text-sm">สร้างรายวิชาใหม่</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">เพิ่มรายวิชาใหม่</p>
                             </div>
                             <i class="fas fa-chevron-right text-gray-400 ml-auto"></i>
                         </a>
@@ -288,8 +288,8 @@
                                 <i class="fas fa-list text-purple-600 dark:text-purple-400"></i>
                             </div>
                             <div>
-                                <p class="font-medium text-gray-900 dark:text-white text-sm">จัดการคอร์ส</p>
-                                <p class="text-xs text-gray-500 dark:text-gray-400">ดูและแก้ไขคอร์สทั้งหมด</p>
+                                <p class="font-medium text-gray-900 dark:text-white text-sm">จัดการรายวิชา</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">ดูและแก้ไขรายวิชาทั้งหมด</p>
                             </div>
                             <i class="fas fa-chevron-right text-gray-400 ml-auto"></i>
                         </a>
@@ -311,7 +311,7 @@
                             <span class="font-bold">{{ $totalLessons }}</span>
                         </div>
                         <div class="flex items-center justify-between">
-                            <span class="text-indigo-100">นักเรียนเฉลี่ย/คอร์ส</span>
+                            <span class="text-indigo-100">นักเรียนเฉลี่ย/รายวิชา</span>
                             <span
                                 class="font-bold">{{ $courses->count() > 0 ? round($totalStudents / $courses->count(), 1) : 0 }}</span>
                         </div>

@@ -15,7 +15,7 @@
                             class="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
                         {{-- </div> --}}
                         <span class="font-bold text-lg text-gray-900 dark:text-white hidden sm:block">Computer
-                            Technology Center Learning</span>
+                            Technology</span>
                     </a>
                 </div>
 
@@ -55,6 +55,10 @@
                             <x-nav-link :href="route('teachers.index')" :active="request()->routeIs('teachers.*')" class="flex items-center space-x-2">
                                 <i class="fas fa-users text-sm"></i>
                                 <span>{{ __('ผู้สอนทั้งหมด') }}</span>
+                            </x-nav-link>
+                            <x-nav-link :href="route('teacher.signature.index')" :active="request()->routeIs('teacher.signature.*')" class="flex items-center space-x-2">
+                                <i class="fas fa-signature text-sm"></i>
+                                <span>{{ __('ลายเซ็นใบประกาศนียบัตร') }}</span>
                             </x-nav-link>
 
                             <x-nav-link :href="route('teacher.profile.edit')" :active="request()->routeIs('teacher.profile.edit')" class="flex items-center space-x-2">
@@ -254,6 +258,13 @@
                     </x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('teachers.index')" :active="request()->routeIs('teachers.*')" class="flex items-center">
                         <i class="fas fa-users mr-3 w-5 text-center"></i>{{ __('ผู้สอนทั้งหมด') }}
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('teacher.signature.index')" :active="request()->routeIs('teacher.signature.*')" class="flex items-center">
+                        <i class="fas fa-signature mr-3 w-5 text-center"></i>{{ __('ลายเซ็นใบประกาศนียบัตร') }}
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('teacher.profile.edit')" :active="request()->routeIs('teacher.profile.edit')" class="flex items-center space-x-2">
+                        <i class="fas fa-user-edit text-sm"></i>
+                        <span>{{ __('แก้ไขโปรไฟล์') }}</span>
                     </x-responsive-nav-link>
                 @endif
 

@@ -8,16 +8,16 @@
         <div class="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
                 <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
-                    <i class="fas fa-book text-indigo-500 mr-2"></i>คอร์สของฉัน
+                    <i class="fas fa-book text-indigo-500 mr-2"></i>รายวิชาของฉัน
                 </h1>
                 <p class="mt-1 text-gray-600 dark:text-gray-400">
-                    จัดการคอร์ส โมดูล และบทเรียนของคุณ
+                    จัดการรายวิชา โมดูล และบทเรียนของคุณ
                 </p>
             </div>
             <a href="{{ route('teacher.courses.create') }}"
                 class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 px-5 rounded-lg inline-flex items-center shadow-lg hover:shadow-xl transition-all">
                 <i class="fas fa-plus mr-2"></i>
-                สร้างคอร์สใหม่
+                สร้างรายวิชาใหม่
             </a>
         </div>
 
@@ -28,7 +28,7 @@
                     <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                         <i class="fas fa-search text-gray-400"></i>
                     </div>
-                    <input type="text" name="search" value="{{ $search ?? '' }}" placeholder="ค้นหาคอร์ส..."
+                    <input type="text" name="search" value="{{ $search ?? '' }}" placeholder="ค้นหารายวิชา..."
                         class="w-full pl-11 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition-all">
                 </div>
                 <button type="submit"
@@ -55,7 +55,7 @@
         @if ($search)
             <div class="mb-4 text-gray-600 dark:text-gray-400">
                 <i class="fas fa-filter mr-1"></i>
-                พบ {{ $courses->total() }} คอร์ส สำหรับ "<strong>{{ $search }}</strong>"
+                พบ {{ $courses->total() }} รายวิชา สำหรับ "<strong>{{ $search }}</strong>"
             </div>
         @endif
 
@@ -145,22 +145,22 @@
                                 class="w-20 h-20 mx-auto mb-4 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center">
                                 <i class="fas fa-search text-4xl text-gray-400"></i>
                             </div>
-                            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">ไม่พบคอร์สที่ค้นหา</h3>
+                            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">ไม่พบรายวิชาที่ค้นหา</h3>
                             <p class="text-gray-500 dark:text-gray-400 mb-6">ลองค้นหาด้วยคำอื่น</p>
                             <a href="{{ route('teacher.courses.index') }}"
                                 class="inline-flex items-center px-5 py-2.5 bg-gray-600 hover:bg-gray-700 text-white font-medium rounded-lg transition-colors">
-                                <i class="fas fa-arrow-left mr-2"></i>ดูคอร์สทั้งหมด
+                                <i class="fas fa-arrow-left mr-2"></i>ดูรายวิชาทั้งหมด
                             </a>
                         @else
                             <div
                                 class="w-20 h-20 mx-auto mb-4 bg-indigo-100 dark:bg-indigo-900/30 rounded-full flex items-center justify-center">
                                 <i class="fas fa-book-open text-4xl text-indigo-500"></i>
                             </div>
-                            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">ยังไม่มีคอร์ส</h3>
-                            <p class="text-gray-500 dark:text-gray-400 mb-6">เริ่มต้นสร้างคอร์สแรกของคุณ</p>
+                            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">ยังไม่มีรายวิชา</h3>
+                            <p class="text-gray-500 dark:text-gray-400 mb-6">เริ่มต้นสร้างรายวิชาแรกของคุณ</p>
                             <a href="{{ route('teacher.courses.create') }}"
                                 class="inline-flex items-center px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg shadow-lg hover:shadow-xl transition-all">
-                                <i class="fas fa-plus mr-2"></i>สร้างคอร์สใหม่
+                                <i class="fas fa-plus mr-2"></i>สร้างรายวิชาใหม่
                             </a>
                         @endif
                     </div>
@@ -181,7 +181,7 @@
         <div class="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4">
             <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-4 text-center">
                 <p class="text-2xl font-bold text-indigo-600 dark:text-indigo-400">{{ $courses->total() }}</p>
-                <p class="text-sm text-gray-500 dark:text-gray-400">คอร์สทั้งหมด</p>
+                <p class="text-sm text-gray-500 dark:text-gray-400">รายวิชาทั้งหมด</p>
             </div>
             <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-4 text-center">
                 <p class="text-2xl font-bold text-green-600 dark:text-green-400">{{ $courses->sum('enrollments_count') }}
