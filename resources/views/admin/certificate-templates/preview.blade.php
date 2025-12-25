@@ -33,7 +33,7 @@
                 <i class="fas fa-cog text-blue-500 mr-2"></i>ปรับแต่งตัวอย่าง
             </h3>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         ชื่อนักเรียน (ตัวอย่าง)
@@ -69,6 +69,30 @@
                                 data-signature="{{ $teacher->signature_image ? asset('storage/' . $teacher->signature_image) : '' }}">
                                 {{ $teacher->name }}
                             </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <i class="fas fa-image text-purple-500 mr-1"></i>พื้นหลัง Certificate
+                    </label>
+                    <select id="background-select" onchange="updateBackgroundPreview()"
+                        class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
+                        <option value="template"
+                            data-background="{{ $template->background_image ? asset('storage/' . $template->background_image) : '' }}">
+                            🎨 พื้นหลัง Template (Admin)
+                        </option>
+                        <option value="none" data-background="">
+                            ❌ ไม่ใช้พื้นหลัง
+                        </option>
+                        @foreach ($teachers as $teacher)
+                            @if ($teacher->certificate_background)
+                                <option value="teacher-{{ $teacher->id }}"
+                                    data-background="{{ asset('storage/' . $teacher->certificate_background) }}">
+                                    👤 {{ $teacher->name }}
+                                </option>
+                            @endif
                         @endforeach
                     </select>
                 </div>
@@ -120,14 +144,14 @@
                 @php
                     $firstCourse = $courses->first();
                     $firstTeacher = $teachers->first();
+                    // ใช้พื้นหลังของ Template เป็นค่าเริ่มต้น
+                    $defaultBackground = $template->background_image ?? null;
                 @endphp
 
                 <x-certificate-preview :template="$template" :studentName="'นักเรียน ตัวอย่าง'" :courseName="$firstCourse ? $firstCourse->title : 'คอร์สตัวอย่าง'" :teacherName="$firstTeacher ? $firstTeacher->name : 'อาจารย์ ตัวอย่าง'"
                     :teacherSignature="$firstTeacher && $firstTeacher->signature_image
                         ? asset('storage/' . $firstTeacher->signature_image)
-                        : null" :teacherBackground="$firstTeacher && $firstTeacher->certificate_background
-                        ? $firstTeacher->certificate_background
-                        : null" containerId="certificate-preview" />
+                        : null" :teacherBackground="null" containerId="certificate-preview" />
             </div>
 
             <p class="text-sm text-gray-500 dark:text-gray-400 text-center mt-4">
@@ -211,6 +235,40 @@
                         sigBox.innerHTML = `<div class="h-10"></div>`;
                     }
                 }
+            }
+        }
+
+        function updateBackgroundPreview() {
+            const select = document.getElementById('background-select');
+            const selectedOption = select.options[select.selectedIndex];
+            const backgroundUrl = selectedOption.dataset.background || '';
+
+            const container = document.getElementById('certificate-preview');
+            if (!container) return;
+
+            // อัพเดทพื้นหลัง
+            if (backgroundUrl) {
+                container.style.backgroundImage = `url(${backgroundUrl})`;
+                container.style.backgroundSize = 'cover';
+                container.style.backgroundPosition = 'center';
+
+                // ซ่อน decorative elements
+                const decoratives = container.querySelectorAll('.absolute:not(.z-10)');
+                decoratives.forEach(el => {
+                    if (!el.classList.contains('z-10')) {
+                        el.style.display = 'none';
+                    }
+                });
+            } else {
+                container.style.backgroundImage = '';
+
+                // แสดง decorative elements
+                const decoratives = container.querySelectorAll('.absolute');
+                decoratives.forEach(el => {
+                    if (!el.classList.contains('z-10')) {
+                        el.style.display = '';
+                    }
+                });
             }
         }
 
