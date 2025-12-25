@@ -1,7 +1,7 @@
 <nav x-data="{ open: false }"
     class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 sticky top-0 z-50 shadow-sm">
     <!-- Primary Navigation Menu -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
             <div class="flex">
                 <!-- Logo -->
@@ -14,7 +14,8 @@
                         <img src="{{ asset('./storage/imgs/logo-technology.png') }}" alt="Logo"
                             class="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
                         {{-- </div> --}}
-                        <span class="font-bold text-lg text-gray-900 dark:text-white hidden sm:block">Computer
+                        <span class="font-bold text-lg text-gray-900 dark:text-white hidden sm:block">Center-Learning
+                            Computer
                             Technology</span>
                     </a>
                 </div>
@@ -35,6 +36,10 @@
                             <x-nav-link :href="route('admin.courses')" :active="request()->routeIs('admin.courses*')" class="flex items-center space-x-2">
                                 <i class="fas fa-book text-sm"></i>
                                 <span>{{ __('รายวิชาออนไลน์') }}</span>
+                            </x-nav-link>
+                            <x-nav-link :href="route('admin.certificate-templates.index')" :active="request()->routeIs('admin.certificate-templates*')" class="flex items-center space-x-2">
+                                <i class="fas fa-book text-sm"></i>
+                                <span>{{ __('แม่แบบใบประกาศนียบัตร') }}</span>
                             </x-nav-link>
                             {{-- <x-nav-link :href="route('admin.statistics')" :active="request()->routeIs('admin.statistics')" class="flex items-center space-x-2">
                                 <i class="fas fa-chart-bar text-sm"></i>

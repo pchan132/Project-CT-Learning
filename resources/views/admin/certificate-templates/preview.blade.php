@@ -125,7 +125,11 @@
                 <x-certificate-preview :template="$template" :studentName="'นักเรียน ตัวอย่าง'" :courseName="$firstCourse ? $firstCourse->title : 'คอร์สตัวอย่าง'" :teacherName="$firstTeacher ? $firstTeacher->name : 'อาจารย์ ตัวอย่าง'"
                     :teacherSignature="$firstTeacher && $firstTeacher->signature_image
                         ? asset('storage/' . $firstTeacher->signature_image)
-                        : null" containerId="certificate-preview" />
+                        : null"
+                    :teacherBackground="$firstTeacher && $firstTeacher->certificate_background
+                        ? $firstTeacher->certificate_background
+                        : null"
+                    containerId="certificate-preview" />
             </div>
 
             <p class="text-sm text-gray-500 dark:text-gray-400 text-center mt-4">

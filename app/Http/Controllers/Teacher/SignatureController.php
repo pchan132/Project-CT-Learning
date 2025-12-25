@@ -79,4 +79,58 @@ class SignatureController extends Controller
         $teacher = auth()->user();
         return view('teacher.signature.preview', compact('teacher'));
     }
+
+    /**
+     * Upload or update teacher certificate background.
+     */
+    public function uploadBackground(Request $request)
+    {
+        $request->validate([
+            'certificate_background' => 'required|image|mimes:jpeg,png,jpg|max:5120',
+        ], [
+            'certificate_background.required' => 'กรุณาเลือกรูปภาพพื้นหลัง',
+            'certificate_background.image' => 'ไฟล์ต้องเป็นรูปภาพเท่านั้น',
+            'certificate_background.mimes' => 'รูปภาพต้องเป็นไฟล์ประเภท: jpeg, png, jpg',
+            'certificate_background.max' => 'ขนาดรูปภาพต้องไม่เกิน 5MB',
+        ]);
+
+        $teacher = auth()->user();
+
+        // Delete old background if exists
+        if ($teacher->certificate_background) {
+            Storage::disk('public')->delete($teacher->certificate_background);
+        }
+
+        // Store new background
+        $path = $request->file('certificate_background')->store('certificate-backgrounds/teachers', 'public');
+        
+        $teacher->update([
+            'certificate_background' => $path
+        ]);
+
+        return redirect()->route('teacher.signature.index')
+            ->with('success', 'อัปโหลดภาพพื้นหลังใบประกาศนียบัตรสำเร็จ!');
+    }
+
+    /**
+     * Delete teacher certificate background.
+     */
+    public function deleteBackground()
+    {
+        $teacher = auth()->user();
+
+        if ($teacher->certificate_background) {
+            Storage::disk('public')->delete($teacher->certificate_background);
+            
+            $teacher->update([
+                'certificate_background' => null
+            ]);
+
+            return redirect()->route('teacher.signature.index')
+                ->with('success', 'ลบภาพพื้นหลังสำเร็จ! (จะใช้พื้นหลังเริ่มต้นของระบบแทน)');
+        }
+
+        return redirect()->route('teacher.signature.index')
+            ->with('error', 'ไม่พบภาพพื้นหลังที่ต้องการลบ');
+    }
 }

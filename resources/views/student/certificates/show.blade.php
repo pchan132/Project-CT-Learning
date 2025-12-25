@@ -19,6 +19,12 @@
     $teacher = $certificate->course->teacher;
     $teacherSignature = $teacher->signature_image ?? null;
 
+    // Background image - ใช้พื้นหลังของ Teacher ก่อน ถ้าไม่มีใช้ของ Template (Admin)
+    $teacherBackground = $teacher->certificate_background ?? null;
+    $templateBackground = $template->background_image ?? null;
+    $backgroundImage = $teacherBackground ?? $templateBackground;
+    $hasBackgroundImage = !empty($backgroundImage);
+
     // ตำแหน่งลายเซ็น (ดึงจาก template)
     $showTeacherSignature = $template->show_teacher_signature ?? true;
     $teacherSignaturePosition = $template->teacher_signature_position ?? 'left';
@@ -83,17 +89,21 @@
         <div class="overflow-x-auto pb-4">
             <div id="certificate-container"
                 class="relative bg-white shadow-2xl overflow-hidden text-center mx-auto font-sarabun"
-                style="width: 1123px; height: 794px;">
+                style="width: 1123px; height: 794px; {{ $hasBackgroundImage ? 'background-image: url(' . asset('storage/' . $backgroundImage) . '); background-size: cover; background-position: center;' : '' }}">
 
-                <!-- Decorative Left Border -->
-                <div class="absolute left-0 top-0 bottom-0 w-4 h-full" style="background-color: {{ $primaryColor }};"></div>
-                <div class="absolute left-4 top-0 bottom-0 w-2 h-full" style="background-color: {{ $goldColor }};"></div>
+                @if (!$hasBackgroundImage)
+                    <!-- Decorative Left Border (only show if no background image) -->
+                    <div class="absolute left-0 top-0 bottom-0 w-4 h-full" style="background-color: {{ $primaryColor }};">
+                    </div>
+                    <div class="absolute left-4 top-0 bottom-0 w-2 h-full" style="background-color: {{ $goldColor }};">
+                    </div>
 
-                <!-- Decorative Corners -->
-                <div class="absolute top-0 right-0 w-32 h-32 rounded-bl-full -mr-16 -mt-16 opacity-50"
-                    style="background-color: #fef3c7;"></div>
-                <div class="absolute bottom-0 right-0 w-48 h-48 rounded-tl-full -mr-10 -mb-10 opacity-50"
-                    style="background-color: #dbeafe;"></div>
+                    <!-- Decorative Corners -->
+                    <div class="absolute top-0 right-0 w-32 h-32 rounded-bl-full -mr-16 -mt-16 opacity-50"
+                        style="background-color: #fef3c7;"></div>
+                    <div class="absolute bottom-0 right-0 w-48 h-48 rounded-tl-full -mr-10 -mb-10 opacity-50"
+                        style="background-color: #dbeafe;"></div>
+                @endif
 
                 <!-- Main Content Area -->
                 <div class="relative z-10 h-full flex flex-col justify-between px-24 py-20">

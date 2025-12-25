@@ -26,6 +26,7 @@ class User extends Authenticatable
         'position',
         'bio',
         'signature_image',
+        'certificate_background',
     ];
 
     /**
