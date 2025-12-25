@@ -85,7 +85,7 @@
                 @endphp
 
                 <x-certificate-preview :template="$template" :studentName="'นักเรียน ตัวอย่าง'" :courseName="$firstCourse ? $firstCourse->title : 'คอร์สตัวอย่าง'" :teacherName="$teacher->name"
-                    :teacherSignature="$teacher->signature_image ? asset('storage/' . $teacher->signature_image) : null" containerId="certificate-preview" />
+                    :teacherSignature="$teacher->signature_image ? asset('storage/' . $teacher->signature_image) : null" :teacherBackground="$teacher->certificate_background" containerId="certificate-preview" />
             </div>
 
             <p class="text-sm text-gray-500 dark:text-gray-400 text-center mt-4">

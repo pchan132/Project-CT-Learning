@@ -20,8 +20,20 @@
     $textColor = $template->text_color ?? '#1f2937';
 
     // Background image - ใช้พื้นหลังของ Teacher ก่อน ถ้าไม่มีใช้ของ Template (Admin)
-    $backgroundImage = $teacherBackground ?? ($template->background_image ?? null);
-    $hasBackgroundImage = !empty($backgroundImage);
+    // teacherBackground อาจเป็น full URL หรือ path
+    $backgroundPath = $teacherBackground ?? ($template->background_image ?? null);
+    $hasBackgroundImage = !empty($backgroundPath);
+
+    // ตรวจสอบว่าเป็น full URL หรือ path
+    if ($hasBackgroundImage) {
+        if (str_starts_with($backgroundPath, 'http://') || str_starts_with($backgroundPath, 'https://')) {
+            $backgroundUrl = $backgroundPath;
+        } else {
+            $backgroundUrl = asset('storage/' . $backgroundPath);
+        }
+    } else {
+        $backgroundUrl = null;
+    }
 
     // ตำแหน่งลายเซ็น
     $showTeacherSignature = $template->show_teacher_signature ?? true;
@@ -57,7 +69,7 @@
 @endphp
 
 <div id="{{ $containerId }}" class="relative bg-white shadow-2xl overflow-hidden text-center mx-auto"
-    style="width: 1123px; height: 794px; font-family: 'Sarabun', sans-serif; {{ $hasBackgroundImage ? 'background-image: url(' . asset('storage/' . $backgroundImage) . '); background-size: cover; background-position: center;' : '' }}">
+    style="width: 1123px; height: 794px; font-family: 'Sarabun', sans-serif; {{ $hasBackgroundImage ? 'background-image: url(' . $backgroundUrl . '); background-size: cover; background-position: center;' : '' }}">
 
     @if (!$hasBackgroundImage)
         <!-- Decorative Left Border (only show if no background image) -->

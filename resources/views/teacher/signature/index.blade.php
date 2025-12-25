@@ -82,12 +82,14 @@
                             </div>
 
                             @if ($teacher->signature_image)
-                                <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
+                                <div
+                                    class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
                                     <p class="text-sm text-green-700 dark:text-green-400 flex items-center mb-2">
                                         <i class="fas fa-check-circle mr-2"></i>
                                         ลายเซ็นปัจจุบัน:
                                     </p>
-                                    <img src="{{ asset('storage/' . $teacher->signature_image) }}" alt="ลายเซ็น" class="max-h-20 bg-white p-2 rounded">
+                                    <img src="{{ asset('storage/' . $teacher->signature_image) }}" alt="ลายเซ็น"
+                                        class="max-h-20 bg-white p-2 rounded">
                                 </div>
                             @endif
 
@@ -121,8 +123,8 @@
                             ภาพพื้นหลังใบประกาศนียบัตร
                         </h3>
 
-                        <form action="{{ route('teacher.signature.upload-background') }}" method="POST" enctype="multipart/form-data"
-                            class="space-y-4">
+                        <form action="{{ route('teacher.signature.upload-background') }}" method="POST"
+                            enctype="multipart/form-data" class="space-y-4">
                             @csrf
 
                             <div>
@@ -143,8 +145,9 @@
                                             <label for="certificate_background"
                                                 class="relative cursor-pointer bg-white dark:bg-gray-800 rounded-md font-medium text-purple-600 dark:text-purple-400 hover:text-purple-500 dark:hover:text-purple-300 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-purple-500">
                                                 <span>อัปโหลดไฟล์</span>
-                                                <input id="certificate_background" name="certificate_background" type="file"
-                                                    class="sr-only" accept="image/*" onchange="previewBackground(event)">
+                                                <input id="certificate_background" name="certificate_background"
+                                                    type="file" class="sr-only" accept="image/*"
+                                                    onchange="previewBackground(event)">
                                             </label>
                                             <p class="pl-1">หรือลากไฟล์มาวาง</p>
                                         </div>
@@ -163,15 +166,18 @@
                             </div>
 
                             @if ($teacher->certificate_background)
-                                <div class="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-lg p-4">
+                                <div
+                                    class="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-lg p-4">
                                     <p class="text-sm text-purple-700 dark:text-purple-400 flex items-center mb-2">
                                         <i class="fas fa-check-circle mr-2"></i>
                                         พื้นหลังปัจจุบัน (ของคุณ):
                                     </p>
-                                    <img src="{{ asset('storage/' . $teacher->certificate_background) }}" alt="พื้นหลัง" class="max-w-full max-h-40 rounded border">
+                                    <img src="{{ asset('storage/' . $teacher->certificate_background) }}" alt="พื้นหลัง"
+                                        class="max-w-full max-h-40 rounded border">
                                 </div>
                             @else
-                                <div class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4">
+                                <div
+                                    class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4">
                                     <p class="text-sm text-amber-700 dark:text-amber-400 flex items-center">
                                         <i class="fas fa-info-circle mr-2"></i>
                                         ยังไม่มีพื้นหลังของตัวเอง (จะใช้พื้นหลังเริ่มต้นของระบบ)
@@ -195,7 +201,8 @@
 
                             <div class="flex justify-end gap-2 items-center">
                                 @if ($teacher->certificate_background)
-                                    <form action="{{ route('teacher.signature.delete-background') }}" method="POST" class="inline"
+                                    <form action="{{ route('teacher.signature.delete-background') }}" method="POST"
+                                        class="inline"
                                         onsubmit="return confirm('คุณแน่ใจหรือไม่ว่าต้องการลบภาพพื้นหลัง? (จะกลับไปใช้พื้นหลังเริ่มต้นของระบบ)');">
                                         @csrf
                                         @method('DELETE')
