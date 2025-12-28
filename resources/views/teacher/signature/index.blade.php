@@ -94,17 +94,6 @@
                             @endif
 
                             <div class="flex justify-end gap-2 items-center">
-                                @if ($teacher->signature_image)
-                                    <form action="{{ route('teacher.signature.delete') }}" method="POST" class="inline"
-                                        onsubmit="return confirm('คุณแน่ใจหรือไม่ว่าต้องการลบลายเซ็นนี้?');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit"
-                                            class="inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors">
-                                            <i class="fas fa-trash mr-2"></i>ลบลายเซ็น
-                                        </button>
-                                    </form>
-                                @endif
                                 <button type="submit"
                                     class="inline-flex items-center px-6 py-3 bg-blue-600 dark:bg-blue-500 border border-transparent rounded-lg font-semibold text-white hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors">
                                     <i class="fas fa-save mr-2"></i>
@@ -112,6 +101,18 @@
                                 </button>
                             </div>
                         </form>
+
+                        @if ($teacher->signature_image)
+                            <form action="{{ route('teacher.signature.delete') }}" method="POST" class="mt-4"
+                                onsubmit="return confirm('คุณแน่ใจหรือไม่ว่าต้องการลบลายเซ็นนี้?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit"
+                                    class="inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors">
+                                    <i class="fas fa-trash mr-2"></i>ลบลายเซ็น
+                                </button>
+                            </form>
+                        @endif
                     </div>
                 </div>
 
@@ -200,18 +201,6 @@
                             </div>
 
                             <div class="flex justify-end gap-2 items-center">
-                                @if ($teacher->certificate_background)
-                                    <form action="{{ route('teacher.signature.delete-background') }}" method="POST"
-                                        class="inline"
-                                        onsubmit="return confirm('คุณแน่ใจหรือไม่ว่าต้องการลบภาพพื้นหลัง? (จะกลับไปใช้พื้นหลังเริ่มต้นของระบบ)');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit"
-                                            class="inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors">
-                                            <i class="fas fa-trash mr-2"></i>ลบพื้นหลัง
-                                        </button>
-                                    </form>
-                                @endif
                                 <button type="submit"
                                     class="inline-flex items-center px-6 py-3 bg-purple-600 dark:bg-purple-500 border border-transparent rounded-lg font-semibold text-white hover:bg-purple-700 dark:hover:bg-purple-600 transition-colors">
                                     <i class="fas fa-save mr-2"></i>
@@ -219,6 +208,19 @@
                                 </button>
                             </div>
                         </form>
+
+                        @if ($teacher->certificate_background)
+                            <form action="{{ route('teacher.signature.delete-background') }}" method="POST"
+                                class="mt-4"
+                                onsubmit="return confirm('คุณแน่ใจหรือไม่ว่าต้องการลบภาพพื้นหลัง? (จะกลับไปใช้พื้นหลังเริ่มต้นของระบบ)');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit"
+                                    class="inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors">
+                                    <i class="fas fa-trash mr-2"></i>ลบพื้นหลัง
+                                </button>
+                            </form>
+                        @endif
                     </div>
                 </div>
             </div>
