@@ -196,6 +196,59 @@
             color: #1d4ed8;
         }
 
+        /* Light mode scrollbar */
+        .light-mode .sidebar-scroll::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+        }
+
+        .light-mode .sidebar-scroll::-webkit-scrollbar-thumb:hover {
+            background: #9ca3af;
+        }
+
+        /* Light mode for timer and other elements */
+        .light-mode .text-yellow-200 {
+            color: #92400e !important;
+        }
+
+        .light-mode .text-yellow-400 {
+            color: #b45309 !important;
+        }
+
+        .light-mode #timer-display-fs,
+        .light-mode #timer-display {
+            background-color: rgba(254, 243, 199, 0.5) !important;
+            border-color: rgba(217, 119, 6, 0.5) !important;
+        }
+
+        .light-mode #studyTimer {
+            color: #1f2937 !important;
+        }
+
+        .light-mode .text-gray-400 {
+            color: #6b7280 !important;
+        }
+
+        .light-mode .text-blue-400 {
+            color: #2563eb !important;
+        }
+
+        .light-mode #timer-label-fs {
+            color: #92400e !important;
+        }
+
+        .light-mode #timer-countdown-fs {
+            color: #b45309 !important;
+        }
+
+        /* Light mode for module badges and icons */
+        .light-mode .bg-gray-700\/30 {
+            background-color: rgba(229, 231, 235, 0.5) !important;
+        }
+
+        .light-mode .bg-gray-700\/50 {
+            background-color: rgba(229, 231, 235, 0.7) !important;
+        }
+
         .sidebar-scroll::-webkit-scrollbar {
             width: 6px;
         }
@@ -941,7 +994,7 @@
                 // Switch to Light Mode
                 html.classList.remove('dark');
                 body.classList.remove('bg-gray-900', 'text-white');
-                body.classList.add('bg-gray-100', 'text-gray-900');
+                body.classList.add('bg-gray-100', 'text-gray-900', 'light-mode');
                 sunIcon.classList.add('hidden');
                 moonIcon.classList.remove('hidden');
                 localStorage.setItem('learn-theme', 'light');
@@ -949,7 +1002,7 @@
             } else {
                 // Switch to Dark Mode
                 html.classList.add('dark');
-                body.classList.remove('bg-gray-100', 'text-gray-900');
+                body.classList.remove('bg-gray-100', 'text-gray-900', 'light-mode');
                 body.classList.add('bg-gray-900', 'text-white');
                 sunIcon.classList.remove('hidden');
                 moonIcon.classList.add('hidden');
@@ -973,10 +1026,24 @@
             const progressText = sidebar.querySelector('.text-blue-400');
 
             // Update content area elements
-            const contentCards = document.querySelectorAll('.bg-gray-800');
+            const contentCards = document.querySelectorAll('.bg-gray-800, .bg-white.shadow-lg');
             const lessonTitle = main.querySelector('h1');
-            const metaText = main.querySelectorAll('.text-gray-400');
-            const descriptionBox = main.querySelector('.bg-gray-800.rounded-xl.p-6');
+            const metaText = main.querySelectorAll('.text-gray-400, .text-gray-600');
+            const descriptionBox = main.querySelector('.bg-gray-800.rounded-xl.p-6, .bg-white.rounded-xl.p-6');
+            const descriptionTitle = main.querySelector('.bg-gray-800.rounded-xl.p-6 h3, .bg-white.rounded-xl.p-6 h3');
+            const descriptionText = main.querySelector('.text-gray-300, .text-gray-700');
+
+            // Timer elements
+            const timerDisplayFs = document.getElementById('timer-display-fs');
+            const timerLabelFs = document.getElementById('timer-label-fs');
+            const timerCountdownFs = document.getElementById('timer-countdown-fs');
+            const completeTimerDisplayFs = document.getElementById('complete-timer-display-fs');
+            const completeTimerLabelFs = document.getElementById('complete-timer-label-fs');
+            const completeTimerCountdownFs = document.getElementById('complete-timer-countdown-fs');
+
+            // Header breadcrumb elements
+            const breadcrumbText = header.querySelectorAll('.text-gray-400, .text-gray-600');
+            const headerBgElements = header.querySelectorAll('.bg-gray-700\\/50');
 
             if (theme === 'light') {
                 // Sidebar
@@ -1018,6 +1085,17 @@
                 header.classList.remove('bg-gray-800', 'border-gray-700');
                 header.classList.add('bg-white', 'border-gray-200', 'shadow-sm');
 
+                // Header breadcrumb
+                breadcrumbText.forEach(text => {
+                    text.classList.remove('text-gray-400');
+                    text.classList.add('text-gray-600');
+                });
+
+                headerBgElements.forEach(el => {
+                    el.classList.remove('bg-gray-700/50');
+                    el.classList.add('bg-gray-100');
+                });
+
                 // Main content
                 main.classList.remove('bg-gray-900');
                 main.classList.add('bg-gray-100');
@@ -1039,6 +1117,16 @@
                     text.classList.remove('text-gray-400');
                     text.classList.add('text-gray-600');
                 });
+
+                // Description
+                if (descriptionTitle) {
+                    descriptionTitle.classList.remove('text-white');
+                    descriptionTitle.classList.add('text-gray-900');
+                }
+                if (descriptionText) {
+                    descriptionText.classList.remove('text-gray-300');
+                    descriptionText.classList.add('text-gray-700');
+                }
 
             } else {
                 // Sidebar
@@ -1079,6 +1167,17 @@
                 header.classList.remove('bg-white', 'border-gray-200', 'shadow-sm');
                 header.classList.add('bg-gray-800', 'border-gray-700');
 
+                // Header breadcrumb
+                breadcrumbText.forEach(text => {
+                    text.classList.remove('text-gray-600');
+                    text.classList.add('text-gray-400');
+                });
+
+                headerBgElements.forEach(el => {
+                    el.classList.remove('bg-gray-100');
+                    el.classList.add('bg-gray-700/50');
+                });
+
                 // Main content
                 main.classList.remove('bg-gray-100');
                 main.classList.add('bg-gray-900');
@@ -1100,6 +1199,16 @@
                     text.classList.remove('text-gray-600');
                     text.classList.add('text-gray-400');
                 });
+
+                // Description
+                if (descriptionTitle) {
+                    descriptionTitle.classList.remove('text-gray-900');
+                    descriptionTitle.classList.add('text-white');
+                }
+                if (descriptionText) {
+                    descriptionText.classList.remove('text-gray-700');
+                    descriptionText.classList.add('text-gray-300');
+                }
             }
         }
 
@@ -1112,7 +1221,7 @@
             if (savedTheme === 'light') {
                 document.documentElement.classList.remove('dark');
                 document.body.classList.remove('bg-gray-900', 'text-white');
-                document.body.classList.add('bg-gray-100', 'text-gray-900');
+                document.body.classList.add('bg-gray-100', 'text-gray-900', 'light-mode');
                 sunIcon.classList.add('hidden');
                 moonIcon.classList.remove('hidden');
                 updateThemeStyles('light');

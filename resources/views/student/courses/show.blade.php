@@ -583,7 +583,7 @@
                         </div>
                         <div class="ml-4">
                             <h4 class="font-medium text-gray-900 dark:text-white">{{ $course->teacher->name }}</h4>
-                            <p class="text-sm text-gray-500 dark:text-gray-400">{{ $course->teacher->email }}</p>
+                            {{-- <p class="text-sm text-gray-500 dark:text-gray-400">{{ $course->teacher->email }}</p> --}}
                         </div>
                     </div>
                 </div>

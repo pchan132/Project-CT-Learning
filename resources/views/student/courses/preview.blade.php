@@ -14,7 +14,7 @@
                 <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                 </svg>
-                กลับไปหน้าคอร์สเรียน
+                กลับไปหน้าสำรวจรายวิชาเรียน
             </a>
         </div>
 
@@ -69,7 +69,7 @@
                         </div>
                         <div class="ml-5">
                             <h4 class="text-xl font-bold text-gray-900">{{ $course->teacher->name }}</h4>
-                            <p class="text-gray-600">{{ $course->teacher->email }}</p>
+                            {{-- <p class="text-gray-600">{{ $course->teacher->email }}</p> --}}
                             @if ($course->teacher->bio)
                                 <p class="text-sm text-gray-500 mt-1">{{ $course->teacher->bio }}</p>
                             @endif
@@ -79,7 +79,7 @@
 
                 <!-- Course Description -->
                 <div class="mb-8">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-3">เกี่ยวกับคอร์สนี้</h3>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-3">เกี่ยวกับรายวิชานี้</h3>
                     <p class="text-gray-600 leading-relaxed">{{ $course->description }}</p>
                 </div>
 
@@ -106,7 +106,7 @@
                 <!-- Course Content Preview -->
                 @if ($course->modules->count() > 0)
                     <div class="mb-8">
-                        <h3 class="text-lg font-semibold text-gray-800 mb-4">เนื้อหาในคอร์ส</h3>
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">เนื้อหาในรายวิชา</h3>
                         <div class="space-y-3">
                             @foreach ($course->modules as $module)
                                 <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
@@ -140,7 +140,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                         </svg>
-                        ลงทะเบียนเรียนคอร์สนี้
+                        ลงทะเบียนเรียนรายวิชานี้
                     </button>
                 </div>
             </div>
@@ -170,7 +170,7 @@
                             </svg>
                         </div>
                         <h3 class="text-2xl font-bold text-gray-900" id="modal-title">ยืนยันการลงทะเบียน</h3>
-                        <p class="mt-2 text-gray-600">คุณต้องการลงทะเบียนเรียนคอร์สนี้หรือไม่?</p>
+                        <p class="mt-2 text-gray-600">คุณต้องการลงทะเบียนเรียนรายวิชานี้หรือไม่?</p>
                     </div>
 
                     <!-- Course Info -->
@@ -195,7 +195,7 @@
                             <div class="ml-4">
                                 <p class="text-sm text-gray-500">ผู้สอน</p>
                                 <h5 class="text-lg font-bold text-gray-900">{{ $course->teacher->name }}</h5>
-                                <p class="text-sm text-gray-600">{{ $course->teacher->email }}</p>
+                                {{-- <p class="text-sm text-gray-600">{{ $course->teacher->email }}</p> --}}
                             </div>
                         </div>
 
