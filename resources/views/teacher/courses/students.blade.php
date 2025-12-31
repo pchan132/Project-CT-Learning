@@ -2,7 +2,7 @@
 
 @section('header')
     <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-        นักเรียนในคอร์ส
+        นักเรียนในรายวิชา
     </h2>
 @endsection
 
@@ -17,7 +17,7 @@
                         <i class="fas fa-arrow-left text-xl"></i>
                     </a>
                     <div>
-                        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">นักเรียนในคอร์ส</h1>
+                        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">นักเรียนในรายวิชา</h1>
                         <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
                             {{ $course->title }}
                         </p>
@@ -27,7 +27,7 @@
                     <a href="{{ route('teacher.courses.show', $course) }}"
                         class="inline-flex items-center px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white text-sm font-medium rounded-lg transition">
                         <i class="fas fa-book mr-2"></i>
-                        ดูคอร์ส
+                        ดูรายวิชา
                     </a>
                 </div>
             </div>
@@ -315,8 +315,8 @@
                         class="inline-flex items-center justify-center w-20 h-20 bg-gray-100 dark:bg-gray-700 rounded-full mb-4">
                         <i class="fas fa-users-slash text-gray-400 dark:text-gray-500 text-3xl"></i>
                     </div>
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">ยังไม่มีนักเรียนในคอร์สนี้</h3>
-                    <p class="text-gray-600 dark:text-gray-400 mb-6">รอให้นักเรียนลงทะเบียนเรียนคอร์สนี้</p>
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">ยังไม่มีนักเรียนในรายวิชา</h3>
+                    <p class="text-gray-600 dark:text-gray-400 mb-6">รอให้นักเรียนลงทะเบียนเรียนรายวิชานี้</p>
                 </div>
             @endif
         </div>
@@ -325,7 +325,7 @@
         <div class="mt-8">
             <a href="{{ route('teacher.courses.show', $course) }}"
                 class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 font-medium transition">
-                <i class="fas fa-arrow-left mr-2"></i>กลับไปหน้าคอร์ส
+                <i class="fas fa-arrow-left mr-2"></i>กลับไปหน้ารายวิชา
             </a>
         </div>
     </div>

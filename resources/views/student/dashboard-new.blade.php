@@ -69,7 +69,8 @@
                         </h1>
                         <p class="text-blue-100 text-sm md:text-base">
                             @if ($continueCourse)
-                                คุณกำลังเรียน {{ $enrolledCourses->count() }} คอร์ส • ความคืบหน้ารวม {{ $overallProgress }}%
+                                คุณกำลังเรียน {{ $enrolledCourses->count() }} รายวิชา • ความคืบหน้ารวม
+                                {{ $overallProgress }}%
                             @else
                                 เริ่มต้นการเรียนรู้ใหม่วันนี้
                             @endif
@@ -86,7 +87,7 @@
                         <a href="{{ route('student.courses.index') }}"
                             class="inline-flex items-center px-6 py-3 bg-white text-blue-600 font-semibold rounded-xl hover:bg-blue-50 transition-colors shadow-lg">
                             <i class="fas fa-search mr-2"></i>
-                            ค้นหาคอร์ส
+                            ค้นหารายวิชา
                         </a>
                     @endif
                 </div>
@@ -166,7 +167,7 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
-                            คอร์สที่ลงทะเบียน</p>
+                            รายวิชาที่ลงทะเบียน</p>
                         <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">{{ $enrolledCourses->count() }}
                         </p>
                     </div>
@@ -222,7 +223,7 @@
                 <div class="flex items-center justify-between mb-4">
                     <h2 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
                         <i class="fas fa-book-reader text-blue-500 mr-2"></i>
-                        คอร์สของฉัน
+                        รายวิชาของฉัน
                     </h2>
                     <a href="{{ route('student.courses.my-courses') }}"
                         class="text-sm text-blue-600 dark:text-blue-400 hover:underline font-medium">
@@ -276,13 +277,14 @@
                             class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
                             <i class="fas fa-book-open text-2xl text-gray-400"></i>
                         </div>
-                        <h3 class="font-semibold text-gray-900 dark:text-white mb-2">ยังไม่มีคอร์สเรียน</h3>
-                        <p class="text-gray-500 dark:text-gray-400 text-sm mb-4">เริ่มต้นการเรียนรู้ด้วยการลงทะเบียนคอร์สแรก
+                        <h3 class="font-semibold text-gray-900 dark:text-white mb-2">ยังไม่มีรายวิชาเรียน</h3>
+                        <p class="text-gray-500 dark:text-gray-400 text-sm mb-4">
+                            เริ่มต้นการเรียนรู้ด้วยการลงทะเบียนรายวิชาแรก
                         </p>
                         <a href="{{ route('student.courses.index') }}"
                             class="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors">
                             <i class="fas fa-search mr-2"></i>
-                            ค้นหาคอร์ส
+                            ค้นหารายวิชา
                         </a>
                     </div>
                 @endif
@@ -341,8 +343,8 @@
                             <i class="fas fa-search text-white"></i>
                         </div>
                         <div>
-                            <p class="font-medium text-gray-900 dark:text-white">ค้นหาคอร์สใหม่</p>
-                            <p class="text-xs text-gray-500 dark:text-gray-400">สำรวจคอร์สที่น่าสนใจ</p>
+                            <p class="font-medium text-gray-900 dark:text-white">ค้นหารายวิชาใหม่</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">สำรวจรายวิชาที่น่าสนใจ</p>
                         </div>
                     </a>
 

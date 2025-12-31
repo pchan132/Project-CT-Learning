@@ -215,7 +215,7 @@
                         <i class="fas fa-folder-open text-gray-400 dark:text-gray-500 text-3xl"></i>
                     </div>
                     <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">ยังไม่มี Modules</h3>
-                    <p class="text-gray-600 dark:text-gray-400 mb-6">เริ่มต้นการสร้าง Module แรกสำหรับคอร์สนี้</p>
+                    <p class="text-gray-600 dark:text-gray-400 mb-6">เริ่มต้นการสร้าง Module แรกสำหรับรายวิชา</p>
                     <a href="{{ route('teacher.courses.modules.create', $course) }}"
                         class="inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition-all hover:shadow-xl">
                         <i class="fas fa-plus mr-2"></i>สร้าง Module แรก
@@ -228,7 +228,7 @@
         <div class="mt-10 pt-6 border-t border-gray-200 dark:border-gray-700">
             <a href="{{ route('teacher.courses.show', $course) }}"
                 class="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition">
-                <i class="fas fa-arrow-left mr-2"></i>กลับไปที่รายละเอียดคอร์ส
+                <i class="fas fa-arrow-left mr-2"></i>กลับไปที่รายละเอียดรายวิชา
             </a>
         </div>
     </div>

@@ -110,7 +110,7 @@
                 <h2 class="text-2xl md:text-3xl font-bold text-white mb-2">
                     ยินดีต้อนรับ, {{ $user->name }}! 👋
                 </h2>
-                <p class="text-blue-100 mb-6">เริ่มต้นการเรียนรู้ของคุณโดยการสำรวจคอร์สที่น่าสนใจ</p>
+                <p class="text-blue-100 mb-6">เริ่มต้นการเรียนรู้ของคุณโดยการสำรวจรายวิชาที่น่าสนใจ</p>
                 <a href="{{ route('student.courses.index') }}"
                     class="inline-flex items-center px-6 py-3 bg-white text-blue-700 font-bold rounded-xl hover:bg-blue-50 transition shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
                     <i class="fas fa-search mr-2"></i>สำรวจรายวิชา

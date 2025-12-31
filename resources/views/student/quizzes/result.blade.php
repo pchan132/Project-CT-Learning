@@ -10,7 +10,7 @@
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <!-- Breadcrumb -->
         <div class="mb-6 flex items-center text-sm text-gray-600 dark:text-gray-400">
-            <a href="{{ route('student.courses.index') }}" class="hover:text-blue-600">คอร์สของฉัน</a>
+            <a href="{{ route('student.courses.index') }}" class="hover:text-blue-600">รายวิชาของฉัน</a>
             <i class="fas fa-chevron-right mx-2"></i>
             <a href="{{ route('student.courses.show', $course->id) }}" class="hover:text-blue-600">{{ $course->title }}</a>
             <i class="fas fa-chevron-right mx-2"></i>
@@ -197,7 +197,7 @@
         <div class="mt-6 flex gap-4">
             <a href="{{ route('student.courses.show', $course->id) }}"
                 class="flex-1 py-4 bg-gray-600 text-white rounded-lg hover:bg-gray-700 font-bold text-center shadow-lg">
-                <i class="fas fa-book mr-2"></i>กลับไปยังคอร์ส
+                <i class="fas fa-book mr-2"></i>กลับไปยังรายวิชา
             </a>
             @if (!$attempt->passed)
                 <form action="{{ route('student.quizzes.start', $quiz->id) }}" method="POST" class="flex-1">

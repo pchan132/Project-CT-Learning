@@ -20,7 +20,7 @@
                         <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ $module->title }}</h1>
                         <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
                             <a href="{{ route('teacher.courses.index') }}"
-                                class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">คอร์สของฉัน</a>
+                                class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">รายวิชาของฉัน</a>
                             <span class="mx-2">/</span>
                             <a href="{{ route('teacher.courses.show', $course) }}"
                                 class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">{{ $course->title }}</a>

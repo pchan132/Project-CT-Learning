@@ -24,7 +24,7 @@
                         <i class="fas fa-search text-gray-400"></i>
                     </div>
                     <input type="text" name="search" value="{{ $search ?? '' }}"
-                        placeholder="ค้นหาคอร์ส... (ชื่อคอร์ส, คำอธิบาย)"
+                        placeholder="ค้นหารายวิชา... (ชื่อรายวิชา, คำอธิบาย)"
                         class="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
                 </div>
                 <button type="submit"

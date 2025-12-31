@@ -44,7 +44,7 @@
                         <i class="fas fa-book text-2xl text-blue-600 dark:text-blue-400"></i>
                     </div>
                     <div class="ml-4">
-                        <p class="text-sm text-gray-600 dark:text-gray-400">คอร์สที่ลงทะเบียน</p>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">รายวิชาที่ลงทะเบียน</p>
                         <p class="text-2xl font-semibold text-gray-900 dark:text-white">{{ $enrolledCoursesCount }}</p>
                     </div>
                 </div>
@@ -93,7 +93,7 @@
             <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
                 <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-                        <i class="fas fa-book text-blue-500 mr-2"></i>คอร์สล่าสุด
+                        <i class="fas fa-book text-blue-500 mr-2"></i>รายวิชาล่าสุด
                     </h3>
                 </div>
                 <div class="p-6">
@@ -140,11 +140,11 @@
                     @else
                         <div class="text-center py-8">
                             <i class="fas fa-book-open text-5xl text-gray-300 dark:text-gray-600 mb-4"></i>
-                            <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">ยังไม่มีคอร์สเรียน</h3>
-                            <p class="text-gray-600 dark:text-gray-400 mb-4">เริ่มต้นโดยการลงทะเบียนคอร์สแรกของคุณ</p>
+                            <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">ยังไม่มีรายวิชาเรียน</h3>
+                            <p class="text-gray-600 dark:text-gray-400 mb-4">เริ่มต้นโดยการลงทะเบียนรายวิชาแรกของคุณ</p>
                             <a href="{{ route('student.courses.index') }}"
                                 class="inline-flex items-center bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200 font-semibold">
-                                <i class="fas fa-plus-circle mr-2"></i>ดูคอร์สที่เปิดสอน
+                                <i class="fas fa-plus-circle mr-2"></i>ดูรายวิชาที่เปิดสอน
                             </a>
                         </div>
                     @endif
@@ -201,7 +201,7 @@
                         <div class="text-center py-8">
                             <i class="fas fa-clipboard-question text-5xl text-gray-300 dark:text-gray-600 mb-4"></i>
                             <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">ยังไม่มีแบบทดสอบ</h3>
-                            <p class="text-gray-600 dark:text-gray-400">เริ่มเรียนคอร์สเพื่อทำแบบทดสอบ</p>
+                            <p class="text-gray-600 dark:text-gray-400">เริ่มเรียนรายวิชาเพื่อทำแบบทดสอบ</p>
                         </div>
                     @endif
                 </div>
@@ -212,21 +212,21 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl shadow-lg p-6 text-white">
                 <i class="fas fa-search text-3xl mb-3"></i>
-                <h3 class="text-lg font-semibold mb-2">ค้นหาคอร์สใหม่</h3>
-                <p class="text-blue-100 mb-4 text-sm">สำรวจคอร์สเรียนที่น่าสนใจและลงทะเบียนเรียนได้ทันที</p>
+                <h3 class="text-lg font-semibold mb-2">ค้นหารายวิชาใหม่</h3>
+                <p class="text-blue-100 mb-4 text-sm">สำรวจรายวิชาที่น่าสนใจและลงทะเบียนเรียนได้ทันที</p>
                 <a href="{{ route('student.courses.index') }}"
                     class="inline-flex items-center bg-white text-blue-600 px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors duration-200 font-semibold">
-                    <i class="fas fa-search mr-2"></i>สำรวจคอร์ส
+                    <i class="fas fa-search mr-2"></i>สำรวจรายวิชา
                 </a>
             </div>
 
             <div class="bg-gradient-to-r from-green-500 to-green-600 rounded-xl shadow-lg p-6 text-white">
                 <i class="fas fa-book-reader text-3xl mb-3"></i>
                 <h3 class="text-lg font-semibold mb-2">เรียนต่อ</h3>
-                <p class="text-green-100 mb-4 text-sm">กลับไปยังคอร์สที่คุณกำลังเรียนอยู่</p>
+                <p class="text-green-100 mb-4 text-sm">กลับไปยังรายวิชาที่คุณกำลังเรียนอยู่</p>
                 <a href="{{ route('student.courses.my-courses') }}"
                     class="inline-flex items-center bg-white text-green-600 px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors duration-200 font-semibold">
-                    <i class="fas fa-book mr-2"></i>คอร์สของฉัน
+                    <i class="fas fa-book mr-2"></i>รายวิชาของฉัน
                 </a>
             </div>
 

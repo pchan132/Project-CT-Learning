@@ -10,7 +10,7 @@
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <!-- Breadcrumb -->
         <div class="mb-6 flex items-center text-sm text-gray-600 dark:text-gray-400">
-            <a href="{{ route('student.courses.index') }}" class="hover:text-blue-600">คอร์สของฉัน</a>
+            <a href="{{ route('student.courses.index') }}" class="hover:text-blue-600">รายวิชาของฉัน</a>
             <i class="fas fa-chevron-right mx-2"></i>
             <a href="{{ route('student.courses.show', $course->id) }}" class="hover:text-blue-600">{{ $course->title }}</a>
             <i class="fas fa-chevron-right mx-2"></i>

@@ -18,7 +18,7 @@
                 <div>
                     <h1 class="text-2xl font-bold text-gray-900 dark:text-white">สร้าง Module ใหม่</h1>
                     <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                        คอร์ส: {{ $course->title }}
+                        รายวิชา: {{ $course->title }}
                     </p>
                 </div>
             </div>
@@ -68,13 +68,13 @@
                             <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                         @enderror
                         <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                            ลำดับการแสดงผลของ Module ในคอร์ส (ลำดับถัดไป: {{ $nextOrder }})
+                            ลำดับการแสดงผลของ Module ในรายวิชา (ลำดับถัดไป: {{ $nextOrder }})
                         </p>
                     </div>
 
                     <!-- Course Info -->
                     <div class="bg-gray-50 dark:bg-gray-700/50 p-5 rounded-xl">
-                        <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">ข้อมูลคอร์ส</h3>
+                        <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">ข้อมูลรายวิชา</h3>
                         <div class="flex items-center">
                             @if ($course->cover_image_url)
                                 <img src="{{ asset('storage/' . $course->cover_image_url) }}" alt="{{ $course->title }}"
@@ -88,7 +88,7 @@
                             <div>
                                 <p class="font-semibold text-gray-900 dark:text-white">{{ $course->title }}</p>
                                 <p class="text-sm text-gray-500 dark:text-gray-400">{{ $course->modules->count() }} modules
-                                    ในคอร์สนี้</p>
+                                    ในรายวิชานี้</p>
                             </div>
                         </div>
                     </div>

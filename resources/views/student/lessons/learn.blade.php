@@ -4,7 +4,7 @@
     <div class="flex items-center justify-between">
         <nav class="flex text-sm">
             <a href="{{ route('student.courses.index') }}"
-                class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">คอร์สเรียน</a>
+                class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">รายวิชา</a>
             <span class="mx-2 text-gray-400">/</span>
             <a href="{{ route('student.courses.show', $course) }}"
                 class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 truncate max-w-xs">{{ $course->title }}</a>
@@ -109,7 +109,7 @@
             <!-- Course Progress Mini Bar -->
             <div class="px-6 py-3 bg-gray-50 dark:bg-gray-700/50">
                 <div class="flex items-center justify-between text-sm">
-                    <span class="text-gray-600 dark:text-gray-400">ความคืบหน้าคอร์ส</span>
+                    <span class="text-gray-600 dark:text-gray-400">ความคืบหน้ารายวิชา</span>
                     <span
                         class="font-semibold text-blue-600 dark:text-blue-400">{{ $course->getProgressForStudent(auth()->id()) }}%</span>
                 </div>
@@ -567,7 +567,7 @@ $youtubeWatchUrl = $isYouTube
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M4 6h16M4 12h16M4 18h7"></path>
                                 </svg>
-                                กลับหน้าคอร์ส
+                                กลับหน้ารายวิชา
                             </a>
                         </div>
                     </div>

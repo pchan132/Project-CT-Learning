@@ -40,7 +40,7 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        เลือกคอร์ส
+                        เลือกรายวิชา (ตัวอย่าง)
                     </label>
                     <select id="course-select" onchange="updateCoursePreview()"
                         class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
@@ -50,7 +50,7 @@
                             </option>
                         @endforeach
                         @if ($courses->isEmpty())
-                            <option value="">คอร์สตัวอย่าง</option>
+                            <option value="">รายวิชาตัวอย่าง</option>
                         @endif
                     </select>
                 </div>
@@ -84,7 +84,7 @@
                     $firstCourse = $courses->first();
                 @endphp
 
-                <x-certificate-preview :template="$template" :studentName="'นักเรียน ตัวอย่าง'" :courseName="$firstCourse ? $firstCourse->title : 'คอร์สตัวอย่าง'" :teacherName="$teacher->name"
+                <x-certificate-preview :template="$template" :studentName="'นักเรียน ตัวอย่าง'" :courseName="$firstCourse ? $firstCourse->title : 'รายวิชาตัวอย่าง'" :teacherName="$teacher->name"
                     :teacherSignature="$teacher->signature_image ? asset('storage/' . $teacher->signature_image) : null" :teacherBackground="$teacher->certificate_background" containerId="certificate-preview" />
             </div>
 

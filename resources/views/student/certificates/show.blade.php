@@ -260,7 +260,7 @@
             <!-- Course Details -->
             <div class="mt-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
                 <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4">
-                    <i class="fas fa-info-circle text-blue-500 mr-2"></i>รายละเอียดคอร์ส
+                    <i class="fas fa-info-circle text-blue-500 mr-2"></i>รายละเอียดรายวิชา
                 </h3>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div class="text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">

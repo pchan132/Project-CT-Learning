@@ -18,7 +18,7 @@
                 <div>
                     <h1 class="text-2xl font-bold text-gray-900 dark:text-white">สร้างบทเรียนใหม่</h1>
                     <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                        คอร์ส: {{ $course->title }} / Module: {{ $module->title }}
+                        รายวิชา: {{ $course->title }} / Module: {{ $module->title }}
                     </p>
                 </div>
             </div>

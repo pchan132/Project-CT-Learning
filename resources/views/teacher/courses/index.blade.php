@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'คอร์สของฉัน')
+@section('title', 'รายวิชาของฉัน')
 
 @section('content')
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -126,7 +126,7 @@
                                 <i class="fas fa-edit mr-1"></i>แก้ไข
                             </a>
                             <form action="{{ route('teacher.courses.destroy', $course) }}" method="POST"
-                                onsubmit="return confirm('คุณต้องการลบคอร์สนี้ใช่หรือไม่? ข้อมูลทั้งหมดจะถูกลบ')">
+                                onsubmit="return confirm('คุณต้องการลบรายวิชานี้ใช่หรือไม่? ข้อมูลทั้งหมดจะถูกลบ')">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit"

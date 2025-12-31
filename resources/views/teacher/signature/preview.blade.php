@@ -133,7 +133,7 @@
                                 ได้ผ่านการอบรมและทดสอบความรู้ในหลักสูตร
                             </p>
                             <h2 class="text-4xl font-bold py-2" style="color: {{ $primaryColor }};">
-                                "ชื่อคอร์สตัวอย่าง"
+                                "ชื่อรายวิชาตัวอย่าง"
                             </h2>
                             <p class="text-xl text-gray-600">
                                 ซึ่งจัดโดย <span
