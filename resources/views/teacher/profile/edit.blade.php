@@ -8,7 +8,7 @@
         <div class="mb-8">
             <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
                 <i class="fas fa-user-edit text-blue-500 mr-3"></i>
-                แก้ไขโปรไฟล์อาจารย์
+                แก้ไขโปรไฟล์ผู้สอน
             </h1>
             <p class="mt-2 text-gray-600 dark:text-gray-400">
                 อัปเดตข้อมูลและรูปโปรไฟล์ของคุณ
@@ -118,25 +118,24 @@
                         @enderror
                     </div>
 
-                    
 
-                <!-- Actions -->
-                <div class="px-6 py-4 bg-gray-50 dark:bg-gray-700/50 flex items-center justify-between">
-                    <a href="{{ route('teacher.dashboard') }}"
-                        class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
-                        <i class="fas fa-arrow-left mr-2"></i>กลับ
-                    </a>
-                    <button type="submit"
-                        class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-6 rounded-lg transition-colors">
-                        <i class="fas fa-save mr-2"></i>บันทึกการเปลี่ยนแปลง
-                    </button>
-                </div>
+
+                    <!-- Actions -->
+                    <div class="px-6 py-4 bg-gray-50 dark:bg-gray-700/50 flex items-center justify-between">
+                        <a href="{{ route('teacher.dashboard') }}"
+                            class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+                            <i class="fas fa-arrow-left mr-2"></i>กลับ
+                        </a>
+                        <button type="submit"
+                            class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-6 rounded-lg transition-colors">
+                            <i class="fas fa-save mr-2"></i>บันทึกการเปลี่ยนแปลง
+                        </button>
+                    </div>
             </form>
         </div>
 
         <!-- Delete Image Form (Hidden) -->
-        <form id="delete-image-form" action="{{ route('teacher.profile.delete-image') }}" method="POST"
-            class="hidden">
+        <form id="delete-image-form" action="{{ route('teacher.profile.delete-image') }}" method="POST" class="hidden">
             @csrf
             @method('DELETE')
         </form>
