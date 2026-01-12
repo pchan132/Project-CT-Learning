@@ -583,7 +583,7 @@
                     </p>
                 </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                {{-- <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
                     <!-- Contact Form -->
                     <div class="tech-card p-8 shadow-2xl shadow-violet-500/20">
                         <h3 class="text-2xl font-semibold text-white mb-6">ส่งข้อความดิจิทัล</h3>
@@ -617,74 +617,74 @@
                                 ส่งข้อความ <i class="fas fa-paper-plane ml-2"></i>
                             </button>
                         </form>
+                    </div> --}}
+
+                <!-- Contact Info -->
+                <div class="space-y-6">
+                    <div class="tech-card p-6 flex items-start shadow-xl shadow-fuchsia-500/10">
+                        <div
+                            class="flex-shrink-0 h-12 w-12 flex items-center justify-center rounded-full bg-violet-600/30 text-fuchsia-400">
+                            <i class="fas fa-map-marker-alt text-xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <h4 class="text-lg font-medium text-white">ที่อยู่</h4>
+                            <p class="mt-1 text-gray-400 text-sm">
+                                แผนกวิชาเทคโนโลยีคอมพิวเตอร์ วิทยาลัยเทคนิคลพบุรี<br>
+                                เลขที่ 323 ถนนนารายณ์มหาราช อำเภอเมือง จังหวัดลพบุรี 15000
+                            </p>
+                        </div>
                     </div>
 
-                    <!-- Contact Info -->
-                    <div class="space-y-6">
-                        <div class="tech-card p-6 flex items-start shadow-xl shadow-fuchsia-500/10">
-                            <div
-                                class="flex-shrink-0 h-12 w-12 flex items-center justify-center rounded-full bg-violet-600/30 text-fuchsia-400">
-                                <i class="fas fa-map-marker-alt text-xl"></i>
-                            </div>
-                            <div class="ml-4">
-                                <h4 class="text-lg font-medium text-white">ที่อยู่</h4>
-                                <p class="mt-1 text-gray-400 text-sm">
-                                    แผนกวิชาเทคโนโลยีคอมพิวเตอร์ วิทยาลัยเทคนิคลพบุรี<br>
-                                    เลขที่ 323 ถนนนารายณ์มหาราช อำเภอเมือง จังหวัดลพบุรี 15000
-                                </p>
-                            </div>
+                    <div class="tech-card p-6 flex items-start shadow-xl shadow-fuchsia-500/10">
+                        <div
+                            class="flex-shrink-0 h-12 w-12 flex items-center justify-center rounded-full bg-violet-600/30 text-fuchsia-400">
+                            <i class="fas fa-phone-alt text-xl"></i>
                         </div>
-
-                        <div class="tech-card p-6 flex items-start shadow-xl shadow-fuchsia-500/10">
-                            <div
-                                class="flex-shrink-0 h-12 w-12 flex items-center justify-center rounded-full bg-violet-600/30 text-fuchsia-400">
-                                <i class="fas fa-phone-alt text-xl"></i>
-                            </div>
-                            <div class="ml-4">
-                                <h4 class="text-lg font-medium text-white">โทรศัพท์</h4>
-                                <p class="mt-1 text-gray-400 text-sm">
-                                    036-411-083 ต่อ 123 | 036-422-123
-                                </p>
-                            </div>
+                        <div class="ml-4">
+                            <h4 class="text-lg font-medium text-white">โทรศัพท์</h4>
+                            <p class="mt-1 text-gray-400 text-sm">
+                                036-411-083 ต่อ 123 | 036-422-123
+                            </p>
                         </div>
+                    </div>
 
-                        <div class="tech-card p-6 flex items-start shadow-xl shadow-fuchsia-500/10">
-                            <div
-                                class="flex-shrink-0 h-12 w-12 flex items-center justify-center rounded-full bg-violet-600/30 text-fuchsia-400">
-                                <i class="fas fa-envelope text-xl"></i>
-                            </div>
-                            <div class="ml-4">
-                                <h4 class="text-lg font-medium text-white">อีเมล</h4>
-                                <p class="mt-1 text-gray-400 text-sm">
-                                    computer.tech@lbtech.ac.th
-                                </p>
-                            </div>
+                    <div class="tech-card p-6 flex items-start shadow-xl shadow-fuchsia-500/10">
+                        <div
+                            class="flex-shrink-0 h-12 w-12 flex items-center justify-center rounded-full bg-violet-600/30 text-fuchsia-400">
+                            <i class="fas fa-envelope text-xl"></i>
                         </div>
+                        <div class="ml-4">
+                            <h4 class="text-lg font-medium text-white">อีเมล</h4>
+                            <p class="mt-1 text-gray-400 text-sm">
+                                computer.tech@lbtech.ac.th
+                            </p>
+                        </div>
+                    </div>
 
-                        <!-- Social Media Links -->
-                        <div class="mt-8 tech-card p-6">
-                            <h4 class="text-lg font-medium text-white mb-4">เชื่อมต่อกับเราในโลกดิจิทัล</h4>
-                            <div class="flex space-x-4">
-                                <a href="https://www.facebook.com/Softwarelopburi" target="_blank"
-                                    class="h-10 w-10 flex items-center justify-center rounded-full bg-blue-600 text-white hover:bg-blue-700 transition duration-300">
-                                    <i class="fab fa-facebook-f"></i>
-                                </a>
-                                <a href="#" target="_blank"
-                                    class="h-10 w-10 flex items-center justify-center rounded-full bg-pink-600 text-white hover:bg-pink-700 transition duration-300">
-                                    <i class="fab fa-instagram"></i>
-                                </a>
-                                <a href="#" target="_blank"
-                                    class="h-10 w-10 flex items-center justify-center rounded-full bg-red-600 text-white hover:bg-red-700 transition duration-300">
-                                    <i class="fab fa-youtube"></i>
-                                </a>
-                                <a href="https://lin.ee/qZgzZ8o" target="_blank"
-                                    class="h-10 w-10 flex items-center justify-center rounded-full bg-green-600 text-white hover:bg-green-700 transition duration-300">
-                                    <i class="fab fa-line"></i>
-                                </a>
-                            </div>
+                    <!-- Social Media Links -->
+                    <div class="mt-8 tech-card p-6">
+                        <h4 class="text-lg font-medium text-white mb-4">เชื่อมต่อกับเราในโลกดิจิทัล</h4>
+                        <div class="flex space-x-4">
+                            <a href="https://www.facebook.com/Softwarelopburi" target="_blank"
+                                class="h-10 w-10 flex items-center justify-center rounded-full bg-blue-600 text-white hover:bg-blue-700 transition duration-300">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                            <a href="#" target="_blank"
+                                class="h-10 w-10 flex items-center justify-center rounded-full bg-pink-600 text-white hover:bg-pink-700 transition duration-300">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            <a href="#" target="_blank"
+                                class="h-10 w-10 flex items-center justify-center rounded-full bg-red-600 text-white hover:bg-red-700 transition duration-300">
+                                <i class="fab fa-youtube"></i>
+                            </a>
+                            <a href="https://lin.ee/qZgzZ8o" target="_blank"
+                                class="h-10 w-10 flex items-center justify-center rounded-full bg-green-600 text-white hover:bg-green-700 transition duration-300">
+                                <i class="fab fa-line"></i>
+                            </a>
                         </div>
                     </div>
                 </div>
+            </div>
             </div>
         </section>
 
