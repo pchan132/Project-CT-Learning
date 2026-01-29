@@ -161,7 +161,7 @@
             </div>
 
             <!-- Center Seal -->
-            <div class="absolute left-1/2 transform -translate-x-1/2 bottom-4">
+            {{-- <div class="absolute left-1/2 transform -translate-x-1/2 bottom-4">
                 <div class="relative inline-flex justify-center items-center">
                     <div class="w-32 h-32 rounded-full flex items-center justify-center border-4 border-yellow-200"
                         style="background: linear-gradient(135deg, #fbbf24, #d97706); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
@@ -183,7 +183,7 @@
                         <div class="w-8 h-12 transform -rotate-12" style="background-color: #ca8a04;"></div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
 
             <!-- Right Signature -->
             <div class="text-center w-64">

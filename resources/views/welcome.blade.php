@@ -149,10 +149,10 @@
                     <div class="ml-10 flex items-baseline space-x-8">
                         <a href="#home"
                             class="nav-link text-gray-300 hover:text-violet-400 px-3 py-2 text-sm font-medium transition duration-150">หน้าหลัก</a>
-                        <a href="#about"
-                            class="nav-link text-gray-300 hover:text-violet-400 px-3 py-2 text-sm font-medium transition duration-150">เกี่ยวกับแผนก</a>
-                        <a href="#courses"
-                            class="nav-link text-gray-300 hover:text-violet-400 px-3 py-2 text-sm font-medium transition duration-150">หลักสูตร</a>
+                        {{-- <a href="#about"
+                            class="nav-link text-gray-300 hover:text-violet-400 px-3 py-2 text-sm font-medium transition duration-150">เกี่ยวกับแผนก</a> --}}
+                        {{-- <a href="#courses"
+                            class="nav-link text-gray-300 hover:text-violet-400 px-3 py-2 text-sm font-medium transition duration-150">หลักสูตร</a> --}}
                         <a href="#teachers"
                             class="nav-link text-gray-300 hover:text-violet-400 px-3 py-2 text-sm font-medium transition duration-150">ผู้สอน</a>
                         <a href="#projects"
@@ -253,9 +253,9 @@
 
                     <div
                         class="mt-8 flex flex-col sm:flex-row justify-center md:justify-start space-y-4 sm:space-y-0 sm:space-x-4">
-                        <a href="#courses"
+                        <a href="#projects"
                             class="btn-primary text-white font-semibold py-3 px-8 rounded-full shadow-xl shadow-violet-500/30">
-                            <i class="fas fa-graduation-cap mr-2"></i> หลักสูตรที่เปิดสอน
+                            <i class="fas fa-graduation-cap mr-2"></i> รายวิชาที่เปิดสอน
                         </a>
                         <a href="#contact"
                             class="bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 px-8 rounded-full transition duration-300">
@@ -284,7 +284,7 @@
             </div>
 
             <!-- Stats Bar -->
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-20">
+            <div class="max-w-7xl mx-auto px-4 pt-24 sm:px-6 lg:px-8 mt-20">
                 <div class="tech-card p-6 grid grid-cols-2 md:grid-cols-4 gap-4 text-center fade-in-up"
                     data-delay="400">
                     <div>
@@ -316,7 +316,7 @@
         </section>
 
         <!-- About Section -->
-        <section id="about" class="py-24">
+        {{-- <section id="about" class="py-24">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 fade-in-up" data-delay="500">
                 <div class="text-center mb-16">
                     <h2 class="text-4xl font-bold text-white">เกี่ยวกับ<span class="text-fuchsia-400">แผนกวิชา</span>
@@ -367,10 +367,10 @@
                     </div>
                 </div>
             </div>
-        </section>
+        </section> --}}
 
         <!-- Courses Section -->
-        <section id="courses" class="py-24 bg-gray-900/30">
+        {{-- <section id="courses" class="py-24 bg-gray-900/30">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 fade-in-up" data-delay="600">
                 <div class="text-center mb-16">
                     <h2 class="text-4xl font-bold text-white">หลักสูตร<span class="text-violet-400">แห่งอนาคต</span>
@@ -431,10 +431,10 @@
                     </div>
                 </div>
             </div>
-        </section>
+        </section> --}}
 
         <!-- Teachers Section -->
-        <section id="teachers" class="py-24">
+        <section id="teachers" class="py-20">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 fade-in-up" data-delay="700">
                 <div class="text-center mb-16">
                     <h2 class="text-4xl font-bold text-white">ผู้สอน
@@ -689,7 +689,7 @@
         </section>
 
         <!-- Map Section -->
-        <section class="py-12">
+        {{-- <section class="py-12">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 fade-in-up" data-delay="1100">
                 <div class="tech-card rounded-xl overflow-hidden shadow-2xl shadow-violet-500/20">
                     <iframe
@@ -697,7 +697,7 @@
                         width="100%" height="450" allowfullscreen="" loading="lazy"></iframe>
                 </div>
             </div>
-        </section>
+        </section> --}}
     </main>
 
     <!-- Footer -->
