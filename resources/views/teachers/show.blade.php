@@ -48,12 +48,12 @@
                     <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
                         <div class="bg-blue-50 dark:bg-blue-900/30 rounded-xl p-4 text-center">
                             <div class="text-3xl font-bold text-blue-600 dark:text-blue-400">{{ $courses->count() }}</div>
-                            <div class="text-sm text-gray-600 dark:text-gray-400">คอร์สที่สอน</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400">รายวิชาที่สอน</div>
                         </div>
                         <div class="bg-green-50 dark:bg-green-900/30 rounded-xl p-4 text-center">
                             <div class="text-3xl font-bold text-green-600 dark:text-green-400">
                                 {{ $courses->sum('enrollments_count') }}</div>
-                            <div class="text-sm text-gray-600 dark:text-gray-400">นักเรียนทั้งหมด</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400">นักเรียนทั้งหมดในรายวิชา</div>
                         </div>
                         <div class="bg-purple-50 dark:bg-purple-900/30 rounded-xl p-4 text-center col-span-2 md:col-span-1">
                             <div class="text-3xl font-bold text-purple-600 dark:text-purple-400">
@@ -67,19 +67,28 @@
                     @if ($teacher->bio)
                         <div class="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4">
                             <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                                <i class="fas fa-quote-left text-blue-500 mr-2"></i>เกี่ยวกับอาจารย์
+                                <i class="fas fa-quote-left text-blue-500 mr-2"></i>เกี่ยวกับผู้สอน
                             </h3>
                             <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
                                 {{ $teacher->bio }}
                             </p>
                         </div>
+                    @else
+                        <div class="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4">
+                            <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                เกี่ยวกับผู้สอน
+                            </h3>
+                            <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+                                ผู้สอนยังไม่ได้เพิ่มประวัติส่วนตัวในขณะนี้
+                            </p>
+                        </div>
                     @endif
 
                     <!-- Contact -->
-                    <div class="mt-6 flex items-center text-gray-500 dark:text-gray-400">
+                    {{-- <div class="mt-6 flex items-center text-gray-500 dark:text-gray-400">
                         <i class="fas fa-envelope mr-2"></i>
                         <span>{{ $teacher->email }}</span>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </div>
@@ -88,7 +97,7 @@
         <div class="mb-6">
             <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">
                 <i class="fas fa-book-open text-blue-500 mr-2"></i>
-                คอร์สที่สอน ({{ $courses->count() }} คอร์ส)
+                รายวิชาที่สอน ({{ $courses->count() }} รายวิชา)
             </h2>
 
             @if ($courses->count() > 0)
@@ -129,18 +138,18 @@
                                     @if (auth()->user()->isTeacher() && auth()->id() === $teacher->id)
                                         <a href="{{ route('teacher.courses.show', $course) }}"
                                             class="block w-full text-center bg-green-600 hover:bg-green-700 text-white font-medium py-2.5 rounded-lg transition-colors">
-                                            จัดการคอร์ส
+                                            จัดการรายวิชา
                                         </a>
                                     @else
                                         <a href="{{ route('courses.preview', $course) }}"
                                             class="block w-full text-center bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 rounded-lg transition-colors">
-                                            ดูรายละเอียดคอร์ส
+                                            ดูรายละเอียดรายวิชา
                                         </a>
                                     @endif
                                 @else
                                     <a href="{{ route('login') }}"
                                         class="block w-full text-center bg-gray-600 hover:bg-gray-700 text-white font-medium py-2.5 rounded-lg transition-colors">
-                                        เข้าสู่ระบบเพื่อดูคอร์ส
+                                        เข้าสู่ระบบเพื่อดูรายละเอียดรายวิชา
                                     </a>
                                 @endauth
                             </div>
@@ -153,8 +162,8 @@
                         class="w-24 h-24 mx-auto mb-6 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
                         <i class="fas fa-book-open text-4xl text-gray-400"></i>
                     </div>
-                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">ยังไม่มีคอร์สที่เปิดสอน</h3>
-                    <p class="text-gray-500 dark:text-gray-400">อาจารย์ยังไม่ได้เปิดสอนคอร์สในขณะนี้</p>
+                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">ยังไม่มีรายวิชาที่เปิดสอน</h3>
+                    <p class="text-gray-500 dark:text-gray-400">ผู้สอนยังไม่ได้เปิดสอนรายวิชาในขณะนี้</p>
                 </div>
             @endif
         </div>

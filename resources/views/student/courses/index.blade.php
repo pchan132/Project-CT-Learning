@@ -2,7 +2,7 @@
 
 @section('header')
     <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-        <i class="fas fa-search mr-2"></i>ค้นหาคอร์ส
+        <i class="fas fa-search mr-2"></i>ค้นหารายวิชา
     </h2>
 @endsection
 
@@ -11,9 +11,9 @@
         <!-- Header -->
         <div class="mb-8">
             <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-                <i class="fas fa-graduation-cap text-blue-500 mr-2"></i>สำรวจคอร์สเรียน
+                <i class="fas fa-graduation-cap text-blue-500 mr-2"></i>สำรวจรายวิชา
             </h1>
-            <p class="text-gray-600 dark:text-gray-400">ค้นหาและลงทะเบียนคอร์สที่คุณสนใจ</p>
+            <p class="text-gray-600 dark:text-gray-400">ค้นหาและลงทะเบียนรายวิชาที่คุณสนใจ</p>
         </div>
 
         <!-- Search Bar -->
@@ -24,7 +24,7 @@
                         <i class="fas fa-search text-gray-400"></i>
                     </div>
                     <input type="text" name="search" value="{{ $search ?? '' }}"
-                        placeholder="ค้นหาคอร์ส... (ชื่อคอร์ส, คำอธิบาย)"
+                        placeholder="ค้นหารายวิชา... (ชื่อรายวิชา, คำอธิบาย)"
                         class="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
                 </div>
                 <button type="submit"
@@ -48,7 +48,7 @@
                         <i class="fas fa-book-reader text-white text-xl"></i>
                     </div>
                     <div>
-                        <p class="text-sm text-blue-600 dark:text-blue-400">คอร์สที่ลงทะเบียน</p>
+                        <p class="text-sm text-blue-600 dark:text-blue-400">รายวิชาที่ลงทะเบียน</p>
                         <p class="text-2xl font-bold text-blue-700 dark:text-blue-300">{{ $enrolledCourses->total() }}</p>
                     </div>
                 </div>
@@ -59,7 +59,7 @@
                         <i class="fas fa-plus-circle text-white text-xl"></i>
                     </div>
                     <div>
-                        <p class="text-sm text-green-600 dark:text-green-400">คอร์สที่สามารถลงทะเบียน</p>
+                        <p class="text-sm text-green-600 dark:text-green-400">รายวิชาที่สามารถลงทะเบียน</p>
                         <p class="text-2xl font-bold text-green-700 dark:text-green-300">{{ $availableCourses->total() }}
                         </p>
                     </div>
@@ -71,7 +71,7 @@
                         <i class="fas fa-graduation-cap text-white text-xl"></i>
                     </div>
                     <div>
-                        <p class="text-sm text-purple-600 dark:text-purple-400">คอร์สทั้งหมด</p>
+                        <p class="text-sm text-purple-600 dark:text-purple-400">รายวิชาทั้งหมด</p>
                         <p class="text-2xl font-bold text-purple-700 dark:text-purple-300">
                             {{ $enrolledCourses->total() + $availableCourses->total() }}</p>
                     </div>
@@ -102,11 +102,11 @@
         <div class="mb-12">
             <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mb-6 flex items-center">
                 <i class="fas fa-book-reader text-blue-500 mr-3"></i>
-                คอร์สที่ลงทะเบียนแล้ว
+                รายวิชาที่ลงทะเบียนแล้ว
                 @if ($enrolledCourses->total() > 0)
                     <span
                         class="ml-3 px-3 py-1 text-sm bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 rounded-full">
-                        {{ $enrolledCourses->total() }} คอร์ส
+                        {{ $enrolledCourses->total() }} รายวิชา
                     </span>
                 @endif
             </h2>
@@ -178,7 +178,7 @@
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit"
-                                            onclick="return confirm('คุณแน่ใจหรือไม่ที่จะถอนการลงทะเบียนคอร์สนี้?')"
+                                            onclick="return confirm('คุณแน่ใจหรือไม่ที่จะถอนการลงทะเบียนรายวิชานี้?')"
                                             class="bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 p-2.5 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/50 transition">
                                             <i class="fas fa-trash-alt"></i>
                                         </button>
@@ -202,8 +202,8 @@
                         class="w-20 h-20 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
                         <i class="fas fa-book-open text-gray-400 text-3xl"></i>
                     </div>
-                    <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">ยังไม่มีคอร์สที่ลงทะเบียน</h3>
-                    <p class="text-gray-600 dark:text-gray-400">เริ่มต้นโดยการลงทะเบียนคอร์สจากรายการด้านล่าง</p>
+                    <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">ยังไม่มีรายวิชาที่ลงทะเบียน</h3>
+                    <p class="text-gray-600 dark:text-gray-400">เริ่มต้นโดยการลงทะเบียนรายวิชาจากรายการด้านล่าง</p>
                 </div>
             @endif
         </div>
@@ -212,11 +212,11 @@
         <div>
             <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mb-6 flex items-center">
                 <i class="fas fa-plus-circle text-green-500 mr-3"></i>
-                คอร์สที่สามารถลงทะเบียนได้
+                รายวิชาที่สามารถลงทะเบียนได้
                 @if ($availableCourses->total() > 0)
                     <span
                         class="ml-3 px-3 py-1 text-sm bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300 rounded-full">
-                        {{ $availableCourses->total() }} คอร์ส
+                        {{ $availableCourses->total() }} รายวิชา
                     </span>
                 @endif
             </h2>
@@ -290,8 +290,8 @@
                         class="w-20 h-20 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
                         <i class="fas fa-check-circle text-green-500 text-3xl"></i>
                     </div>
-                    <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">ไม่มีคอร์สใหม่ในขณะนี้</h3>
-                    <p class="text-gray-600 dark:text-gray-400">คอร์สที่มีอยู่ทั้งหมดคุณได้ลงทะเบียนไปแล้ว</p>
+                    <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">ไม่มีรายวิชาใหม่ในขณะนี้</h3>
+                    <p class="text-gray-600 dark:text-gray-400">รายวิชาที่มีอยู่ทั้งหมดคุณได้ลงทะเบียนไปแล้ว</p>
                 </div>
             @endif
         </div>

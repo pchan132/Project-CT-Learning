@@ -7,6 +7,7 @@
     'courseName' => 'ชื่อคอร์สเรียน',
     'teacherName' => 'อาจารย์ผู้สอน',
     'teacherSignature' => null,
+    'teacherBackground' => null,
     'certificateNumber' => 'CERT-XXXXXX',
     'issuedDate' => null,
     'containerId' => 'certificate-preview',
@@ -17,6 +18,22 @@
     $primaryColor = $template->primary_color ?? '#2563eb';
     $goldColor = $template->border_color ?? '#ca8a04';
     $textColor = $template->text_color ?? '#1f2937';
+
+    // Background image - ใช้พื้นหลังของ Teacher ก่อน ถ้าไม่มีใช้ของ Template (Admin)
+    // teacherBackground อาจเป็น full URL หรือ path
+    $backgroundPath = $teacherBackground ?? ($template->background_image ?? null);
+    $hasBackgroundImage = !empty($backgroundPath);
+
+    // ตรวจสอบว่าเป็น full URL หรือ path
+    if ($hasBackgroundImage) {
+        if (str_starts_with($backgroundPath, 'http://') || str_starts_with($backgroundPath, 'https://')) {
+            $backgroundUrl = $backgroundPath;
+        } else {
+            $backgroundUrl = asset('storage/' . $backgroundPath);
+        }
+    } else {
+        $backgroundUrl = null;
+    }
 
     // ตำแหน่งลายเซ็น
     $showTeacherSignature = $template->show_teacher_signature ?? true;
@@ -52,17 +69,19 @@
 @endphp
 
 <div id="{{ $containerId }}" class="relative bg-white shadow-2xl overflow-hidden text-center mx-auto"
-    style="width: 1123px; height: 794px; font-family: 'Sarabun', sans-serif;">
+    style="width: 1123px; height: 794px; font-family: 'Sarabun', sans-serif; {{ $hasBackgroundImage ? 'background-image: url(' . $backgroundUrl . '); background-size: cover; background-position: center;' : '' }}">
 
-    <!-- Decorative Left Border -->
-    <div class="absolute left-0 top-0 bottom-0 w-4 h-full" style="background-color: {{ $primaryColor }};"></div>
-    <div class="absolute left-4 top-0 bottom-0 w-2 h-full" style="background-color: {{ $goldColor }};"></div>
+    @if (!$hasBackgroundImage)
+        <!-- Decorative Left Border (only show if no background image) -->
+        <div class="absolute left-0 top-0 bottom-0 w-4 h-full" style="background-color: {{ $primaryColor }};"></div>
+        <div class="absolute left-4 top-0 bottom-0 w-2 h-full" style="background-color: {{ $goldColor }};"></div>
 
-    <!-- Decorative Corners -->
-    <div class="absolute top-0 right-0 w-32 h-32 rounded-bl-full -mr-16 -mt-16 opacity-50"
-        style="background-color: #fef3c7;"></div>
-    <div class="absolute bottom-0 right-0 w-48 h-48 rounded-tl-full -mr-10 -mb-10 opacity-50"
-        style="background-color: #dbeafe;"></div>
+        <!-- Decorative Corners -->
+        <div class="absolute top-0 right-0 w-32 h-32 rounded-bl-full -mr-16 -mt-16 opacity-50"
+            style="background-color: #fef3c7;"></div>
+        <div class="absolute bottom-0 right-0 w-48 h-48 rounded-tl-full -mr-10 -mb-10 opacity-50"
+            style="background-color: #dbeafe;"></div>
+    @endif
 
     <!-- Main Content Area -->
     <div class="relative z-10 h-full flex flex-col justify-between px-24 py-20">
@@ -142,7 +161,7 @@
             </div>
 
             <!-- Center Seal -->
-            <div class="absolute left-1/2 transform -translate-x-1/2 bottom-4">
+            {{-- <div class="absolute left-1/2 transform -translate-x-1/2 bottom-4">
                 <div class="relative inline-flex justify-center items-center">
                     <div class="w-32 h-32 rounded-full flex items-center justify-center border-4 border-yellow-200"
                         style="background: linear-gradient(135deg, #fbbf24, #d97706); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
@@ -164,7 +183,7 @@
                         <div class="w-8 h-12 transform -rotate-12" style="background-color: #ca8a04;"></div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
 
             <!-- Right Signature -->
             <div class="text-center w-64">

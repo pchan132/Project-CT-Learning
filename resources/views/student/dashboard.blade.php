@@ -110,10 +110,10 @@
                 <h2 class="text-2xl md:text-3xl font-bold text-white mb-2">
                     ยินดีต้อนรับ, {{ $user->name }}! 👋
                 </h2>
-                <p class="text-blue-100 mb-6">เริ่มต้นการเรียนรู้ของคุณโดยการสำรวจคอร์สที่น่าสนใจ</p>
+                <p class="text-blue-100 mb-6">เริ่มต้นการเรียนรู้ของคุณโดยการสำรวจรายวิชาที่น่าสนใจ</p>
                 <a href="{{ route('student.courses.index') }}"
                     class="inline-flex items-center px-6 py-3 bg-white text-blue-700 font-bold rounded-xl hover:bg-blue-50 transition shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
-                    <i class="fas fa-search mr-2"></i>สำรวจคอร์ส
+                    <i class="fas fa-search mr-2"></i>สำรวจรายวิชา
                 </a>
             </div>
         @endif
@@ -125,7 +125,7 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-3xl font-bold text-gray-900 dark:text-white">{{ $enrolledCoursesCount }}</p>
-                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">คอร์สที่ลงทะเบียน</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">รายวิชาที่ลงทะเบียน</p>
                     </div>
                     <div
                         class="w-12 h-12 bg-blue-100 dark:bg-blue-900/50 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
@@ -181,7 +181,7 @@
                 <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-100 dark:border-gray-700">
                     <div class="px-6 py-4 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">
                         <h3 class="text-lg font-bold text-gray-900 dark:text-white flex items-center">
-                            <i class="fas fa-book-open text-blue-500 mr-2"></i>คอร์สของฉัน
+                            <i class="fas fa-book-open text-blue-500 mr-2"></i>รายวิชาของฉัน
                         </h3>
                         <a href="{{ route('student.courses.my-courses') }}"
                             class="text-blue-600 dark:text-blue-400 text-sm font-medium hover:underline flex items-center">
@@ -251,11 +251,11 @@
                                 class="w-20 h-20 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
                                 <i class="fas fa-book-open text-gray-400 text-3xl"></i>
                             </div>
-                            <h4 class="font-medium text-gray-900 dark:text-white mb-2 text-lg">ยังไม่มีคอร์สเรียน</h4>
+                            <h4 class="font-medium text-gray-900 dark:text-white mb-2 text-lg">ยังไม่มีรายวิชาเรียน</h4>
                             <p class="text-gray-500 dark:text-gray-400 text-sm mb-6">เริ่มต้นการเรียนรู้ของคุณวันนี้!</p>
                             <a href="{{ route('student.courses.index') }}"
                                 class="inline-flex items-center px-5 py-2.5 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition shadow hover:shadow-lg">
-                                <i class="fas fa-search mr-2"></i>ค้นหาคอร์ส
+                                <i class="fas fa-search mr-2"></i>ค้นหารายวิชา
                             </a>
                         </div>
                     @endif
@@ -323,8 +323,8 @@
                                 <i class="fas fa-search text-blue-600 dark:text-blue-400"></i>
                             </div>
                             <div>
-                                <p class="font-medium text-gray-900 dark:text-white text-sm">ค้นหาคอร์สใหม่</p>
-                                <p class="text-xs text-gray-500 dark:text-gray-400">สำรวจคอร์สที่น่าสนใจ</p>
+                                <p class="font-medium text-gray-900 dark:text-white text-sm">ค้นหารายวิชาใหม่</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">สำรวจรายวิชาที่น่าสนใจ</p>
                             </div>
                             <i class="fas fa-chevron-right text-gray-400 ml-auto"></i>
                         </a>
@@ -335,8 +335,8 @@
                                 <i class="fas fa-chalkboard-teacher text-purple-600 dark:text-purple-400"></i>
                             </div>
                             <div>
-                                <p class="font-medium text-gray-900 dark:text-white text-sm">อาจารย์ผู้สอน</p>
-                                <p class="text-xs text-gray-500 dark:text-gray-400">ดูอาจารย์ทั้งหมด</p>
+                                <p class="font-medium text-gray-900 dark:text-white text-sm">ผู้สอน</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">ดูผู้สอนทั้งหมด</p>
                             </div>
                             <i class="fas fa-chevron-right text-gray-400 ml-auto"></i>
                         </a>
@@ -347,8 +347,8 @@
                                 <i class="fas fa-book-reader text-green-600 dark:text-green-400"></i>
                             </div>
                             <div>
-                                <p class="font-medium text-gray-900 dark:text-white text-sm">คอร์สของฉัน</p>
-                                <p class="text-xs text-gray-500 dark:text-gray-400">ดูคอร์สที่ลงทะเบียน</p>
+                                <p class="font-medium text-gray-900 dark:text-white text-sm">รายวิชาของฉัน</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">ดูรายวิชาที่ลงทะเบียน</p>
                             </div>
                             <i class="fas fa-chevron-right text-gray-400 ml-auto"></i>
                         </a>

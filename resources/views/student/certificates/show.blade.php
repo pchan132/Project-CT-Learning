@@ -19,6 +19,12 @@
     $teacher = $certificate->course->teacher;
     $teacherSignature = $teacher->signature_image ?? null;
 
+    // Background image - ใช้พื้นหลังของ Teacher ก่อน ถ้าไม่มีใช้ของ Template (Admin)
+    $teacherBackground = $teacher->certificate_background ?? null;
+    $templateBackground = $template->background_image ?? null;
+    $backgroundImage = $teacherBackground ?? $templateBackground;
+    $hasBackgroundImage = !empty($backgroundImage);
+
     // ตำแหน่งลายเซ็น (ดึงจาก template)
     $showTeacherSignature = $template->show_teacher_signature ?? true;
     $teacherSignaturePosition = $template->teacher_signature_position ?? 'left';
@@ -83,17 +89,21 @@
         <div class="overflow-x-auto pb-4">
             <div id="certificate-container"
                 class="relative bg-white shadow-2xl overflow-hidden text-center mx-auto font-sarabun"
-                style="width: 1123px; height: 794px;">
+                style="width: 1123px; height: 794px; {{ $hasBackgroundImage ? 'background-image: url(' . asset('storage/' . $backgroundImage) . '); background-size: cover; background-position: center;' : '' }}">
 
-                <!-- Decorative Left Border -->
-                <div class="absolute left-0 top-0 bottom-0 w-4 h-full" style="background-color: {{ $primaryColor }};"></div>
-                <div class="absolute left-4 top-0 bottom-0 w-2 h-full" style="background-color: {{ $goldColor }};"></div>
+                @if (!$hasBackgroundImage)
+                    <!-- Decorative Left Border (only show if no background image) -->
+                    <div class="absolute left-0 top-0 bottom-0 w-4 h-full" style="background-color: {{ $primaryColor }};">
+                    </div>
+                    <div class="absolute left-4 top-0 bottom-0 w-2 h-full" style="background-color: {{ $goldColor }};">
+                    </div>
 
-                <!-- Decorative Corners -->
-                <div class="absolute top-0 right-0 w-32 h-32 rounded-bl-full -mr-16 -mt-16 opacity-50"
-                    style="background-color: #fef3c7;"></div>
-                <div class="absolute bottom-0 right-0 w-48 h-48 rounded-tl-full -mr-10 -mb-10 opacity-50"
-                    style="background-color: #dbeafe;"></div>
+                    <!-- Decorative Corners -->
+                    <div class="absolute top-0 right-0 w-32 h-32 rounded-bl-full -mr-16 -mt-16 opacity-50"
+                        style="background-color: #fef3c7;"></div>
+                    <div class="absolute bottom-0 right-0 w-48 h-48 rounded-tl-full -mr-10 -mb-10 opacity-50"
+                        style="background-color: #dbeafe;"></div>
+                @endif
 
                 <!-- Main Content Area -->
                 <div class="relative z-10 h-full flex flex-col justify-between px-24 py-20">
@@ -129,7 +139,7 @@
                         </h2>
                         <p class="text-xl text-gray-600">
                             ซึ่งจัดโดย <span
-                                class="font-semibold text-gray-800">{{ $template->name ?? 'CT Learning' }}</span>
+                                class="font-semibold text-gray-800">{{ $teacher->name ?? 'CT Learning' }}</span>
                             <br>
                             เมื่อวันที่ {{ $thaiDate }}
                         </p>
@@ -168,7 +178,7 @@
                         </div>
 
                         <!-- Center Seal -->
-                        <div class="absolute left-1/2 transform -translate-x-1/2 bottom-4">
+                        {{-- <div class="absolute left-1/2 transform -translate-x-1/2 bottom-4">
                             <div class="relative inline-flex justify-center items-center">
                                 <div
                                     class="seal-outer w-32 h-32 rounded-full flex items-center justify-center border-4 border-yellow-200">
@@ -190,7 +200,7 @@
                                     <div class="w-8 h-12 transform -rotate-12" style="background-color: #ca8a04;"></div>
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
 
                         {{-- Right Signature (ตามตำแหน่งที่กำหนดใน template) --}}
                         <div class="text-center w-64">
@@ -223,9 +233,9 @@
                     </div>
 
                     <!-- Certificate Number -->
-                    <div class="absolute bottom-2 left-1/2 transform -translate-x-1/2">
+                    {{-- <div class="absolute bottom-2 left-1/2 transform -translate-x-1/2">
                         <p class="text-sm text-gray-400">Certificate No: {{ $certificate->certificate_number }}</p>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
 
@@ -250,7 +260,7 @@
             <!-- Course Details -->
             <div class="mt-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
                 <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4">
-                    <i class="fas fa-info-circle text-blue-500 mr-2"></i>รายละเอียดคอร์ส
+                    <i class="fas fa-info-circle text-blue-500 mr-2"></i>รายละเอียดรายวิชา
                 </h3>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div class="text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">

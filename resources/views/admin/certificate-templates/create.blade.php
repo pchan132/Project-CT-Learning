@@ -49,10 +49,31 @@
                             </div>
                         </div>
 
+                        {{-- ภาพพื้นหลัง Certificate --}}
+                        <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-6 mb-6">
+                            <h3 class="text-lg font-semibold mb-4 text-indigo-600 dark:text-indigo-400">
+                                <i class="fas fa-image mr-2"></i>ภาพพื้นหลัง Certificate
+                            </h3>
+
+                            <div>
+                                <input type="file" name="background_image" id="background_image" accept="image/*"
+                                    class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                                <p class="text-xs text-gray-500 mt-1">แนะนำ: ขนาด 1123x794 พิกเซล (A4 แนวนอน) รูปแบบ JPG,
+                                    PNG ไม่เกิน 5MB</p>
+                                <p class="text-xs text-amber-600 dark:text-amber-400 mt-1">
+                                    <i class="fas fa-lightbulb mr-1"></i>ถ้าไม่อัปโหลดภาพพื้นหลัง
+                                    จะใช้การออกแบบเริ่มต้นของระบบ
+                                </p>
+                                @error('background_image')
+                                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
+
                         {{-- โลโก้ --}}
                         <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-6 mb-6">
                             <h3 class="text-lg font-semibold mb-4 text-indigo-600 dark:text-indigo-400">
-                                <i class="fas fa-image mr-2"></i>โลโก้สถาบัน
+                                <i class="fas fa-building mr-2"></i>โลโก้สถาบัน
                             </h3>
 
                             <div>

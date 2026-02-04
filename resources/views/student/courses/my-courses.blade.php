@@ -2,7 +2,7 @@
 
 @section('header')
     <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-        คอร์สของฉัน
+        รายวิชาของฉัน
     </h2>
 @endsection
 
@@ -10,8 +10,8 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <!-- Header -->
         <div class="mb-6">
-            <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">คอร์สของฉัน</h1>
-            <p class="text-gray-600 dark:text-gray-400">รายการคอร์สที่คุณลงทะเบียนเรียน</p>
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">รายวิชาของฉัน</h1>
+            <p class="text-gray-600 dark:text-gray-400">รายวิชาที่คุณลงทะเบียนเรียน</p>
         </div>
 
         @if (session('success'))
@@ -100,11 +100,11 @@
         @else
             <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-12 text-center">
                 <i class="fas fa-graduation-cap text-6xl text-gray-300 dark:text-gray-600 mb-4"></i>
-                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">ยังไม่ได้ลงทะเบียนคอร์สใดๆ</h3>
-                <p class="text-gray-600 dark:text-gray-400 mb-6">เริ่มเรียนรู้วันนี้ด้วยการลงทะเบียนคอร์สที่สนใจ</p>
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">ยังไม่ได้ลงทะเบียนรายวิชาใดๆ</h3>
+                <p class="text-gray-600 dark:text-gray-400 mb-6">เริ่มเรียนรู้วันนี้ด้วยการลงทะเบียนรายวิชาที่สนใจ</p>
                 <a href="{{ route('student.courses.index') }}"
                     class="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold">
-                    <i class="fas fa-search mr-2"></i>ค้นหาคอร์ส
+                    <i class="fas fa-search mr-2"></i>ค้นหารายวิชา
                 </a>
             </div>
         @endif

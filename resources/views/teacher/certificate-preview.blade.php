@@ -26,7 +26,7 @@
                 class="mb-6 bg-yellow-100 dark:bg-yellow-900/30 border border-yellow-400 text-yellow-700 dark:text-yellow-300 px-4 py-3 rounded-lg">
                 <i class="fas fa-exclamation-triangle mr-2"></i>
                 คุณยังไม่ได้อัพโหลดลายเซ็น
-                <a href="{{ route('teacher.profile.edit') }}"
+                <a href="{{ route('teacher.signature.index') }}"
                     class="underline font-semibold">คลิกที่นี่เพื่ออัพโหลดลายเซ็น</a>
             </div>
         @endif
@@ -40,7 +40,7 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        เลือกคอร์ส
+                        เลือกรายวิชา (ตัวอย่าง)
                     </label>
                     <select id="course-select" onchange="updateCoursePreview()"
                         class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
@@ -50,7 +50,7 @@
                             </option>
                         @endforeach
                         @if ($courses->isEmpty())
-                            <option value="">คอร์สตัวอย่าง</option>
+                            <option value="">รายวิชาตัวอย่าง</option>
                         @endif
                     </select>
                 </div>
@@ -84,8 +84,8 @@
                     $firstCourse = $courses->first();
                 @endphp
 
-                <x-certificate-preview :template="$template" :studentName="'นักเรียน ตัวอย่าง'" :courseName="$firstCourse ? $firstCourse->title : 'คอร์สตัวอย่าง'" :teacherName="$teacher->name"
-                    :teacherSignature="$teacher->signature_image ? asset('storage/' . $teacher->signature_image) : null" containerId="certificate-preview" />
+                <x-certificate-preview :template="$template" :studentName="'นักเรียน ตัวอย่าง'" :courseName="$firstCourse ? $firstCourse->title : 'รายวิชาตัวอย่าง'" :teacherName="$teacher->name"
+                    :teacherSignature="$teacher->signature_image ? asset('storage/' . $teacher->signature_image) : null" :teacherBackground="$teacher->certificate_background" containerId="certificate-preview" />
             </div>
 
             <p class="text-sm text-gray-500 dark:text-gray-400 text-center mt-4">
@@ -96,9 +96,9 @@
 
         <!-- Back Button -->
         <div class="mt-6">
-            <a href="{{ route('teacher.profile.edit') }}"
+            <a href="{{ route('teacher.signature.index') }}"
                 class="inline-flex items-center text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">
-                <i class="fas fa-arrow-left mr-2"></i>กลับไปหน้าแก้ไขโปรไฟล์
+                <i class="fas fa-arrow-left mr-2"></i>กลับไปหน้าจัดการลายเซ็น
             </a>
         </div>
     </div>

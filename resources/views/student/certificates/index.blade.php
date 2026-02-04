@@ -53,12 +53,12 @@
                             <div class="flex gap-2">
                                 <a href="{{ route('student.certificates.show', $certificate->id) }}"
                                     class="flex-1 text-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-sm font-semibold">
-                                    <i class="fas fa-eye mr-1"></i>ดู
+                                    <i class="fas fa-eye mr-1"></i>ดูและพิมพ์ใบประกาศนียบัตร
                                 </a>
-                                <a href="{{ route('student.certificates.download', $certificate->id) }}"
+                                {{-- <a href="{{ route('student.certificates.download', $certificate->id) }}"
                                     class="flex-1 text-center px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 text-sm font-semibold">
                                     <i class="fas fa-download mr-1"></i>ดาวน์โหลด
-                                </a>
+                                </a> --}}
                             </div>
                         </div>
                     </div>
@@ -68,11 +68,12 @@
             <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-12 text-center">
                 <i class="fas fa-award text-6xl text-gray-300 dark:text-gray-600 mb-4"></i>
                 <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">ยังไม่มีใบประกาศนียบัตร</h3>
-                <p class="text-gray-600 dark:text-gray-400 mb-6">เรียนคอร์สให้จบและผ่านแบบทดสอบทุกบทเพื่อรับใบประกาศนียบัตร
+                <p class="text-gray-600 dark:text-gray-400 mb-6">
+                    เรียนรายวิชาให้จบและผ่านแบบทดสอบทุกบทเพื่อรับใบประกาศนียบัตร
                 </p>
                 <a href="{{ route('student.courses.my-courses') }}"
                     class="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold">
-                    <i class="fas fa-book mr-2"></i>ไปที่คอร์สของฉัน
+                    <i class="fas fa-book mr-2"></i>ไปที่รายวิชาของฉัน
                 </a>
             </div>
         @endif

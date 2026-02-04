@@ -143,6 +143,14 @@ Route::middleware(['auth', 'teacher'])->prefix('teacher')->name('teacher.')->gro
     Route::put('profile', [TeacherProfileController::class, 'updateProfile'])->name('profile.update');
     Route::delete('profile/image', [TeacherProfileController::class, 'deleteProfileImage'])->name('profile.delete-image');
     
+    // Route สำหรับจัดการลายเซ็นสำหรับใบประกาศนียบัตร
+    Route::get('signature', [App\Http\Controllers\Teacher\SignatureController::class, 'index'])->name('signature.index');
+    Route::post('signature/upload', [App\Http\Controllers\Teacher\SignatureController::class, 'upload'])->name('signature.upload');
+    Route::delete('signature', [App\Http\Controllers\Teacher\SignatureController::class, 'delete'])->name('signature.delete');
+    Route::get('signature/preview', [App\Http\Controllers\Teacher\SignatureController::class, 'preview'])->name('signature.preview');
+    Route::post('signature/background', [App\Http\Controllers\Teacher\SignatureController::class, 'uploadBackground'])->name('signature.upload-background');
+    Route::delete('signature/background', [App\Http\Controllers\Teacher\SignatureController::class, 'deleteBackground'])->name('signature.delete-background');
+    
     // Route สำหรับดูตัวอย่าง Certificate พร้อมลายเซ็น
     Route::get('certificate-preview', [TeacherProfileController::class, 'certificatePreview'])->name('certificate-preview');
     

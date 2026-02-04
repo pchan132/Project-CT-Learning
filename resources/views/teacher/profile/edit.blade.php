@@ -8,7 +8,7 @@
         <div class="mb-8">
             <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
                 <i class="fas fa-user-edit text-blue-500 mr-3"></i>
-                แก้ไขโปรไฟล์อาจารย์
+                แก้ไขโปรไฟล์ผู้สอน
             </h1>
             <p class="mt-2 text-gray-600 dark:text-gray-400">
                 อัปเดตข้อมูลและรูปโปรไฟล์ของคุณ
@@ -118,86 +118,24 @@
                         @enderror
                     </div>
 
-                    <!-- Signature Section -->
-                    <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
-                        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">
-                            <i class="fas fa-signature text-purple-500 mr-2"></i>ลายเซ็นสำหรับใบประกาศนียบัตร
-                        </h3>
-                        <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
-                            ลายเซ็นของคุณจะแสดงในใบประกาศนียบัตรของนักเรียนที่เรียนจบคอร์สของคุณ
-                        </p>
 
-                        <div class="bg-purple-50 dark:bg-purple-900/20 rounded-xl p-4">
-                            <div class="flex flex-col md:flex-row items-start md:items-center gap-4">
-                                <!-- Current Signature Preview -->
-                                <div class="flex-shrink-0">
-                                    @if ($teacher->signature_image)
-                                        <div class="relative group">
-                                            <img src="{{ $teacher->signature_image_url }}" alt="ลายเซ็นปัจจุบัน"
-                                                id="signature-preview"
-                                                class="h-20 bg-white rounded-lg border border-purple-200 p-2">
-                                            <div class="text-xs text-center text-purple-600 mt-1">ลายเซ็นปัจจุบัน</div>
-                                        </div>
-                                    @else
-                                        <div class="w-48 h-20 bg-white dark:bg-gray-700 rounded-lg border-2 border-dashed border-purple-300 dark:border-purple-600 flex items-center justify-center"
-                                            id="signature-placeholder">
-                                            <div class="text-center text-purple-400">
-                                                <i class="fas fa-signature text-2xl mb-1"></i>
-                                                <div class="text-xs">ยังไม่มีลายเซ็น</div>
-                                            </div>
-                                        </div>
-                                        <img src="" alt="" id="signature-preview"
-                                            class="h-20 bg-white rounded-lg border border-purple-200 p-2 hidden">
-                                    @endif
-                                </div>
 
-                                <!-- Upload Section -->
-                                <div class="flex-1">
-                                    <label for="signature_image"
-                                        class="inline-flex items-center px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-lg cursor-pointer transition-colors">
-                                        <i class="fas fa-upload mr-2"></i>
-                                        {{ $teacher->signature_image ? 'เปลี่ยนลายเซ็น' : 'อัพโหลดลายเซ็น' }}
-                                    </label>
-                                    <input type="file" name="signature_image" id="signature_image" accept="image/*"
-                                        class="hidden" onchange="previewSignature(this)">
-
-                                    <p class="mt-2 text-xs text-purple-600 dark:text-purple-400">
-                                        <i class="fas fa-info-circle mr-1"></i>
-                                        แนะนำ: ใช้รูป PNG พื้นหลังโปร่งใส ขนาดไม่เกิน 2MB
-                                    </p>
-
-                                    <!-- ปุ่มดูตัวอย่าง Certificate -->
-                                    <a href="{{ route('teacher.certificate-preview') }}"
-                                        class="inline-flex items-center mt-3 px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white font-medium rounded-lg transition-colors">
-                                        <i class="fas fa-certificate mr-2"></i>ดูตัวอย่างใบประกาศนียบัตร
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-
-                        @error('signature_image')
-                            <p class="mt-2 text-sm text-red-500">{{ $message }}</p>
-                        @enderror
+                    <!-- Actions -->
+                    <div class="px-6 py-4 bg-gray-50 dark:bg-gray-700/50 flex items-center justify-between">
+                        <a href="{{ route('teacher.dashboard') }}"
+                            class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+                            <i class="fas fa-arrow-left mr-2"></i>กลับ
+                        </a>
+                        <button type="submit"
+                            class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-6 rounded-lg transition-colors">
+                            <i class="fas fa-save mr-2"></i>บันทึกการเปลี่ยนแปลง
+                        </button>
                     </div>
-                </div>
-
-                <!-- Actions -->
-                <div class="px-6 py-4 bg-gray-50 dark:bg-gray-700/50 flex items-center justify-between">
-                    <a href="{{ route('teacher.dashboard') }}"
-                        class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
-                        <i class="fas fa-arrow-left mr-2"></i>กลับ
-                    </a>
-                    <button type="submit"
-                        class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-6 rounded-lg transition-colors">
-                        <i class="fas fa-save mr-2"></i>บันทึกการเปลี่ยนแปลง
-                    </button>
-                </div>
             </form>
         </div>
 
         <!-- Delete Image Form (Hidden) -->
-        <form id="delete-image-form" action="{{ route('teacher.profile.delete-image') }}" method="POST"
-            class="hidden">
+        <form id="delete-image-form" action="{{ route('teacher.profile.delete-image') }}" method="POST" class="hidden">
             @csrf
             @method('DELETE')
         </form>

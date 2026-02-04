@@ -18,7 +18,7 @@
                 <div>
                     <h1 class="text-2xl font-bold text-gray-900 dark:text-white">แก้ไข Module</h1>
                     <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                        คอร์ส: {{ $course->title }} / Module: {{ $module->title }}
+                        รายวิชา: {{ $course->title }} / Module: {{ $module->title }}
                     </p>
                 </div>
             </div>
@@ -69,7 +69,7 @@
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                         <p class="mt-1 text-sm text-gray-500">
-                            ลำดับการแสดงผลของ Module ในคอร์ส (ปัจจุบัน: {{ $module->order }})
+                            ลำดับการแสดงผลของ Module ในรายวิชา (ปัจจุบัน: {{ $module->order }})
                         </p>
                     </div>
 
@@ -90,7 +90,7 @@
 
                     <!-- Course Info -->
                     <div class="bg-blue-50 dark:bg-blue-900/20 p-5 rounded-xl mt-4">
-                        <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">ข้อมูลคอร์ส</h3>
+                        <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">ข้อมูลรายวิชา</h3>
                         <div class="flex items-center">
                             @if ($course->cover_image_url)
                                 <img src="{{ asset('storage/' . $course->cover_image_url) }}" alt="{{ $course->title }}"
@@ -104,7 +104,7 @@
                             <div>
                                 <p class="font-semibold text-gray-900 dark:text-white">{{ $course->title }}</p>
                                 <p class="text-sm text-gray-500 dark:text-gray-400">{{ $course->modules->count() }} modules
-                                    ในคอร์สนี้</p>
+                                    ในรายวิชานี้</p>
                             </div>
                         </div>
                     </div>
