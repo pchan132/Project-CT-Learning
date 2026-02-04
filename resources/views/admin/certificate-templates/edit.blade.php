@@ -120,6 +120,8 @@
                                     <input type="file" name="admin_signature" id="admin_signature" accept="image/*"
                                         class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100">
                                     <p class="text-xs text-gray-500 mt-1">แนะนำ: PNG พื้นหลังโปร่งใส</p>
+                                    <p class="text-xs text-gray-500 mt-1">ขนาด 800x400 พิกเซล</p>
+                                    <p class="text-xs text-gray-500 mt-1">ไฟล์ไม่เกิน 2MB</p>
                                     @error('admin_signature')
                                         <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                                     @enderror
