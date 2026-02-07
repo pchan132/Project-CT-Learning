@@ -2,7 +2,17 @@
 
 @section('header')
     <div class="flex items-center justify-between">
-        <nav class="flex text-sm">
+        <!-- Mobile: แสดงแค่ปุ่มกลับ -->
+        <a href="{{ route('student.courses.show', $course) }}"
+            class="flex items-center text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 sm:hidden">
+            <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+            <span class="text-sm truncate max-w-[200px]">{{ $course->title }}</span>
+        </a>
+
+        <!-- Desktop: แสดง breadcrumb เต็ม -->
+        <nav class="hidden sm:flex text-sm">
             <a href="{{ route('student.courses.index') }}"
                 class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">รายวิชา</a>
             <span class="mx-2 text-gray-400">/</span>
@@ -180,7 +190,8 @@ $youtubeWatchUrl = $isYouTube
 
                                     @if ($lesson->content_text)
                                         <div class="mt-6 prose dark:prose-invert max-w-none">
-                                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">รายละเอียดเพิ่มเติม
+                                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">
+                                                รายละเอียดเพิ่มเติม
                                             </h3>
                                             <div class="text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
                                                 {!! nl2br(e($lesson->content_text)) !!}
@@ -637,8 +648,10 @@ $youtubeWatchUrl = $isYouTube
         </div>
     </div>
 
-    <!-- Notification Toast Container -->
-    <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2"></div>
+    <!-- Notification Toast Container - ย้ายไปตำแหน่งที่ไม่บัง hamburger menu -->
+    <div id="toast-container" class="fixed top-20 right-4 z-[60] space-y-2 pointer-events-none">
+        <!-- Toast items will have pointer-events-auto -->
+    </div>
 
     <script>
         function completeLesson() {
