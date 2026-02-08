@@ -200,6 +200,9 @@ class QuizController extends Controller
         $course = \App\Models\Course::findOrFail($courseId);
         
         if ($course->teacher_id !== auth()->id() || $question->quiz_id !== $quiz->id) {
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'Unauthorized action.'], 403);
+            }
             abort(403, 'Unauthorized action.');
         }
 
@@ -212,6 +215,9 @@ class QuizController extends Controller
 
         $hasCorrectAnswer = collect($validated['answers'])->contains('is_correct', true);
         if (!$hasCorrectAnswer) {
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'ต้องมีคำตอบที่ถูกต้องอย่างน้อย 1 ข้อ'], 422);
+            }
             return back()->withErrors(['answers' => 'ต้องมีคำตอบที่ถูกต้องอย่างน้อย 1 ข้อ'])->withInput();
         }
 
@@ -227,6 +233,14 @@ class QuizController extends Controller
                 ]);
             }
         });
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'อัปเดตคำถามสำเร็จ!',
+                'question' => $question->fresh()->load('answers')
+            ]);
+        }
 
         return back()->with('success', 'อัปเดตคำถามสำเร็จ!');
     }
