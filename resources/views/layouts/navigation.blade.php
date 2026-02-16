@@ -14,9 +14,9 @@
                         <img src="{{ asset('./storage/imgs/logo-technology.png') }}" alt="Logo"
                             class="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
                         {{-- </div> --}}
-                        <span class="font-bold text-lg text-gray-900 dark:text-white hidden sm:block">Center-Learning
+                        <span class="font-bold text-lg text-gray-900 dark:text-white hidden sm:block">
                             Computer
-                            Technology</span>
+                            Technology Learning</span>
                     </a>
                 </div>
 

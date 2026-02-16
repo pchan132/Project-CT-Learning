@@ -11,6 +11,7 @@
     'certificateNumber' => 'CERT-XXXXXX',
     'issuedDate' => null,
     'containerId' => 'certificate-preview',
+    'signatureHeight' => '100px', // สามารถกำหนดความสูงลายเซ็นได้ เช่น '80px', '100px'
 ])
 
 @php
@@ -66,6 +67,10 @@
     $adminSignature = $template->admin_signature ?? null;
     $adminName = $template->admin_name ?? 'ผู้อำนวยการ';
     $adminPosition = $template->admin_position ?? 'ผู้รับรอง';
+
+    // Signature size - ขนาดลายเซ็น (default 100px, ปรับได้ตาม template หรือ prop)
+    $sigHeight = $signatureHeight ?? ($template->signature_height ?? '100px');
+    $sigContainerHeight = '120px'; // container สูงกว่าลายเซ็น 20px
 @endphp
 
 <div id="{{ $containerId }}" class="relative bg-white shadow-2xl overflow-hidden text-center mx-auto"
@@ -130,27 +135,23 @@
             <div class="text-center w-64">
                 @if ($showTeacherSignature && $teacherSignaturePosition === 'left')
                     <!-- Teacher Signature (Left) -->
-                    <div class="border-b-2 border-gray-400 mb-3 pb-2">
-                        <div class="h-12 w-full flex items-end justify-center">
-                            @if ($teacherSignature)
-                                <img src="{{ $teacherSignature }}" alt="Signature" class="h-10 object-contain">
-                            @else
-                                {{-- No signature image --}}
-                                <div class="h-10"></div>
-                            @endif
-                        </div>
+                    <div
+                        style="display: flex; align-items: flex-end; justify-content: center; height: {{ $sigContainerHeight }}; border-bottom: 2px solid #9ca3af; margin-bottom: 4px;">
+                        @if ($teacherSignature)
+                            <img src="{{ $teacherSignature }}" alt="Signature"
+                                style="height: {{ $sigHeight }}; max-width: 180px; object-fit: contain; display: block;">
+                        @endif
                     </div>
                     <p class="text-lg font-bold text-gray-800">{{ $teacherName }}</p>
                     <p class="text-sm text-gray-500">ผู้สอน</p>
                 @elseif ($adminSignaturePosition === 'left')
                     <!-- Admin Signature (Left) -->
-                    <div class="border-b-2 border-gray-400 mb-3 pb-2">
-                        <div class="h-12 w-full flex items-end justify-center">
-                            @if ($adminSignature)
-                                <img src="{{ asset('storage/' . $adminSignature) }}" alt="Admin Signature"
-                                    class="h-10 object-contain">
-                            @endif
-                        </div>
+                    <div
+                        style="display: flex; align-items: flex-end; justify-content: center; height: {{ $sigContainerHeight }}; border-bottom: 2px solid #9ca3af; margin-bottom: 4px;">
+                        @if ($adminSignature)
+                            <img src="{{ asset('storage/' . $adminSignature) }}" alt="Admin Signature"
+                                style="height: {{ $sigHeight }}; max-width: 180px; object-fit: contain; display: block;">
+                        @endif
                     </div>
                     <p class="text-lg font-bold text-gray-800">{{ $adminName }}</p>
                     <p class="text-sm text-gray-500">{{ $adminPosition }}</p>
@@ -189,27 +190,23 @@
             <div class="text-center w-64">
                 @if ($showTeacherSignature && $teacherSignaturePosition === 'right')
                     <!-- Teacher Signature (Right) -->
-                    <div class="border-b-2 border-gray-400 mb-3 pb-2">
-                        <div class="h-12 w-full flex items-end justify-center">
-                            @if ($teacherSignature)
-                                <img src="{{ $teacherSignature }}" alt="Signature" class="h-10 object-contain">
-                            @else
-                                {{-- No signature image --}}
-                                <div class="h-10"></div>
-                            @endif
-                        </div>
+                    <div
+                        style="display: flex; align-items: flex-end; justify-content: center; height: {{ $sigContainerHeight }}; border-bottom: 2px solid #9ca3af; margin-bottom: 4px;">
+                        @if ($teacherSignature)
+                            <img src="{{ $teacherSignature }}" alt="Signature"
+                                style="height: {{ $sigHeight }}; max-width: 180px; object-fit: contain; display: block;">
+                        @endif
                     </div>
                     <p class="text-lg font-bold text-gray-800">{{ $teacherName }}</p>
                     <p class="text-sm text-gray-500">ผู้สอน</p>
                 @elseif ($adminSignaturePosition === 'right')
                     <!-- Admin Signature (Right) -->
-                    <div class="border-b-2 border-gray-400 mb-3 pb-2">
-                        <div class="h-12 w-full flex items-end justify-center">
-                            @if ($adminSignature)
-                                <img src="{{ asset('storage/' . $adminSignature) }}" alt="Admin Signature"
-                                    class="h-10 object-contain">
-                            @endif
-                        </div>
+                    <div
+                        style="display: flex; align-items: flex-end; justify-content: center; height: {{ $sigContainerHeight }}; border-bottom: 2px solid #9ca3af; margin-bottom: 4px;">
+                        @if ($adminSignature)
+                            <img src="{{ asset('storage/' . $adminSignature) }}" alt="Admin Signature"
+                                style="height: {{ $sigHeight }}; max-width: 180px; object-fit: contain; display: block;">
+                        @endif
                     </div>
                     <p class="text-lg font-bold text-gray-800">{{ $adminName }}</p>
                     <p class="text-sm text-gray-500">{{ $adminPosition }}</p>

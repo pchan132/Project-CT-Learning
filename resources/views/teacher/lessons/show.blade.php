@@ -502,12 +502,12 @@
                     <div>
                         <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">สร้างเมื่อ</dt>
                         <dd class="mt-1 text-sm text-gray-900 dark:text-white font-semibold">
-                            {{ $lesson->created_at->format('d/m/Y H:i:s') }}</dd>
+                            {{ $lesson->created_at->format('d/m/Y') }}</dd>
                     </div>
                     <div>
                         <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">อัปเดตล่าสุด</dt>
                         <dd class="mt-1 text-sm text-gray-900 dark:text-white font-semibold">
-                            {{ $lesson->updated_at->format('d/m/Y H:i:s') }}</dd>
+                            {{ $lesson->updated_at->format('d/m/Y') }}</dd>
                     </div>
                 </dl>
             </div>

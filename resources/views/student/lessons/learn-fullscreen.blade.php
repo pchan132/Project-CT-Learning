@@ -270,8 +270,14 @@
 
 <body class="bg-gray-900 text-white antialiased">
     <div class="flex h-screen overflow-hidden" id="app">
+        <!-- Mobile Sidebar Overlay -->
+        <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-40 hidden md:hidden" onclick="toggleSidebar()">
+        </div>
+
         <!-- Sidebar - Course Navigation -->
-        <aside class="w-80 bg-gray-800 flex flex-col border-r border-gray-700 shrink-0" id="sidebar">
+        <aside
+            class="hidden md:flex w-80 bg-gray-800 flex-col border-r border-gray-700 shrink-0 fixed md:relative h-full z-50 md:z-auto"
+            id="sidebar">
             <!-- Course Header -->
             <div class="p-4 border-b border-gray-700">
                 <h2 class="font-bold text-lg text-white truncate mb-1">{{ $course->title }}</h2>
@@ -498,8 +504,18 @@
         <div class="flex-1 flex flex-col min-w-0">
             <!-- Top Header Bar -->
             <header class="h-14 bg-gray-800 border-b border-gray-700 flex items-center justify-between px-4 shrink-0">
-                <!-- Left: Breadcrumb -->
+                <!-- Left: Mobile Menu + Breadcrumb -->
                 <div class="flex items-center min-w-0">
+                    <!-- Mobile Hamburger Menu -->
+                    <button onclick="toggleSidebar()"
+                        class="md:hidden p-2 -ml-2 mr-2 text-gray-400 hover:text-white hover:bg-gray-700 rounded-lg transition-colors"
+                        title="เปิดเมนู">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+
                     <a href="{{ route('student.courses.show', $course) }}"
                         class="text-gray-400 hover:text-white mr-2">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -508,27 +524,29 @@
                         </svg>
                     </a>
                     <nav class="flex items-center text-sm truncate">
-                        <span class="text-gray-400 truncate max-w-[200px]">{{ $course->title }}</span>
-                        <span class="mx-2 text-gray-600">/</span>
-                        <span class="text-orange-400 font-medium truncate max-w-[300px]">{{ $lesson->title }}</span>
+                        <span
+                            class="text-gray-400 truncate max-w-[120px] sm:max-w-[200px]">{{ $course->title }}</span>
+                        <span class="mx-2 text-gray-600 hidden sm:inline">/</span>
+                        <span
+                            class="text-orange-400 font-medium truncate max-w-[150px] sm:max-w-[300px] hidden sm:inline">{{ $lesson->title }}</span>
                     </nav>
                 </div>
 
                 <!-- Right: Timer & Actions -->
-                <div class="flex items-center space-x-2">
+                <div class="flex items-center space-x-1 sm:space-x-2">
                     <!-- Study Timer -->
-                    <div class="flex items-center bg-gray-700/50 px-3 py-1.5 rounded-lg">
-                        <svg class="w-4 h-4 text-gray-400 mr-2" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24">
+                    <div class="flex items-center bg-gray-700/50 px-2 sm:px-3 py-1.5 rounded-lg">
+                        <svg class="w-4 h-4 text-gray-400 mr-1 sm:mr-2 hidden sm:block" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
-                        <span id="studyTimer" class="text-sm font-mono text-white">00:00</span>
+                        <span id="studyTimer" class="text-xs sm:text-sm font-mono text-white">00:00</span>
                     </div>
 
-                    <!-- Toggle Sidebar -->
+                    <!-- Toggle Sidebar (Desktop only) -->
                     <button onclick="toggleSidebar()"
-                        class="p-2 text-gray-400 hover:text-white hover:bg-gray-700 rounded-lg transition-colors"
+                        class="hidden md:block p-2 text-gray-400 hover:text-white hover:bg-gray-700 rounded-lg transition-colors"
                         title="ซ่อน/แสดง Sidebar">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -872,7 +890,9 @@
     </div>
 
     <!-- Toast Container -->
-    <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2"></div>
+    <div id="toast-container" class="fixed top-20 right-4 z-[60] space-y-2 pointer-events-none">
+        <!-- Toast items will have pointer-events-auto -->
+    </div>
 
     <script>
         // Study Timer
@@ -889,7 +909,19 @@
         // Toggle Sidebar
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
-            sidebar.classList.toggle('hidden');
+            const overlay = document.getElementById('sidebar-overlay');
+            const isMobile = window.innerWidth < 768;
+
+            if (isMobile) {
+                // Mobile: toggle visibility with overlay
+                sidebar.classList.toggle('hidden');
+                sidebar.classList.toggle('flex');
+                overlay.classList.toggle('hidden');
+            } else {
+                // Desktop: just toggle sidebar
+                sidebar.classList.toggle('hidden');
+                sidebar.classList.toggle('md:flex');
+            }
         }
 
         // Toggle Module

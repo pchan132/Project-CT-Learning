@@ -128,9 +128,6 @@
     <!-- Particle Background Container -->
     <div id="particle-bg"></div>
 
-
-
-
     <!-- Navbar (Glass Effect) -->
     <nav class="glass-nav sticky top-0 w-full z-50 shadow-xl">
         <div class="max-w-10xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -140,7 +137,7 @@
                     <!-- ใช้ชื่อแผนกแทนโลโก้ -->
                     <span
                         class="text-xl md:text-2xl font-extrabold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-fuchsia-500">
-                        Center-Learning <span class="text-white">TECHNOLOGY COMPUTER</span>
+                        COMPUTER TECHNOLOGY <span class="text-white">LEARNING</span>
                     </span>
                 </a>
 
